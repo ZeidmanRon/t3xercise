@@ -12,9 +12,22 @@ generator client {
 }
 
 model Exercise {
-    id        String @id @default(cuid())
-    Title     String 
-    Desc      String @db.VarChar(255)
+    id        String    @id @default(cuid())
+    title     String
+    desc      String    @db.VarChar(255)
     authorId  String
+    updatedAt DateTime  @updatedAt
+    workouts  Workout[]
+
+    @@index([authorId])
+}
+
+model Workout {
+    id        String     @id @default(cuid())
+    title     String
+    authorId  String
+    updatedAt DateTime   @updatedAt
+    exercises Exercise[]
+
     @@index([authorId])
 }
