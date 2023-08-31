@@ -1,5 +1,6 @@
 import { SignInButton, SignOutButton, useUser } from "@clerk/nextjs";
 import Head from "next/head";
+import { ExerciseSkeleton } from "~/components/exercise";
 import { api } from "~/utils/api";
 
 export default function Home() {
@@ -29,7 +30,7 @@ export default function Home() {
           <div className="flex flex-col">
             {[...data]?.map((exercise) => (
               <div className="border-b border-slate-400 p-8" key={exercise.id}>
-                {exercise.Title}
+               <ExerciseSkeleton exercise={exercise}/>
               </div>
             ))}
           </div>
