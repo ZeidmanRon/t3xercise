@@ -1,4 +1,3 @@
-import { type Exercise } from "@prisma/client";
 import React from "react"; // we need this to make JSX compile
 
 type T3hrefProps = {

@@ -1,7 +1,7 @@
 import { SignOutButton, useUser } from "@clerk/nextjs";
 import { useRouter } from "next/router";
-import { ExerciseSkeleton } from "~/Components/exercise";
-import Layout from "~/Components/layout/layout";
+import { ExerciseSkeleton } from "~/components/exercise";
+import Layout from "~/components/layout/layout";
 import { api } from "~/utils/api";
 
 const HomePage: React.FC = () => {

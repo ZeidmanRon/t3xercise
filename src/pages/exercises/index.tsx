@@ -1,6 +1,6 @@
-import { ExerciseList } from "~/Components/exerciseList";
-import Layout from "~/Components/layout/layout";
-import { T3buttonSkeleton } from "~/Components/t3button";
+import Layout from "~/components/layout/layout";
+import { ExerciseList } from "~/components/exerciseList";
+import { T3buttonSkeleton } from "~/components/t3button";
 import { api } from "~/utils/api";
 
 const Exercises = () => {
