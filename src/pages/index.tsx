@@ -33,11 +33,11 @@ export default function Home() {
           <div className="flex h-full justify-center border-b border-slate-400 p-4">
             {!user.isLoaded || !user.isSignedIn ? (
               <div className=" flex flex-col justify-center text-center text-white">
-                <div className="flex h-1/4 flex-col justify-normal">
-                  <h1 className="handwrite mb-2 text-6xl tracking-tight sm:text-[5rem]">
+                <div className="flex h-1/4 flex-col justify-center">
+                  <h1 className="handwrite text-[4rem] tracking-tight">
                     T3XERCISE
                   </h1>
-                  <h1 className="handwrite text-3xl font-extrabold tracking-tight sm:text-[5rem]">
+                  <h1 className="handwrite -mt-5 text-[3rem] tracking-tight">
                     Build a{" "}
                     <span className="handwrite text-[hsl(280,100%,70%)]">
                       Workout
@@ -46,7 +46,7 @@ export default function Home() {
                 </div>
                 <div className="h-1/4 flex-col justify-normal">
                   <SignInButton>
-                    <button className="handwrite rounded-full border border-dashed py-1 px-3 text-5xl border-transparent">
+                    <button className="handwrite rounded-full border border-dashed border-transparent px-3 py-1 text-[3rem]">
                       sign in
                     </button>
                   </SignInButton>
