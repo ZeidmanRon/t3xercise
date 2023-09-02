@@ -16,8 +16,10 @@ export const ExerciseSkeleton = ({ exercise }: ExerciseProps) => (
         @{exercise.authorId}
       </p>
     </div>
-    <div className="max-h-10 overflow-y-auto">
-      <p className="text-xs text-gray-400">{exercise.desc}</p>
+    <div className="max-h-12 overflow-y-auto">
+      <p className="text-xs text-gray-400">
+        {exercise.desc}
+      </p>
     </div>
   </div>
 );
