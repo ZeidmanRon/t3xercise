@@ -5,6 +5,7 @@ class MyDocument extends Document {
     return (
       <Html lang="en" dir="rtl">
         <Head />
+        <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&display=swap" rel="stylesheet"/>
         <body>
           <Main />
           <NextScript />
