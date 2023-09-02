@@ -29,7 +29,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           </div>
           <div className="mt-3 flex h-full flex-col justify-center">
             <T3href text="דף הבית" href="/home" />
-            <T3href text="התרגילים שלי" href="/home" />
+            <T3href text="התרגילים שלי" href="/exercises" />
             <T3href text="דף העסק" href="/home" />
           </div>
         </div>

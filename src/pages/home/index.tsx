@@ -1,8 +1,8 @@
 import { SignOutButton, useUser } from "@clerk/nextjs";
 import { useRouter } from "next/router";
-import { ExerciseSkeleton } from "~/components/exercise";
+import { ExerciseSkeleton } from "~/Components/exercise";
+import Layout from "~/Components/layout/layout";
 import { api } from "~/utils/api";
-import Layout from "../../components/layout/layout";
 
 const HomePage: React.FC = () => {
   const { data, isLoading } = api.exercises.getAll.useQuery();

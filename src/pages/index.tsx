@@ -25,11 +25,14 @@ export default function Home() {
     <>
       <Head>
         <title>T3xercise</title>
-        <meta name="description" content="Unleash Your Trainer Potential: Effortlessly Craft Customized Workouts, Share Exercises, and Organize Your Fitness Arsenal – All in One Place!" />
+        <meta
+          name="description"
+          content="Unleash Your Trainer Potential: Effortlessly Craft Customized Workouts, Share Exercises, and Organize Your Fitness Arsenal – All in One Place!"
+        />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="flex h-screen w-screen justify-center">
-        <div className="flex h-full min-h-screen w-full flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] md:max-w-2xl">
+        <div className="flex h-full min-h-screen w-full flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
           <div className="flex h-full justify-center border-b border-slate-400 p-4">
             {!user.isLoaded || !user.isSignedIn ? (
               <div className=" flex flex-col justify-center text-center text-white">
