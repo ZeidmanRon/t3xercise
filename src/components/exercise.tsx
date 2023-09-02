@@ -16,12 +16,9 @@ export const ExerciseSkeleton = ({ exercise }: ExerciseProps) => (
         @{exercise.authorId}
       </p>
     </div>
-    <div className="max-h-10 overflow-y-auto">
+    <div className="max-h-12 overflow-y-auto">
       <p className="text-xs text-gray-400">
-        {exercise.desc} dddddddddddd dddd dddd dddddddd dddd ddddddd dddddd
-        dddddddd dddddddddddddddddddddddddddd dddddddddd dddddddddddd dddd dddd
-        dddddddd dddd ddddddd dddddd dddddddd dddddddddddddddddddddddddddd
-        dddddddddd
+        {exercise.desc}
       </p>
     </div>
   </div>
