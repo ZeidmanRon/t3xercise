@@ -1,11 +1,11 @@
 import { SignOutButton, useUser } from "@clerk/nextjs";
 import { useRouter } from "next/router";
-import { ExerciseSkeleton } from "~/components/exercise";
+import { WorkoutList } from "~/components/workoutList";
 import Layout from "~/components/layout/layout";
 import { api } from "~/utils/api";
 
 const HomePage: React.FC = () => {
-  const { data, isLoading } = api.exercises.getAll.useQuery();
+  const { data, isLoading } = api.workouts.getTop10.useQuery();
   const router = useRouter();
 
   if (isLoading) return <div>Loading...</div>;
@@ -14,39 +14,29 @@ const HomePage: React.FC = () => {
   return (
     <Layout>
       {/* <CreateExerciseWizard /> */}
-      <div className=" flex justify-center p-2">
-        <SignOutButton signOutCallback={() => router.push("/")}>
-          <button className="rounded border border-gray-400 bg-white px-4 py-2 font-semibold text-gray-800 shadow hover:bg-gray-100">
-            Sign out
-          </button>
-        </SignOutButton>
-      </div>
-      <div className="flex flex-col">
-        {[...data]?.map((exercise) => (
-          <div className="border-b border-slate-400 p-3" key={exercise.id}>
-            <ExerciseSkeleton exercise={exercise} />
-          </div>
-        ))}
+      <div className=" m-4 flex flex-col justify-center p-4">
+        <h1 className="text-2xl font-semibold"> האימונים שלי:</h1>
+        <WorkoutList workouts={data} />
       </div>
     </Layout>
   );
 };
 
-const CreateExerciseWizard = () => {
-  const { user } = useUser();
+// const CreateExerciseWizard = () => {
+//   const { user } = useUser();
 
-  if (!user) return null;
+//   if (!user) return null;
 
-  return (
-    <div className="flex w-full gap-3">
-      <img
-        src={user.imageUrl}
-        alt="Profile Image"
-        className="h-14 w-14 rounded-full"
-      />
-      <input className="w-full bg-transparent" placeholder="type here" />
-    </div>
-  );
-};
+//   return (
+//     <div className="flex w-full gap-3">
+//       <img
+//         src={user.imageUrl}
+//         alt="Profile Image"
+//         className="h-14 w-14 rounded-full"
+//       />
+//       <input className="w-full bg-transparent" placeholder="type here" />
+//     </div>
+//   );
+// };
 
 export default HomePage;
