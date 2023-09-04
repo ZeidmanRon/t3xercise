@@ -6,7 +6,7 @@ type ExerciseProps = {
 };
 
 export const ExerciseSkeleton = ({ exercise }: ExerciseProps) => (
-  <div className="w-full rounded-lg p-4">
+  <div className="w-full rounded-lg px-2 pb-2">
     <div className="top mb-1 flex w-full items-center justify-between">
       <div className="flex flex-col">
         <h2 className="text-xl font-semibold">{exercise.title}</h2>
@@ -17,9 +17,7 @@ export const ExerciseSkeleton = ({ exercise }: ExerciseProps) => (
       </p>
     </div>
     <div className="max-h-12 overflow-y-auto">
-      <p className="text-xs text-gray-400">
-        {exercise.desc}
-      </p>
+      <p className="text-xs text-gray-400">{exercise.desc}</p>
     </div>
   </div>
 );

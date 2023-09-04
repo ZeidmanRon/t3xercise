@@ -31,8 +31,8 @@ export default function Home() {
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className="flex h-screen w-screen justify-center">
-        <div className="flex h-full min-h-screen w-full flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
+      <main className="flex flex-1 justify-center">
+        <div className="flex flex-1 flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
           <div className="flex h-full justify-center border-b border-slate-400 p-4">
             {!user.isLoaded || !user.isSignedIn ? (
               <div className=" flex flex-col justify-center text-center text-white">

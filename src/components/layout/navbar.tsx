@@ -1,102 +1,72 @@
-// const MobileNavbar: React.FC = () => {
-//   const [isOpen, setIsOpen] = useState(false);
-
-//   const toggleMenu = () => {
-//     setIsOpen(!isOpen);
-//   };
-
-//   return (
-//     <nav className="fixed left-0 right-0 top-0 z-10 bg-white p-4 text-gray-800 shadow-md">
-//       <div className="flex items-center justify-between">
-//         <button onClick={toggleMenu} className="p-2 focus:outline-none">
-//           <Bars3Icon className="h-6 w-6" />
-//         </button>
-//         <a href="home/" className="handwrite text-[2rem] tracking-tight">
-//           T3XERCISE
-//         </a>
-//       </div>
-//       <div
-//         className={`${
-//           isOpen ? "flex w-full flex-col justify-center text-center" : "hidden"
-//         }`}
-//       >
-//         <T3href
-//           text="לדף הבית"
-//           href="/home"
-//           icon={<HomeIcon className="h-6 w-6" />}
-//         />
-//         <T3href
-//           text="התרגילים שלי"
-//           href="/exercises"
-//           icon={<ClipboardDocumentListIcon className="h-6 w-6" />}
-//         />
-//         <T3href
-//           text="לדף העסק"
-//           href="/home"
-//           icon={<BriefcaseIcon className="h-6 w-6" />}
-//         />
-//       </div>
-//     </nav>
-//   );
-// };
-
-// export default MobileNavbar;
-import { useState, useRef, useEffect } from "react";
+import { useRef, useEffect } from "react";
 import autoAnimate from "@formkit/auto-animate";
 import {
-  Bars3Icon,
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "~/components/ui/sheet";
+import Link from "next/link";
+import { SignOutButton } from "@clerk/nextjs";
+import { useRouter } from "next/router";
+import { Button } from "~/components/ui/button";
+import {
+  MenuIcon,
   HomeIcon,
-  ClipboardDocumentListIcon,
+  ClipboardListIcon,
   BriefcaseIcon,
-} from "@heroicons/react/24/solid";
-import { T3href } from "./t3href";
+  LogOutIcon,
+} from "lucide-react";
 
-const MobileNavbar: React.FC = () => {
-  const [show, setShow] = useState(false);
+const Navbar: React.FC = () => {
   const parent = useRef(null);
+  const router = useRouter();
 
   useEffect(() => {
     parent.current && autoAnimate(parent.current);
   }, [parent]);
 
-  const reveal = () => setShow(!show);
-
   return (
-    <nav
-      ref={parent}
-      className="fixed left-0 right-0 top-0 z-10 bg-white p-4 text-gray-800 shadow-md"
-    >
-      <div className="flex items-center justify-between">
-        <button onClick={reveal} className="p-2 focus:outline-none">
-          <Bars3Icon className="h-6 w-6" />
-        </button>
-        <a href="home/" className="handwrite text-[2rem] tracking-tight">
-          T3XERCISE
-        </a>
+    <Sheet>
+      <div className="absolute right-3 top-3 p-2">
+        <SheetTrigger>
+          <MenuIcon />
+        </SheetTrigger>
       </div>
-      {show ? (
-        <div className="flex flex-col py-3">
-          <T3href
-            text="לדף הבית"
-            href="/home"
-            icon={<HomeIcon className="h-6 w-6" />}
-          />
-          <T3href
-            text="התרגילים שלי"
-            href="/exercises"
-            icon={<ClipboardDocumentListIcon className="h-6 w-6" />}
-          />
-          <T3href
-            text="לדף העסק"
-            href="/home"
-            icon={<BriefcaseIcon className="h-6 w-6" />}
-          />
-        </div>
-      ) : (
-        <></>
-      )}
-    </nav>
+      <SheetContent className="flex w-3/4 flex-col">
+        <SheetHeader>
+          <SheetTitle>T3XERCISE</SheetTitle>
+        </SheetHeader>
+        <Button asChild variant={"default"} className="bg-indigo-400">
+          <Link href="/home">
+            לדף הראשי
+            <HomeIcon className="m-1" />
+          </Link>
+        </Button>
+        <Button asChild variant={"default"} className="bg-indigo-400">
+          <Link href="/exercises">
+            התרגילים שלי
+            <ClipboardListIcon className="m-1" />
+          </Link>
+        </Button>
+        <Button asChild variant={"default"} className="bg-indigo-400">
+          <Link href="/home">
+            לדף העסק
+            <BriefcaseIcon className="m-1" />
+          </Link>
+        </Button>
+        <Button variant="link">
+          <SignOutButton signOutCallback={() => router.push("/")}>
+            <p className="flex gap-3">
+              התנתקות
+              <LogOutIcon />
+            </p>
+          </SignOutButton>
+        </Button>
+      </SheetContent>
+    </Sheet>
   );
 };
 
-export default MobileNavbar;
+export default Navbar;
