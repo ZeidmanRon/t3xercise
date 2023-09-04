@@ -68,21 +68,24 @@
 
 @layer base {
   * {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+      "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+      "Helvetica Neue", sans-serif;
     /* @apply test-border */
   }
 
   body {
-    @apply bg-background text-foreground ;
+    @apply bg-background text-foreground;
   }
 
   #__next {
-    @apply h-[100dvh] flex flex-col;
+    @apply flex h-[100dvh] flex-col;
   }
 
   .test-border {
     @apply border border-red-500;
+  }
+  .handwrite {
+    font-family: "Caveat", cursive;
   }
 }

@@ -12,7 +12,7 @@ const Exercises = () => {
   return (
     <Layout>
       <div className="flex w-full flex-col p-4">
-        <h1 className="text-2xl font-semibold"> התרגילים שלי:</h1>
+        <h1 className="mb-1 text-2xl font-semibold"> התרגילים שלי:</h1>
         <ExerciseList exercises={[...data]} />
         <div className="mt-3 flex justify-center">
           <T3buttonSkeleton text="תרגיל חדש" onClick={() => "hello"} />

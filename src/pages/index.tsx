@@ -2,10 +2,6 @@ import { SignInButton, useUser } from "@clerk/nextjs";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
-import {Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger} from "~/components/ui/sheet";
-import {MenuIcon} from "lucide-react";
-import Image from "next/image";
-import God from "/public/koolcool.jpg";
 
 export default function Home() {
   const user = useUser();
@@ -36,20 +32,6 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="flex flex-1 justify-center">
-          <Sheet>
-              <div className="absolute right-0 top-0 p-4">
-              <SheetTrigger><MenuIcon /></SheetTrigger>
-              </div>
-              <SheetContent className="w-3/4">
-                  <SheetHeader>
-                      <SheetTitle>תחנק 💓</SheetTitle>
-                      <SheetDescription>
-                      ותגיד תודה לאלוהים שלך
-                      </SheetDescription>
-                  </SheetHeader>
-                  <Image src={God} alt="koolcool" />
-              </SheetContent>
-          </Sheet>
         <div className="flex flex-1 flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
           <div className="flex h-full justify-center border-b border-slate-400 p-4">
             {!user.isLoaded || !user.isSignedIn ? (
