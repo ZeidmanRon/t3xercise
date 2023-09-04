@@ -31,10 +31,7 @@ export const usersRouter = createTRPCRouter({
       });
 
       if (!user) {
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "User ID not exist",
-        });
+        return null;
       }
 
       return user;

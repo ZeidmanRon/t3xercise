@@ -7,6 +7,7 @@ import { useUser } from "@clerk/nextjs";
 
 const HomePage: React.FC = () => {
   const { user } = useUser();
+  console.log("email address:");
   console.log(user?.emailAddresses);
 
   const { mutate, isLoading: isLoading2 } = api.users.create.useMutation();
@@ -16,10 +17,14 @@ const HomePage: React.FC = () => {
     return <div>user not exist</div>;
   }
 
+  const { data, isLoading } = api.workouts.getTop10.useQuery();
   const { data: dbUser, isLoading: isLoading3 } = api.users.getUser.useQuery({
     userId: user.id,
   });
-
+  if (isLoading3) {
+    // todo: change to Loading component
+    return <div>Loading...</div>;
+  }
   if (!dbUser) {
     // todo: change to PageNotFound component
     return (
@@ -36,7 +41,6 @@ const HomePage: React.FC = () => {
       </Button>
     );
   }
-  const { data, isLoading } = api.workouts.getTop10.useQuery();
 
   // const { data, isLoading } = api.Business.getBusinessById.useQuery({
   //   businessId: dbUser.data.businessId!,
