@@ -3,7 +3,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import {Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger} from "~/components/ui/sheet";
-import {Menu} from "lucide-react";
+import {MenuIcon} from "lucide-react";
 import Image from "next/image";
 import God from "/public/koolcool.jpg";
 
@@ -38,7 +38,7 @@ export default function Home() {
       <main className="flex flex-1 justify-center">
           <Sheet>
               <div className="absolute right-0 top-0 p-4">
-              <SheetTrigger><Menu /></SheetTrigger>
+              <SheetTrigger><MenuIcon /></SheetTrigger>
               </div>
               <SheetContent className="w-3/4">
                   <SheetHeader>

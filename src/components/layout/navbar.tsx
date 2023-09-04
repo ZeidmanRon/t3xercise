@@ -43,12 +43,7 @@
 // export default MobileNavbar;
 import { useState, useRef, useEffect } from "react";
 import autoAnimate from "@formkit/auto-animate";
-import {
-  Bars3Icon,
-  HomeIcon,
-  ClipboardDocumentListIcon,
-  BriefcaseIcon,
-} from "@heroicons/react/24/solid";
+import {MenuIcon, HomeIcon, ClipboardListIcon, BriefcaseIcon} from "lucide-react"
 import { T3href } from "./t3href";
 
 const MobileNavbar: React.FC = () => {
@@ -68,7 +63,7 @@ const MobileNavbar: React.FC = () => {
     >
       <div className="flex items-center justify-between">
         <button onClick={reveal} className="p-2 focus:outline-none">
-          <Bars3Icon className="h-6 w-6" />
+          <MenuIcon className="h-6 w-6" />
         </button>
         <a href="home/" className="handwrite text-[2rem] tracking-tight">
           T3XERCISE
@@ -84,7 +79,7 @@ const MobileNavbar: React.FC = () => {
           <T3href
             text="התרגילים שלי"
             href="/exercises"
-            icon={<ClipboardDocumentListIcon className="h-6 w-6" />}
+            icon={<ClipboardListIcon className="h-6 w-6" />}
           />
           <T3href
             text="לדף העסק"

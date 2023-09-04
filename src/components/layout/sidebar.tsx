@@ -1,4 +1,4 @@
-import { XMarkIcon } from "@heroicons/react/24/solid";
+import { XIcon } from "lucide-react";
 import React from "react";
 import { T3href } from "./t3href";
 import { SignOutButton } from "@clerk/nextjs";
@@ -28,7 +28,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         <div className="test-border flex h-full w-full flex-col justify-normal pt-3">
           <div className="pr-2">
             <button className="p-0.5" onClick={onClose}>
-              <XMarkIcon className="h-7 w-7 text-gray-700" />
+              <XIcon className="h-7 w-7 text-gray-700" />
             </button>
           </div>
           <div className="mt-3 flex flex-col justify-center">
@@ -38,7 +38,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           </div>
           <div className="test-border flex h-full flex-col justify-end">
             <SignOutButton signOutCallback={() => router.push("/")}>
-              <button className="rounded border border-gray-400 bg-white px-4 py-2 font-semibold text-gray-800 shadow hover:bg-gray-100">
+              <button
+                className="rounded border border-gray-400 bg-white px-4 py-2 font-semibold text-gray-800 shadow hover:bg-gray-100">
                 Sign out
               </button>
             </SignOutButton>
