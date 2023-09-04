@@ -50,8 +50,12 @@ const Navbar: React.FC = () => {
             <ClipboardListIcon className="m-1" />
           </Link>
         </Button>
-        <Button asChild variant={"default"} className="bg-indigo-400">
-          <Link href="/home">
+        <Button
+          asChild
+          variant={"default"}
+          className="bg-indigo-400 ring-transparent"
+        >
+          <Link href="/business">
             לדף העסק
             <BriefcaseIcon className="m-1" />
           </Link>

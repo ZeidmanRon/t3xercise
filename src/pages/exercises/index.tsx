@@ -1,7 +1,7 @@
 import Layout from "~/components/layout/layout";
 import { ExerciseList } from "~/components/exerciseList";
-import { T3buttonSkeleton } from "~/components/t3button";
 import { api } from "~/utils/api";
+import { Button } from "~/components/ui/button";
 
 const Exercises = () => {
   const { data, isLoading } = api.exercises.getAll.useQuery();
@@ -15,7 +15,9 @@ const Exercises = () => {
         <h1 className="mb-1 text-2xl font-semibold"> התרגילים שלי:</h1>
         <ExerciseList exercises={[...data]} />
         <div className="mt-3 flex justify-center">
-          <T3buttonSkeleton text="תרגיל חדש" onClick={() => "hello"} />
+          <Button className="" variant={"outline"}>
+            תרגיל חדש
+          </Button>
         </div>
       </div>
     </Layout>

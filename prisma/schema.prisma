@@ -11,6 +11,13 @@ generator client {
     provider = "prisma-client-js"
 }
 
+model User {
+    id         String  @id @default(cuid())
+    fullName   String
+    email      String? @unique
+    businessId String?
+}
+
 model Exercise {
     id        String    @id @default(cuid())
     title     String
@@ -30,4 +37,13 @@ model Workout {
     exercises Exercise[]
 
     @@index([authorId])
+}
+
+model Business {
+    id        String   @id @default(cuid())
+    name      String
+    ownerId   String
+    createdAt DateTime @default(now())
+
+    @@index([ownerId])
 }
