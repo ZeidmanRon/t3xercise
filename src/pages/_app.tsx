@@ -5,9 +5,18 @@ import { ClerkProvider } from "@clerk/nextjs";
 
 const MyApp: AppType = ({ Component, pageProps }) => {
   return (
-  <ClerkProvider {...pageProps}>
-    <Component {...pageProps} />
-  </ClerkProvider>
+    <ClerkProvider
+      {...pageProps}
+      appearance={{
+        elements: {
+          headerSubtitle: "hidden",
+          footer: "hidden",
+        },
+        layout: {},
+      }}
+    >
+      <Component {...pageProps} />
+    </ClerkProvider>
   );
 };
 

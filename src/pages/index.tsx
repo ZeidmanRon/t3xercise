@@ -1,4 +1,5 @@
-import { SignInButton, useUser } from "@clerk/nextjs";
+import { SignInButton, useUser, SignIn } from "@clerk/nextjs";
+import { Sign } from "crypto";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
@@ -32,30 +33,18 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="flex flex-1 justify-center">
-        <div className="flex flex-1 flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
-          <div className="flex h-full justify-center border-b border-slate-400 p-4">
-            {!user.isLoaded || !user.isSignedIn ? (
-              <div className=" flex flex-col justify-center text-center text-white">
-                <div className="flex h-1/4 flex-col justify-center">
-                  <h1 className="handwrite text-[4rem] tracking-tight">
-                    T3XERCISE
-                  </h1>
-                  <h1 className="handwrite -mt-5 text-[3rem] tracking-tight">
-                    Build a{" "}
-                    <span className="handwrite text-[hsl(280,100%,70%)]">
-                      Workout
-                    </span>
-                  </h1>
-                </div>
-                <div className="h-1/4 flex-col justify-normal">
-                  <SignInButton>
-                    <button className="handwrite rounded-full border border-dashed border-transparent px-3 py-1 text-[3rem]">
-                      sign in
-                    </button>
-                  </SignInButton>
-                </div>
-              </div>
-            ) : null}
+        <div className="flex flex-1 flex-col items-center justify-center text-center text-stone-600">
+          <div dir="ltr">
+            <h1 className="handwrite text-[4rem] tracking-tight">T3XERCISE</h1>
+            <h1 className="handwrite -mt-5 text-[3rem] tracking-tight">
+              Build a{" "}
+              <span className="handwrite text-[hsl(247,100%,70%)]">
+                Workout
+              </span>
+            </h1>
+            <div className="mt-10">
+              <SignIn />
+            </div>
           </div>
         </div>
       </main>
