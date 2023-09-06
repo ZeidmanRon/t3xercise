@@ -1,5 +1,6 @@
-import { clerkClient } from "@clerk/nextjs";
 import { TRPCError } from "@trpc/server";
+import { clerkClient } from "@clerk/nextjs";
+import { getAuth } from "@clerk/nextjs/server";
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
@@ -23,17 +24,21 @@ export const usersRouter = createTRPCRouter({
 
       return users;
     }),
-  getUser: publicProcedure
-    .input(z.object({ userId: z.string() }))
+  getUserById: publicProcedure
+    .input(z.object({ userId: z.string().optional() }))
     .query(async ({ ctx, input }) => {
-      const user = await ctx.prisma.user.findFirst({
-        where: { id: input.userId },
+      const { userId } = input;
+      if (!userId || userId === undefined) {
+        return null;
+      }
+      const user = await ctx.prisma.user.findUnique({
+        where: {
+          id: userId,
+        },
       });
-
       if (!user) {
         return null;
       }
-
       return user;
     }),
   create: publicProcedure
@@ -42,6 +47,7 @@ export const usersRouter = createTRPCRouter({
         userId: z.string(),
         fullName: z.string(),
         email: z.string().optional(),
+        businessId: z.string().optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -50,6 +56,7 @@ export const usersRouter = createTRPCRouter({
           id: input.userId,
           fullName: input.fullName,
           email: input.email,
+          businessId: input.businessId,
         },
       });
       return user;

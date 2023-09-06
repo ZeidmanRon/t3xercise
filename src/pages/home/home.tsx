@@ -4,13 +4,11 @@ import { api } from "~/utils/api";
 import { Button } from "~/components/ui/button";
 import Link from "next/link";
 import { useUser } from "@clerk/nextjs";
-import { useEffect } from "react";
 
 const HomePage: React.FC = () => {
   const { user } = useUser();
-  useEffect(() => {
-    const { data, isLoading } = api.workouts.getTop10.useQuery();
-  });
+  const { data, isLoading } = api.workouts.getTop10.useQuery();
+
   if (!user) {
     // todo: change to PageNotFound component
     return <div>user not exist</div>;

@@ -10,10 +10,10 @@ const Business: React.FC = () => {
     // todo: change to PageNotFound component
     return <div>user not exist</div>;
   }
-  const { mutate, isLoading: isLoading2 } = api.users.create.useMutation();
-  const { data: dbUser, isLoading: isLoading3 } = api.users.getUser.useQuery({
-    userId: user.id,
-  });
+  const { data: dbUser, isLoading: isLoading3 } =
+    api.users.getUserById.useQuery({
+      userId: user.id,
+    });
 
   if (isLoading3) {
     // todo: change to Loading component
@@ -22,19 +22,7 @@ const Business: React.FC = () => {
   if (!dbUser && !isLoading3) {
     // todo: change to PageNotFound component
 
-    return (
-      <Button
-        onClick={() =>
-          mutate({
-            userId: user.id,
-            fullName: user.fullName!,
-            email: user.emailAddresses[0]?.emailAddress,
-          })
-        }
-      >
-        DB user not exist
-      </Button>
-    );
+    return <Button>some test</Button>;
   }
 
   //   const { data, isLoading } = api.Business.getBusinessById.useQuery({

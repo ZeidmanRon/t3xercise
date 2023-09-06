@@ -1,27 +1,61 @@
-import { SignInButton, useUser, SignIn } from "@clerk/nextjs";
-import { Sign } from "crypto";
 import Head from "next/head";
+import { useUser, SignIn } from "@clerk/nextjs";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
+import { api } from "~/utils/api";
 
 export default function Home() {
-  const user = useUser();
+  const { user, isLoaded, isSignedIn } = useUser();
   const router = useRouter();
+  let isCreatingUserFlag = false;
+
+  const { data: existingUser, isLoading: isSearchingUser } =
+    api.users.getUserById.useQuery(
+      {
+        userId: user?.id ?? "",
+      },
+      { enabled: !!user }
+    );
+
+  const { mutate: createUser, isLoading: isCreatingUser } =
+    api.users.create.useMutation();
 
   useEffect(() => {
-    if (user.isLoaded && user.isSignedIn) {
-      router
-        .push("/home")
-        .then(() => {
-          // The navigation was successful
-        })
-        .catch((error) => {
-          // Handle any errors that occurred during navigation
-          console.error(error);
-        });
+    // Check if user is loaded and signed in
+    if (isLoaded && isSignedIn && !isCreatingUser) {
+      // Check if the query has finished
+      if (!isSearchingUser) {
+        // Check if the user doesn't exist in your database
+        if (!existingUser) {
+          createUser({
+            userId: user.id,
+            fullName: user.fullName!,
+            email: user.emailAddresses[0]?.emailAddress,
+            businessId: "",
+          });
+        } else {
+          router
+            .push("/home")
+            .then(() => {
+              // The navigation was successful
+            })
+            .catch((error) => {
+              // Handle any errors that occurred during navigation
+              console.error(error);
+            });
+        }
+      }
     }
-  }, [user, router]);
+  }, [isSignedIn, isSearchingUser, existingUser, isLoaded, createUser, router]);
 
+  useEffect(() => {
+    if (isCreatingUserFlag !== isCreatingUser) {
+      isCreatingUserFlag = isCreatingUser;
+      console.log(isCreatingUser);
+    } else {
+      console.log("im here");
+    }
+  }, [isCreatingUser]);
   return (
     <>
       <Head>
@@ -42,9 +76,7 @@ export default function Home() {
                 Workout
               </span>
             </h1>
-            <div className="mt-10">
-              <SignIn />
-            </div>
+            <div className="mt-10">{isSignedIn ? "" : <SignIn />}</div>
           </div>
         </div>
       </main>
