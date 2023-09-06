@@ -30,11 +30,12 @@ model Exercise {
 }
 
 model Workout {
-    id        String     @id @default(cuid())
-    title     String
-    authorId  String
-    updatedAt DateTime   @updatedAt
-    exercises Exercise[]
+    id         String     @id @default(cuid())
+    title      String
+    authorId   String
+    authorName String
+    updatedAt  DateTime   @updatedAt
+    exercises  Exercise[]
 
     @@index([authorId])
 }
