@@ -27,28 +27,33 @@ export default function Home() {
 
   useEffect(() => {
     // Check if user is loaded and signed in
-    if (isLoaded && isSignedIn && !isCreatingUser && !isSearchingUser) {
-      // Check if the query has finished
-      // Check if the user doesn't exist in your database
-      if (!existingUser) {
-        createUser({
-          userId: user.id,
-          fullName: user.fullName!,
-          email: user.emailAddresses[0]?.emailAddress,
-          businessId: "",
-        });
-      } else {
-        router
-          .push("/home")
-          .then(() => {
-            // The navigation was successful
-          })
-          .catch((error) => {
-            // Handle any errors that occurred during navigation
-            console.error(error);
-          });
-      }
+    if (!isLoaded || !isSignedIn) {
+      return;
     }
+    // Check if not waiting for callabck
+    if (isCreatingUser || isSearchingUser) {
+      return;
+    }
+    if (existingUser) {
+      router
+        .push("/home")
+        .then(() => {
+          // The navigation was successful
+        })
+        .catch((error) => {
+          // Handle any errors that occurred during navigation
+          console.error(error);
+        });
+      return;
+    }
+    // if (!existingUser) {
+    createUser({
+      userId: user.id,
+      fullName: user.fullName!,
+      email: user.emailAddresses[0]?.emailAddress,
+      businessId: "",
+    });
+    // }
   }, [
     user,
     isSignedIn,
