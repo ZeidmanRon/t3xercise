@@ -1,4 +1,4 @@
-import { WorkoutList } from "~/components/workoutList";
+import { WorkoutList } from "~/components/workout/workoutList";
 import Layout from "~/components/layout/layout";
 import { api } from "~/utils/api";
 import { Button } from "~/components/ui/button";
