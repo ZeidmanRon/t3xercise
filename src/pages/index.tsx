@@ -1,13 +1,14 @@
 import Head from "next/head";
 import { useUser, SignIn } from "@clerk/nextjs";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { api } from "~/utils/api";
 
 export default function Home() {
   const { user, isLoaded, isSignedIn } = useUser();
   const router = useRouter();
-  let isCreatingUserFlag = false;
+
+  const utils = api.useContext();
 
   const { data: existingUser, isLoading: isSearchingUser } =
     api.users.getUserById.useQuery(
@@ -18,44 +19,47 @@ export default function Home() {
     );
 
   const { mutate: createUser, isLoading: isCreatingUser } =
-    api.users.create.useMutation();
+    api.users.create.useMutation({
+      async onSuccess(data, variables, context) {
+        await utils.users.getUserById.invalidate();
+      },
+    });
 
   useEffect(() => {
     // Check if user is loaded and signed in
-    if (isLoaded && isSignedIn && !isCreatingUser) {
+    if (isLoaded && isSignedIn && !isCreatingUser && !isSearchingUser) {
       // Check if the query has finished
-      if (!isSearchingUser) {
-        // Check if the user doesn't exist in your database
-        if (!existingUser) {
-          createUser({
-            userId: user.id,
-            fullName: user.fullName!,
-            email: user.emailAddresses[0]?.emailAddress,
-            businessId: "",
+      // Check if the user doesn't exist in your database
+      if (!existingUser) {
+        createUser({
+          userId: user.id,
+          fullName: user.fullName!,
+          email: user.emailAddresses[0]?.emailAddress,
+          businessId: "",
+        });
+      } else {
+        router
+          .push("/home")
+          .then(() => {
+            // The navigation was successful
+          })
+          .catch((error) => {
+            // Handle any errors that occurred during navigation
+            console.error(error);
           });
-        } else {
-          router
-            .push("/home")
-            .then(() => {
-              // The navigation was successful
-            })
-            .catch((error) => {
-              // Handle any errors that occurred during navigation
-              console.error(error);
-            });
-        }
       }
     }
-  }, [isSignedIn, isSearchingUser, existingUser, isLoaded, createUser, router]);
+  }, [
+    user,
+    isSignedIn,
+    isSearchingUser,
+    isCreatingUser,
+    existingUser,
+    isLoaded,
+    createUser,
+    router,
+  ]);
 
-  useEffect(() => {
-    if (isCreatingUserFlag !== isCreatingUser) {
-      isCreatingUserFlag = isCreatingUser;
-      console.log(isCreatingUser);
-    } else {
-      console.log("im here");
-    }
-  }, [isCreatingUser]);
   return (
     <>
       <Head>
