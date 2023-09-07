@@ -5,4 +5,26 @@ export const exercisesRouter = createTRPCRouter({
   getAll: publicProcedure.query(({ ctx }) => {
     return ctx.prisma.exercise.findMany();
   }),
+  create: publicProcedure
+    .input(
+      z.object({
+        name: z.string(),
+        desc: z.string().optional(),
+        category: z.string(),
+        authorId: z.string(),
+        authorName: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const user = await ctx.prisma.exercise.create({
+        data: {
+          name: input.name,
+          desc: input.desc ?? "",
+          category: input.category,
+          authorId: input.authorId,
+          authorName: input.authorName,
+        },
+      });
+      return user;
+    }),
 });

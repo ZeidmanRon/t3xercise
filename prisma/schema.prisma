@@ -19,12 +19,14 @@ model User {
 }
 
 model Exercise {
-    id        String    @id @default(cuid())
-    title     String
-    desc      String    @db.VarChar(255)
-    authorId  String
-    updatedAt DateTime  @updatedAt
-    workouts  Workout[]
+    id         String    @id @default(cuid())
+    name       String
+    desc       String
+    category   String
+    authorId   String
+    authorName String
+    updatedAt  DateTime  @updatedAt
+    workouts   Workout[]
 
     @@index([authorId])
 }
