@@ -5,7 +5,6 @@ import { Button } from "~/components/ui/button";
 import Link from "next/link";
 import { useUser } from "@clerk/nextjs";
 import LoadingPage from "~/components/layout/loading";
-import { useRouter } from "next/router";
 
 export default function HomePage() {
   const { user, isLoaded: userLoaded } = useUser();
