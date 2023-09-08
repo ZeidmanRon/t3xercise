@@ -17,8 +17,8 @@ export default function WorkoutPage() {
 
   return (
     <Layout userFullName={user.fullName!} userImageUrl={user.imageUrl}>
-      <div className="flex w-full flex-col items-center">
-        <div className="justify-center p-4 md:w-1/2">
+      <div className="flex items-center">
+        <div className="flex w-full flex-col p-4">
           <h1 className="mb-1 text-2xl font-semibold"> האימונים שלי:</h1>
           <WorkoutList workouts={data} />
           <div className="flex w-full flex-col items-center justify-center pt-4">

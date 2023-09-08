@@ -17,14 +17,4 @@ export const ExerciseList = ({ exercises }: ExerciseProps) => (
       ))}
     </ScrollArea>
   </div>
-
-  // <div className="flex w-full justify-center">
-  //   <div className="  overflow-y-auto rounded-lg border border-gray-300 p-2 shadow-md md:w-1/2">
-  //     {exercises.map((exercise) => (
-  //       <div className="w-full border-b border-dashed" key={exercise.id}>
-  //         <ExerciseSkeleton exercise={exercise} />
-  //       </div>
-  //     ))}
-  //   </div>
-  // </div>
 );

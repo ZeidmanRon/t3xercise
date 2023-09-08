@@ -26,8 +26,8 @@ export default function Business() {
   }
   return (
     <Layout userFullName={user.fullName!} userImageUrl={user.imageUrl}>
-      <div className="flex w-full flex-col items-center">
-        <div className="flex-col p-4 md:w-1/2">
+      <div className="flex items-center">
+        <div className="flex w-full flex-col p-4">
           <h1 className="mb-1 text-center text-2xl font-semibold">
             Logged User: {user.fullName}
           </h1>
