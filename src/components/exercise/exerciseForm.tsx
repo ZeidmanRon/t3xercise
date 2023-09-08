@@ -28,6 +28,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "~/components/ui/popover";
+import LoadingPage, { LoadingSpinner } from "../layout/loading";
 
 export const FormSchema = z.object({
   name: z
@@ -114,7 +115,9 @@ export function ExerciseForm({
   }
 
   return isCreatingExercise || isUpdatingExercise ? (
-    <div> loading </div>
+    <div className="flex min-h-[400px] items-center justify-center">
+      <LoadingSpinner size={40} />
+    </div>
   ) : (
     <Form {...form}>
       <form
