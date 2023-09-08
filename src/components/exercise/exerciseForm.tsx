@@ -29,6 +29,7 @@ import {
   PopoverTrigger,
 } from "~/components/ui/popover";
 import { LoadingSpinner } from "../layout/loading";
+import { type Dispatch, type SetStateAction } from "react";
 
 export const FormSchema = z.object({
   name: z
@@ -64,6 +65,7 @@ type exerciseFormProps = {
   userId: string;
   updateForm: boolean;
   exerciseId?: string;
+  setOpen: Dispatch<SetStateAction<boolean>>;
 };
 
 export function ExerciseForm({
@@ -71,18 +73,21 @@ export function ExerciseForm({
   userId,
   updateForm,
   exerciseId,
+  setOpen,
 }: exerciseFormProps) {
   const utils = api.useContext();
   const { mutate: createExercise, isLoading: isCreatingExercise } =
     api.exercises.create.useMutation({
       async onSuccess() {
         await utils.exercises.getAllById.invalidate();
+        setOpen(false);
       },
     });
   const { mutate: updateExercise, isLoading: isUpdatingExercise } =
     api.exercises.update.useMutation({
       async onSuccess() {
         await utils.exercises.getAllById.invalidate();
+        setOpen(false);
       },
     });
   const form = useForm<z.infer<typeof FormSchema>>({
