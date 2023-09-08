@@ -3,7 +3,7 @@ import { api } from "~/utils/api";
 import { useUser } from "@clerk/nextjs";
 import { Button } from "~/components/ui/button";
 
-const Business: React.FC = () => {
+export default function Business() {
   const { user } = useUser();
 
   if (!user) {
@@ -42,7 +42,7 @@ const Business: React.FC = () => {
   // console.log(user);
 
   return (
-    <Layout>
+    <Layout userFullName={user.fullName!} userImageUrl={user.imageUrl}>
       <div className="flex w-full flex-col p-4">
         <h1 className="mb-1 text-2xl font-semibold">
           {user.fullName} supposed to be a name before this text
@@ -50,6 +50,4 @@ const Business: React.FC = () => {
       </div>
     </Layout>
   );
-};
-
-export default Business;
+}

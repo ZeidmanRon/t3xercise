@@ -8,12 +8,15 @@ import Link from "next/link";
 
 interface LayoutProps {
   children: ReactNode;
+  userFullName: string;
+  userImageUrl: string;
 }
 
-const Layout: React.FC<LayoutProps> = ({ children }) => {
-  const { user } = useUser();
-  if (!user) return null;
-
+export default function Layout({
+  children,
+  userFullName,
+  userImageUrl,
+}: LayoutProps) {
   return (
     <div>
       <div className="flex w-full justify-center border-b border-slate-300 p-2 text-xl shadow-md">
@@ -28,11 +31,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         </Button>
         <div className="absolute left-3 top-3 flex items-center justify-end">
           <Label className="ml-3 hidden md:block" htmlFor="username">
-            {user.fullName}
+            {userFullName}
           </Label>
           <Avatar>
-            <AvatarImage src={user.imageUrl} />
-            <AvatarFallback>{user.fullName?.at(0)}</AvatarFallback>
+            <AvatarImage src={userImageUrl} />
+            <AvatarFallback>{userFullName?.at(0)}</AvatarFallback>
           </Avatar>
         </div>
       </div>
@@ -40,6 +43,4 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       {/* Add footer or other elements here */}
     </div>
   );
-};
-
-export default Layout;
+}

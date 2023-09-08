@@ -5,7 +5,7 @@ import { Button } from "~/components/ui/button";
 import Link from "next/link";
 import { useUser } from "@clerk/nextjs";
 
-const HomePage: React.FC = () => {
+export default function HomePage() {
   const { user } = useUser();
   const { data, isLoading } = api.workouts.getTop10.useQuery();
 
@@ -25,7 +25,7 @@ const HomePage: React.FC = () => {
   }
 
   return (
-    <Layout>
+    <Layout userFullName={user.fullName!} userImageUrl={user.imageUrl}>
       {/* <CreateExerciseWizard /> */}
       <div className="flex flex-col justify-center p-4">
         <h1 className="mb-1 text-2xl font-semibold"> אימונים האחרונים:</h1>
@@ -41,6 +41,4 @@ const HomePage: React.FC = () => {
       </div>
     </Layout>
   );
-};
-
-export default HomePage;
+}

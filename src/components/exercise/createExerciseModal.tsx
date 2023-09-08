@@ -14,8 +14,11 @@ export const formSchema = z.object({
   desc: z.string().optional(),
   category: z.string().trim().nonempty({ message: "error" }),
 });
-
-export function CreateExerciseModal() {
+type userProps = {
+  userFullName: string;
+  userId: string;
+};
+export function CreateExerciseModal({ userFullName, userId }: userProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -26,7 +29,7 @@ export function CreateExerciseModal() {
           <DialogTitle>יצירת תרגיל</DialogTitle>
         </DialogHeader>
         <div className="flex-1">
-          <NewExerciseForm />
+          <NewExerciseForm userFullName={userFullName} userId={userId} />
         </div>
       </DialogContent>
     </Dialog>

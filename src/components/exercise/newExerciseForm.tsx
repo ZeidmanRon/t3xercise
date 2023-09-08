@@ -28,7 +28,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "~/components/ui/popover";
-import { useUser } from "@clerk/nextjs";
 
 export const FormSchema = z.object({
   name: z
@@ -59,8 +58,12 @@ const muscleGroups = [
   { label: "ידיים", value: "ידיים" },
 ] as const;
 
-export function NewExerciseForm() {
-  const { user } = useUser();
+type userProps = {
+  userFullName: string;
+  userId: string;
+};
+
+export function NewExerciseForm({ userFullName, userId }: userProps) {
   const utils = api.useContext();
   const { mutate: createExercise, isLoading: isCreatingExercise } =
     api.exercises.create.useMutation({
@@ -80,8 +83,8 @@ export function NewExerciseForm() {
     createExercise({
       name: data.name,
       category: data.category,
-      authorName: user!.fullName!,
-      authorId: user!.id,
+      authorName: userFullName,
+      authorId: userId,
       desc: data.desc,
     });
     form.reset();
