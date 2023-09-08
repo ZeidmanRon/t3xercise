@@ -22,16 +22,6 @@ import {
 import { Input } from "~/components/ui/input";
 import { api } from "~/utils/api";
 import { useUser } from "@clerk/nextjs";
-import { BodyPartSelect } from "./bodyPartSelect";
-
-export enum BodyParts {
-  booty = "ישבן",
-  legs = "רגליים",
-  back = "גב",
-  chest = "חזה",
-  shoulders = "כתפיים",
-  arms = "ידיים",
-}
 
 export const formSchema = z.object({
   name: z.string().trim().nonempty({ message: "error" }),
@@ -125,7 +115,7 @@ export function CreateExerciseDialog() {
                 <FormItem className="mb-10 mt-0 space-y-0">
                   <FormLabel>קבוצת שריר</FormLabel>
                   <FormControl {...field}>
-                    <BodyPartSelect selectOptions={Object.values(BodyParts)} />
+                    {/* <muscleGroupSelect selectOptions={Object.values(BodyParts)} /> */}
                   </FormControl>
                   <FormMessage />
                 </FormItem>

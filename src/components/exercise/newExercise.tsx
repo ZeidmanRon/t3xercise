@@ -1,12 +1,3 @@
-export enum BodyParts {
-  booty = "ישבן",
-  legs = "רגליים",
-  back = "גב",
-  chest = "חזה",
-  shoulders = "כתפיים",
-  arms = "ידיים",
-}
-
 type Exercise = {
   name: string;
   category: string;
@@ -32,8 +23,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { Input } from "~/components/ui/input";
 import { Textarea } from "~/components/ui/textarea";
 import { Button } from "~/components/ui/button";
+import { Check, ChevronsUpDown } from "lucide-react";
+import { cn } from "~/lib/utils";
 import {
   Form,
   FormControl,
@@ -43,36 +37,71 @@ import {
   FormLabel,
   FormMessage,
 } from "~/components/ui/form";
-import { Input } from "~/components/ui/input";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+} from "~/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "~/components/ui/popover";
+import { formSchema } from "./createExerciseModal";
 
 export const FormSchema = z.object({
   name: z
-    .string()
+    .string({ required_error: "נא להזין את שם התרגיל" })
     .trim()
-    .nonempty({ message: "נא להזין את שם התרגיל" })
+    .min(2, { message: "נא להזין שם ארוך יותר" })
     .max(50, {
       message: "השם ארוך מדי",
     }),
-  desc: z.string().max(190, {
-    message: "הפירוט ארוך מדי",
+  desc: z
+    .string()
+    .trim()
+    .max(190, {
+      message: "הפירוט ארוך מדי",
+    })
+    .optional(),
+  category: z.string({
+    required_error: "נא לבחור קבוצת שריר",
   }),
-  category: z.string().trim().nonempty({ message: "error" }),
 });
 
+const muscleGroups = [
+  { label: "ישבן", value: "ישבן" },
+  { label: "רגליים", value: "רגליים" },
+  { label: "גב", value: "גב" },
+  { label: "חזה", value: "חזה" },
+  { label: "כתפיים", value: "כתפיים" },
+  { label: "ידיים", value: "ידיים" },
+] as const;
+
 export function NewExerciseForm() {
-  const [exerciseName, setExerciseName] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
+    defaultValues: {
+      name: "",
+    },
   });
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
+    setIsLoading(true);
     await createExercise(data.name, data.category, data.desc ?? "");
+    form.reset();
+    setIsLoading(false);
   }
 
-  return (
+  return isLoading ? (
+    <div> loading </div>
+  ) : (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="w-2/3 space-y-6">
+      <form onSubmit={form.handleSubmit(onSubmit)} className=" w-2/3 space-y-4">
         <FormField
           control={form.control}
           name="name"
@@ -81,8 +110,12 @@ export function NewExerciseForm() {
               <FormLabel>שם התרגיל</FormLabel>
               <FormControl>
                 <Input
+                  className={cn(
+                    "resize-none",
+                    !field.value && "font-light text-muted-foreground"
+                  )}
                   autoComplete="off"
-                  placeholder="enter exercise name"
+                  placeholder="שם התרגיל"
                   {...field}
                 />
               </FormControl>
@@ -99,7 +132,10 @@ export function NewExerciseForm() {
               <FormControl>
                 <Textarea
                   placeholder="ניתן לפרט על התרגיל או על אופן הביצוע"
-                  className="resize-none"
+                  className={cn(
+                    "resize-none",
+                    !field.value && "font-light text-muted-foreground"
+                  )}
                   {...field}
                 />
               </FormControl>
@@ -111,16 +147,65 @@ export function NewExerciseForm() {
           control={form.control}
           name="category"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>Username</FormLabel>
-              <FormControl>
-                <Input placeholder="enter exercise name" {...field} />
-              </FormControl>
+            <FormItem className="flex flex-col">
+              <FormLabel>קבוצת שריר</FormLabel>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <FormControl>
+                    <Button
+                      variant="outline"
+                      role="combobox"
+                      className={cn(
+                        "w-full justify-between",
+                        !field.value && "font-light text-muted-foreground"
+                      )}
+                    >
+                      {field.value
+                        ? muscleGroups.find(
+                            (muscleGroup) => muscleGroup.value === field.value
+                          )?.label
+                        : "בחר/י קבוצת שריר"}
+                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                    </Button>
+                  </FormControl>
+                </PopoverTrigger>
+                <PopoverContent className="w-full p-0">
+                  <Command>
+                    <CommandInput placeholder="Search framework..." />
+                    <CommandEmpty>לא קיימת קבוצת שריר זו</CommandEmpty>
+                    <CommandGroup>
+                      {muscleGroups.map((muscleGroup) => (
+                        <CommandItem
+                          value={muscleGroup.label}
+                          key={muscleGroup.value}
+                          onSelect={() => {
+                            form.setValue("category", muscleGroup.value);
+                          }}
+                        >
+                          <Check
+                            className={cn(
+                              "mr-2 h-4 w-4",
+                              muscleGroup.value === field.value
+                                ? "opacity-100"
+                                : "opacity-0"
+                            )}
+                          />
+                          {muscleGroup.label}
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  </Command>
+                </PopoverContent>
+              </Popover>
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button type="submit">Submit</Button>
+        <div className="flex w-full justify-center">
+          <Button className="w-auto font-light" type="submit">
+            יצירת תרגיל
+          </Button>
+        </div>
       </form>
     </Form>
   );
