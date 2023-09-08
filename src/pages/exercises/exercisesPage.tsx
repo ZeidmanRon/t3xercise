@@ -7,15 +7,16 @@ import LoadingPage from "~/components/layout/loading";
 
 export default function Exercises() {
   const { user, isLoaded: userLoaded } = useUser();
+  if (!user || !userLoaded) return <div />;
+
   const { data, isLoading: exercisesLoading } =
     api.exercises.getAllById.useQuery(
       {
-        currUserId: user!.id,
+        currUserId: user.id,
       },
       { enabled: !!user }
     );
 
-  if (!user || !userLoaded) return <div />;
   if (exercisesLoading || !data) return <LoadingPage />;
 
   return (
