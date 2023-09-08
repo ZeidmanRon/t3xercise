@@ -47,7 +47,6 @@ model ExercisesOnWorkouts {
     exerciseId String
     workout    Workout  @relation(fields: [workoutId], references: [id])
     workoutId  String
-    sets       Int
 
     @@id([exerciseId, workoutId])
     @@index([workoutId])
