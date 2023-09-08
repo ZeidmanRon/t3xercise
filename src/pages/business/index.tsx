@@ -39,7 +39,7 @@ const Business: React.FC = () => {
   //     return <div>Create Business Page...</div>;
   //   }
 
-  console.log(user);
+  // console.log(user);
 
   return (
     <Layout>
