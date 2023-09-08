@@ -11,6 +11,9 @@ export const exercisesRouter = createTRPCRouter({
     .query(({ ctx, input }) => {
       return ctx.prisma.exercise.findMany({
         where: { authorId: input.currUserId },
+        orderBy: {
+          updatedAt: "desc",
+        },
       });
     }),
   create: publicProcedure
