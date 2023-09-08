@@ -39,7 +39,7 @@ export const usersRouter = createTRPCRouter({
       }
       return user;
     }),
-  create: publicProcedure
+  upsert: publicProcedure
     .input(
       z.object({
         userId: z.string(),

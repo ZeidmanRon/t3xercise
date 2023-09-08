@@ -7,63 +7,24 @@ import { api } from "~/utils/api";
 export default function Home() {
   const { user, isLoaded, isSignedIn } = useUser();
   const router = useRouter();
-
   const utils = api.useContext();
-
-  const { data: existingUser, isLoading: isSearchingUser } =
-    api.users.getUserById.useQuery(
-      {
-        userId: user?.id ?? "",
-      },
-      { enabled: !!user }
-    );
-
-  const { mutate: createUser, isLoading: isCreatingUser } =
-    api.users.create.useMutation({
-      async onSuccess() {
-        await utils.users.getUserById.invalidate();
-      },
-    });
+  const { mutate: upsertUser } = api.users.upsert.useMutation({
+    async onSuccess() {
+      await utils.users.getUserById.invalidate();
+    },
+  });
 
   useEffect(() => {
-    // Check if user is loaded and signed in
-    if (!isLoaded || !isSignedIn) {
+    if (user && isLoaded && isSignedIn) {
+      upsertUser({
+        userId: user.id,
+        fullName: user.fullName!,
+        email: user.emailAddresses[0]?.emailAddress,
+      });
+      void router.push("/home");
       return;
     }
-    // Check if not waiting for callabck
-    if (isCreatingUser || isSearchingUser) {
-      return;
-    }
-    if (existingUser) {
-      router
-        .push("/home")
-        .then(() => {
-          // The navigation was successful
-        })
-        .catch((error) => {
-          // Handle any errors that occurred during navigation
-          console.error(error);
-        });
-      return;
-    }
-    // if (!existingUser) {
-    createUser({
-      userId: user.id,
-      fullName: user.fullName!,
-      email: user.emailAddresses[0]?.emailAddress,
-      businessId: "",
-    });
-    // }
-  }, [
-    user,
-    isSignedIn,
-    isSearchingUser,
-    isCreatingUser,
-    existingUser,
-    isLoaded,
-    createUser,
-    router,
-  ]);
+  }, [isLoaded, isSignedIn, router, upsertUser, user]);
 
   return (
     <>

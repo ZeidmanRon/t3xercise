@@ -9,6 +9,7 @@ import {
 import { TrashIcon } from "lucide-react";
 import React, { useState } from "react";
 import { api } from "~/utils/api";
+import { LoadingSpinner } from "../layout/loading";
 
 type editExerciseModalProps = {
   exerciseId: string;
@@ -17,10 +18,11 @@ export function ExerciseDeleteModal({ exerciseId }: editExerciseModalProps) {
   const [open, setOpen] = useState(false);
   const utils = api.useContext();
 
-  const { mutate: deleteExercise, isLoading } =
+  const { mutate: deleteExercise, isLoading: isDeleting } =
     api.exercises.delete.useMutation({
       async onSuccess() {
         await utils.exercises.getAllById.invalidate();
+        setOpen(false);
       },
     });
 
@@ -39,15 +41,18 @@ export function ExerciseDeleteModal({ exerciseId }: editExerciseModalProps) {
         <DialogHeader className="h-fit">
           <DialogTitle>למחוק את התרגיל?</DialogTitle>
         </DialogHeader>
-        <Button
-          variant={"destructive"}
-          onClick={() => {
-            deleteExercise({ exerciseId });
-            setOpen(false);
-          }}
-        >
-          מחיקה
-        </Button>
+        {isDeleting ? (
+          <LoadingSpinner />
+        ) : (
+          <Button
+            variant={"destructive"}
+            onClick={() => {
+              deleteExercise({ exerciseId });
+            }}
+          >
+            מחיקה
+          </Button>
+        )}
       </DialogContent>
     </Dialog>
   );

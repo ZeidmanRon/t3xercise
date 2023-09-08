@@ -8,6 +8,7 @@ import {
 } from "~/components/ui/dialog";
 import { ExerciseForm } from "./exerciseForm";
 import { EditIcon } from "lucide-react";
+import { useState } from "react";
 
 type editExerciseModalProps = {
   userFullName: string;
@@ -19,8 +20,10 @@ export function ExerciseEditModal({
   userId,
   exerciseId,
 }: editExerciseModalProps) {
+  const [open, setOpen] = useState(false);
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button
           className=" rounded-full text-[0.6rem]"
@@ -36,6 +39,7 @@ export function ExerciseEditModal({
         </DialogHeader>
         <div className="flex-1">
           <ExerciseForm
+            setOpen={setOpen}
             updateForm={true}
             userFullName={userFullName}
             userId={userId}
