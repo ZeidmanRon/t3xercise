@@ -3,22 +3,20 @@ import { ExerciseList } from "~/components/exercise/exerciseList";
 import { api } from "~/utils/api";
 import { ExerciseEditModal } from "~/components/exercise/exerciseCreateModal";
 import { useUser } from "@clerk/nextjs";
+import LoadingPage from "~/components/layout/loading";
 
 export default function Exercises() {
-  const { user } = useUser();
+  const { user, isLoaded: userLoaded } = useUser();
+  const { data, isLoading: exercisesLoading } =
+    api.exercises.getAllById.useQuery(
+      {
+        currUserId: user!.id,
+      },
+      { enabled: !!user }
+    );
 
-  if (!user) {
-    return <div>not connected</div>;
-  }
-  const { data, isLoading } = api.exercises.getAllById.useQuery(
-    {
-      currUserId: user.id,
-    },
-    { enabled: !!user }
-  );
-
-  if (isLoading) return <div>Loading...</div>;
-  if (!data) return <div>Create some exercises...</div>;
+  if (!user || !userLoaded) return <div />;
+  if (exercisesLoading || !data) return <LoadingPage />;
 
   return (
     <Layout userFullName={user.fullName!} userImageUrl={user.imageUrl}>

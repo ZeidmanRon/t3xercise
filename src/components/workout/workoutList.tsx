@@ -10,10 +10,14 @@ export const WorkoutList = ({ workouts }: WorkoutProps) => (
   <div
     className={`max-h-96 w-full overflow-y-auto rounded-lg border border-gray-300 shadow-md`}
   >
-    {workouts.map((workout) => (
-      <div className="w-full border-b border-dashed px-3" key={workout.id}>
-        <WorkoutSkeleton workout={workout} />
-      </div>
-    ))}
+    {workouts.length === 0 ? (
+      <div className="flex justify-center p-3">לא קיימים אימונים</div>
+    ) : (
+      workouts.map((workout) => (
+        <div className="w-full border-b border-dashed px-3" key={workout.id}>
+          <WorkoutSkeleton workout={workout} />
+        </div>
+      ))
+    )}
   </div>
 );

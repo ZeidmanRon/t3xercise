@@ -3,17 +3,14 @@ import Layout from "~/components/layout/layout";
 import { api } from "~/utils/api";
 import { Button } from "~/components/ui/button";
 import { useUser } from "@clerk/nextjs";
+import LoadingPage from "~/components/layout/loading";
 
 export default function WorkoutPage() {
-  const { user } = useUser();
-  const { data, isLoading } = api.workouts.getAll.useQuery();
-  if (!user) {
-    // todo: change to PageNotFound component
-    return <div>user not exist</div>;
-  }
+  const { user, isLoaded: userLoaded } = useUser();
+  const { data, isLoading: workoutsLoading } = api.workouts.getAll.useQuery();
 
-  if (isLoading) return <div>Loading...</div>;
-  if (!data) return <div>Create some workouts...</div>;
+  if (!user || !userLoaded) return <div />;
+  if (workoutsLoading || !data) return <LoadingPage />;
 
   return (
     <Layout userFullName={user.fullName!} userImageUrl={user.imageUrl}>

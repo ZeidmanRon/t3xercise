@@ -4,25 +4,15 @@ import { api } from "~/utils/api";
 import { Button } from "~/components/ui/button";
 import Link from "next/link";
 import { useUser } from "@clerk/nextjs";
+import LoadingPage from "~/components/layout/loading";
+import { useRouter } from "next/router";
 
 export default function HomePage() {
-  const { user } = useUser();
-  const { data, isLoading } = api.workouts.getTop10.useQuery();
+  const { user, isLoaded: userLoaded } = useUser();
+  const { data, isLoading: workoutsLoading } = api.workouts.getTop10.useQuery();
 
-  if (!user) {
-    // todo: change to PageNotFound component
-    return <div>user not exist</div>;
-  }
-
-  if (isLoading) {
-    // todo: change to Loading component
-    return <div>Loading...</div>;
-  }
-
-  if (!data) {
-    // todo: create a businessPage component
-    return <div>Create some workouts...</div>;
-  }
+  if (!user || !userLoaded) return <div />;
+  if (workoutsLoading || !data) return <LoadingPage />;
 
   return (
     <Layout userFullName={user.fullName!} userImageUrl={user.imageUrl}>
