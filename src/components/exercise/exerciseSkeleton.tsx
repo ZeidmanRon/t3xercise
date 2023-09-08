@@ -2,6 +2,8 @@ import { type Exercise } from "@prisma/client";
 import React from "react"; // we need this to make JSX compile
 import { ExerciseEditModal } from "./exerciseEditModal";
 import { ExerciseDeleteModal } from "./exerciseDeleteModal";
+import { Badge } from "~/components/ui/badge";
+
 type ExerciseProps = {
   exercise: Exercise;
 };
@@ -21,9 +23,11 @@ export const ExerciseSkeleton = ({ exercise }: ExerciseProps) => (
         <ExerciseDeleteModal exerciseId={exercise.id} />
       </div>
     </div>
-    <div className="top mb-1 flex w-full items-start justify-between">
+    <div className="mb-1 flex w-full items-start justify-between">
       <div className="w-2/3">
-        <p className="text-sm font-normal text-gray-500">{exercise.category}</p>
+        <Badge className="px-5 text-xs font-normal" variant="outline">
+          {exercise.category}
+        </Badge>
       </div>
       <p className="mx-2 w-auto min-w-max text-[0.6rem] font-semibold text-gray-400">
         {english.test(exercise.authorName)
