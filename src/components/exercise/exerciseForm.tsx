@@ -195,7 +195,7 @@ export function ExerciseForm({
                 </PopoverTrigger>
                 <PopoverContent className="w-full p-0">
                   <Command>
-                    <CommandInput placeholder="Search framework..." />
+                    <CommandInput placeholder="חפש/י קבוצת שריר" />
                     <CommandEmpty>לא קיימת קבוצת שריר זו</CommandEmpty>
                     <CommandGroup>
                       {muscleGroups.map((muscleGroup) => (
