@@ -7,11 +7,26 @@ type ExerciseProps = {
   exercises: Exercise[];
 };
 
+export const ExerciseList2 = ({ exercises }: ExerciseProps) => (
+  <div className="flex w-full justify-center">
+    <ScrollArea dir="rtl" className="max-h-96 w-full rounded-md border p-2">
+      {exercises.map((exercise) => (
+        <div className="w-full border-b border-dashed" key={exercise.id}>
+          <ExerciseSkeleton exercise={exercise} />
+        </div>
+      ))}
+    </ScrollArea>
+  </div>
+);
+
 export const ExerciseList = ({ exercises }: ExerciseProps) => (
   <div className="flex w-full justify-center">
     <ScrollArea dir="rtl" className="max-h-96 w-full rounded-md border px-2">
-      {exercises.map((exercise) => (
-        <div className="w-full border-b border-dashed" key={exercise.id}>
+      {exercises.map((exercise, index) => (
+        <div
+          className={`w-full ${index !== 0 ? "border-t border-dashed" : ""} `}
+          key={exercise.id}
+        >
           <ExerciseSkeleton exercise={exercise} />
         </div>
       ))}
