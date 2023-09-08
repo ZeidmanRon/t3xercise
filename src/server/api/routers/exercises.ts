@@ -38,4 +38,40 @@ export const exercisesRouter = createTRPCRouter({
       });
       return user;
     }),
+  update: publicProcedure
+    .input(
+      z.object({
+        exerciseId: z.string(),
+        name: z.string(),
+        desc: z.string().optional(),
+        category: z.string(),
+        authorId: z.string(),
+        authorName: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const updatedUser = await ctx.prisma.exercise.update({
+        where: { id: input.exerciseId },
+        data: {
+          name: input.name,
+          desc: input.desc ?? "",
+          category: input.category,
+          authorId: input.authorId,
+          authorName: input.authorName,
+        },
+      });
+      return updatedUser;
+    }),
+  delete: publicProcedure
+    .input(
+      z.object({
+        exerciseId: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const updatedUser = await ctx.prisma.exercise.delete({
+        where: { id: input.exerciseId },
+      });
+      return updatedUser;
+    }),
 });

@@ -17,6 +17,7 @@ import {
   ClipboardListIcon,
   BriefcaseIcon,
   LogOutIcon,
+  ClipboardCheckIcon,
 } from "lucide-react";
 
 const Navbar: React.FC = () => {
@@ -48,6 +49,12 @@ const Navbar: React.FC = () => {
           <Link href="/exercises">
             התרגילים שלי
             <ClipboardListIcon className="m-1" />
+          </Link>
+        </Button>
+        <Button asChild variant={"default"} className="bg-indigo-400">
+          <Link href="/workouts">
+            האימונים שלי
+            <ClipboardCheckIcon className="m-1" />
           </Link>
         </Button>
         <Button

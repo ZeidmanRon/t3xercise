@@ -58,12 +58,19 @@ const muscleGroups = [
   { label: "ידיים", value: "ידיים" },
 ] as const;
 
-type userProps = {
+type exerciseFormProps = {
   userFullName: string;
   userId: string;
+  updateForm: boolean;
+  exerciseId?: string;
 };
 
-export function NewExerciseForm({ userFullName, userId }: userProps) {
+export function ExerciseForm({
+  userFullName,
+  userId,
+  updateForm,
+  exerciseId,
+}: exerciseFormProps) {
   const utils = api.useContext();
   const { mutate: createExercise, isLoading: isCreatingExercise } =
     api.exercises.create.useMutation({
@@ -71,7 +78,12 @@ export function NewExerciseForm({ userFullName, userId }: userProps) {
         await utils.exercises.getAllById.invalidate();
       },
     });
-
+  const { mutate: updateExercise, isLoading: isUpdatingExercise } =
+    api.exercises.update.useMutation({
+      async onSuccess() {
+        await utils.exercises.getAllById.invalidate();
+      },
+    });
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -79,7 +91,7 @@ export function NewExerciseForm({ userFullName, userId }: userProps) {
     },
   });
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
+  function onSubmitCreate(data: z.infer<typeof FormSchema>) {
     createExercise({
       name: data.name,
       category: data.category,
@@ -89,14 +101,29 @@ export function NewExerciseForm({ userFullName, userId }: userProps) {
     });
     form.reset();
   }
+  function onSubmitUpdate(data: z.infer<typeof FormSchema>) {
+    updateExercise({
+      exerciseId: exerciseId!,
+      name: data.name,
+      category: data.category,
+      authorName: userFullName,
+      authorId: userId,
+      desc: data.desc,
+    });
+    form.reset();
+  }
 
-  return isCreatingExercise ? (
+  return isCreatingExercise || isUpdatingExercise ? (
     <div> loading </div>
   ) : (
     <Form {...form}>
       <form
         // eslint-disable-next-line @typescript-eslint/no-misused-promises
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={
+          updateForm
+            ? form.handleSubmit(onSubmitUpdate)
+            : form.handleSubmit(onSubmitCreate)
+        }
         className=" w-full space-y-4"
       >
         <FormField

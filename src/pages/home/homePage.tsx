@@ -27,16 +27,18 @@ export default function HomePage() {
   return (
     <Layout userFullName={user.fullName!} userImageUrl={user.imageUrl}>
       {/* <CreateExerciseWizard /> */}
-      <div className="flex flex-col justify-center p-4">
-        <h1 className="mb-1 text-2xl font-semibold"> אימונים האחרונים:</h1>
-        <WorkoutList workouts={data} />
-        <div className="flex w-full flex-col items-center justify-center pt-4">
-          <Button variant={"outline"} className="w-auto px-10">
-            הוספת אימון
-          </Button>
-          <Button variant={"outline"} className="mt-2 h-10 w-auto px-20">
-            <Link href="/workouts">לכל האימונים</Link>
-          </Button>
+      <div className="flex w-full flex-col items-center">
+        <div className="p-4 md:w-1/2">
+          <h1 className="mb-1 text-2xl font-semibold"> אימונים האחרונים:</h1>
+          <WorkoutList workouts={data} />
+          <div className="flex w-full flex-col items-center justify-center pt-4">
+            <Button variant={"outline"} className="w-auto px-10">
+              הוספת אימון
+            </Button>
+            <Button variant={"outline"} className="mt-2 h-10 w-auto px-20">
+              <Link href="/workouts">לכל האימונים</Link>
+            </Button>
+          </div>
         </div>
       </div>
     </Layout>
