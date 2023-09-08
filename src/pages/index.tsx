@@ -1,7 +1,7 @@
 import Head from "next/head";
 import { useUser, SignIn } from "@clerk/nextjs";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { api } from "~/utils/api";
 
 export default function Home() {
@@ -20,7 +20,7 @@ export default function Home() {
 
   const { mutate: createUser, isLoading: isCreatingUser } =
     api.users.create.useMutation({
-      async onSuccess(data, variables, context) {
+      async onSuccess() {
         await utils.users.getUserById.invalidate();
       },
     });

@@ -65,7 +65,7 @@ export function NewExerciseForm() {
   const { mutate: createExercise, isLoading: isCreatingExercise } =
     api.exercises.create.useMutation({
       async onSuccess() {
-        await utils.exercises.getAll.invalidate();
+        await utils.exercises.getAllById.invalidate();
       },
     });
 

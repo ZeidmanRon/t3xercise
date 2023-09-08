@@ -2,9 +2,17 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
 export const exercisesRouter = createTRPCRouter({
-  getAll: publicProcedure.query(({ ctx }) => {
-    return ctx.prisma.exercise.findMany();
-  }),
+  getAllById: publicProcedure
+    .input(
+      z.object({
+        currUserId: z.string(),
+      })
+    )
+    .query(({ ctx, input }) => {
+      return ctx.prisma.exercise.findMany({
+        where: { authorId: input.currUserId },
+      });
+    }),
   create: publicProcedure
     .input(
       z.object({

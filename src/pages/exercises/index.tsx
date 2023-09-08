@@ -2,9 +2,15 @@ import Layout from "~/components/layout/layout";
 import { ExerciseList } from "~/components/exercise/exerciseList";
 import { api } from "~/utils/api";
 import { CreateExerciseModal } from "~/components/exercise/createExerciseModal";
-
+import { useUser } from "@clerk/nextjs";
 const Exercises = () => {
-  const { data, isLoading } = api.exercises.getAll.useQuery();
+  const { user } = useUser();
+  if (!user) {
+    return <div> no connected user</div>;
+  }
+  const { data, isLoading } = api.exercises.getAllById.useQuery({
+    currUserId: user.id,
+  });
 
   if (isLoading) return <div>Loading...</div>;
   if (!data) return <div>Create some exercises...</div>;
