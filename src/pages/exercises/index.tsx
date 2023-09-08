@@ -10,9 +10,12 @@ export default function Exercises() {
   if (!user) {
     return <div>not connected</div>;
   }
-  const { data, isLoading } = api.exercises.getAllById.useQuery({
-    currUserId: user.id,
-  });
+  const { data, isLoading } = api.exercises.getAllById.useQuery(
+    {
+      currUserId: user.id,
+    },
+    { enabled: !!user }
+  );
 
   if (isLoading) return <div>Loading...</div>;
   if (!data) return <div>Create some exercises...</div>;
