@@ -1,26 +1,4 @@
-type Exercise = {
-  name: string;
-  category: string;
-  desc: string | undefined;
-};
-
-const createExercise = async (
-  exerciseName: string,
-  category: string,
-  desc: string
-) => {
-  const result = await new Promise((resolve, reject) => {
-    setTimeout(() => {
-      resolve("Async operation completed");
-    }, 2000); // Simulate a 2-second delay
-  });
-
-  console.log(exerciseName, category, desc);
-  return;
-};
-
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Input } from "~/components/ui/input";
@@ -28,10 +6,11 @@ import { Textarea } from "~/components/ui/textarea";
 import { Button } from "~/components/ui/button";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "~/lib/utils";
+import { api } from "~/utils/api";
+
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -49,7 +28,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "~/components/ui/popover";
-import { formSchema } from "./createExerciseModal";
+import { useUser } from "@clerk/nextjs";
 
 export const FormSchema = z.object({
   name: z
@@ -81,7 +60,14 @@ const muscleGroups = [
 ] as const;
 
 export function NewExerciseForm() {
-  const [isLoading, setIsLoading] = useState(false);
+  const { user } = useUser();
+  const utils = api.useContext();
+  const { mutate: createExercise, isLoading: isCreatingExercise } =
+    api.exercises.create.useMutation({
+      async onSuccess() {
+        await utils.exercises.getAll.invalidate();
+      },
+    });
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -90,18 +76,25 @@ export function NewExerciseForm() {
     },
   });
 
-  async function onSubmit(data: z.infer<typeof FormSchema>) {
-    setIsLoading(true);
-    await createExercise(data.name, data.category, data.desc ?? "");
+  function onSubmit(data: z.infer<typeof FormSchema>) {
+    createExercise({
+      name: data.name,
+      category: data.category,
+      authorName: user!.fullName!,
+      authorId: user!.id,
+      desc: data.desc,
+    });
     form.reset();
-    setIsLoading(false);
   }
 
-  return isLoading ? (
+  return isCreatingExercise ? (
     <div> loading </div>
   ) : (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className=" w-2/3 space-y-4">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className=" w-full space-y-4"
+      >
         <FormField
           control={form.control}
           name="name"

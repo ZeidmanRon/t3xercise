@@ -19,27 +19,39 @@ model User {
 }
 
 model Exercise {
-    id         String    @id @default(cuid())
-    name       String
-    desc       String
-    category   String
-    authorId   String
-    authorName String
-    updatedAt  DateTime  @updatedAt
-    workouts   Workout[]
+    id                  String                @id @default(cuid())
+    name                String
+    desc                String
+    category            String
+    authorId            String
+    authorName          String
+    updatedAt           DateTime              @updatedAt
+    ExercisesOnWorkouts ExercisesOnWorkouts[]
 
     @@index([authorId])
 }
 
 model Workout {
-    id         String     @id @default(cuid())
-    title      String
-    authorId   String
-    authorName String
-    updatedAt  DateTime   @updatedAt
-    exercises  Exercise[]
+    id                  String                @id @default(cuid())
+    title               String
+    authorId            String
+    authorName          String
+    updatedAt           DateTime              @updatedAt
+    ExercisesOnWorkouts ExercisesOnWorkouts[]
 
     @@index([authorId])
+}
+
+model ExercisesOnWorkouts {
+    exercise   Exercise @relation(fields: [exerciseId], references: [id])
+    exerciseId String
+    workout    Workout  @relation(fields: [workoutId], references: [id])
+    workoutId  String
+    sets       Int
+
+    @@id([exerciseId, workoutId])
+    @@index([workoutId])
+    @@index([exerciseId])
 }
 
 model Business {
