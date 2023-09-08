@@ -92,6 +92,7 @@ export function NewExerciseForm() {
   ) : (
     <Form {...form}>
       <form
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onSubmit={form.handleSubmit(onSubmit)}
         className=" w-full space-y-4"
       >
