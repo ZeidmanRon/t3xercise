@@ -1,5 +1,4 @@
 import { Button } from "~/components/ui/button";
-import * as z from "zod";
 import {
   Dialog,
   DialogContent,
@@ -7,18 +6,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "~/components/ui/dialog";
-import { NewExerciseForm } from "./newExerciseForm";
+import { ExerciseForm } from "./exerciseForm";
 
-export const formSchema = z.object({
-  name: z.string().trim().nonempty({ message: "error" }),
-  desc: z.string().optional(),
-  category: z.string().trim().nonempty({ message: "error" }),
-});
 type userProps = {
   userFullName: string;
   userId: string;
 };
-export function CreateExerciseModal({ userFullName, userId }: userProps) {
+export function ExerciseEditModal({ userFullName, userId }: userProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -29,7 +23,11 @@ export function CreateExerciseModal({ userFullName, userId }: userProps) {
           <DialogTitle>יצירת תרגיל</DialogTitle>
         </DialogHeader>
         <div className="flex-1">
-          <NewExerciseForm userFullName={userFullName} userId={userId} />
+          <ExerciseForm
+            updateForm={false}
+            userFullName={userFullName}
+            userId={userId}
+          />
         </div>
       </DialogContent>
     </Dialog>
