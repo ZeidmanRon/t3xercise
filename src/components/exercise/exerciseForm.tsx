@@ -28,7 +28,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "~/components/ui/popover";
-import LoadingPage, { LoadingSpinner } from "../layout/loading";
+import { LoadingSpinner } from "../layout/loading";
 
 export const FormSchema = z.object({
   name: z
