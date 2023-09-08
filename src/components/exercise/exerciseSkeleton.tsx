@@ -23,9 +23,12 @@ export const ExerciseSkeleton = ({ exercise }: ExerciseProps) => (
         <ExerciseDeleteModal exerciseId={exercise.id} />
       </div>
     </div>
-    <div className="mb-1 flex w-full items-start justify-between">
+    <div className="-mt-2.5 mb-1 flex w-full items-start justify-between ">
       <div className="w-2/3">
-        <Badge className="px-5 text-xs font-normal" variant="outline">
+        <Badge
+          className="px-3 text-center text-[0.6rem] font-semibold text-gray-600"
+          variant="outline"
+        >
           {exercise.category}
         </Badge>
       </div>
