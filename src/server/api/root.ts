@@ -9,6 +9,7 @@ import { businessesRouter } from "./routers/businesses";
  *
  * All routers added in /api/routers should be manually added here.
  */
+
 export const appRouter = createTRPCRouter({
   exercises: exercisesRouter,
   workouts: workoutsRouter,
