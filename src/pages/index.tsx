@@ -7,22 +7,12 @@ import { api } from "~/utils/api";
 export default function Home() {
   const { user, isLoaded, isSignedIn } = useUser();
   const router = useRouter();
-  const utils = api.useContext();
-  const { mutate: upsertUser } = api.users.upsert.useMutation({
-    async onSuccess() {
-      await utils.users.getUserById.invalidate();
-    },
-  });
+  const { mutate: upsertUser } = api.users.upsert.useMutation({});
 
   useEffect(() => {
     if (user && isLoaded && isSignedIn) {
-      upsertUser({
-        userId: user.id,
-        fullName: user.fullName!,
-        email: user.emailAddresses[0]?.emailAddress,
-      });
+      upsertUser({});
       void router.push("/home");
-      return;
     }
   }, [isLoaded, isSignedIn, router, upsertUser, user]);
 
