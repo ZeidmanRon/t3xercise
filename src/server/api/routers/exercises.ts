@@ -87,7 +87,7 @@ export const exercisesRouter = createTRPCRouter({
 
         throw new TRPCError({
           code: "TOO_MANY_REQUESTS",
-          message: `Rate limit exceeded. Request rejected. Time Left: ${timeLeftInSeconds} seconds`,
+          message: `Rate limit exceeded.|${timeLeftInSeconds}`,
         });
       }
       const updatedUser = await ctx.prisma.exercise.delete({
