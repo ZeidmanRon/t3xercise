@@ -106,6 +106,6 @@ import { Redis } from "@upstash/redis";
 //create a new ratelimiter, that allows 3 requests per minute
 export const rateLimit = new Ratelimit({
   redis: Redis.fromEnv(),
-  limiter: Ratelimit.slidingWindow(15, "1 m"),
+  limiter: Ratelimit.slidingWindow(12, "1 m"),
   analytics: true,
 });

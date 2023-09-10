@@ -31,7 +31,7 @@ export default function Home() {
           <div dir="ltr">
             <h1 className="handwrite text-[4rem] tracking-tight">T3XERCISE</h1>
             <h1 className="handwrite -mt-5 text-[3rem] tracking-tight">
-              Build a{" "}
+              Build a
               <span className="handwrite text-[hsl(247,100%,70%)]">
                 Workout
               </span>
