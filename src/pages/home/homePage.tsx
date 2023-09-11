@@ -8,7 +8,8 @@ import LoadingPage from "~/components/layout/loading";
 
 export default function HomePage() {
   const { user, isLoaded: userLoaded } = useUser();
-  const { data, isLoading: workoutsLoading } = api.workouts.getTop10.useQuery();
+  const { data, isLoading: workoutsLoading } =
+    api.workouts.getMostUpdated.useQuery();
 
   if (!user || !userLoaded) return <div />;
   if (workoutsLoading || !data) return <LoadingPage />;

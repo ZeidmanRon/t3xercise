@@ -1,11 +1,20 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-import { createTRPCRouter, privateProcedure } from "~/server/api/trpc";
+import {
+  calculateTimeLeftForLimit,
+  createTRPCRouter,
+  privateProcedure,
+  rateLimit,
+} from "~/server/api/trpc";
 
 export const usersRouter = createTRPCRouter({
   getUsersOfBusiness: privateProcedure
     .input(z.object({ businessId: z.string() }))
     .query(async ({ ctx, input }) => {
+      const { success, reset } = await rateLimit.limit(ctx.currentUser.id);
+      if (!success) {
+        calculateTimeLeftForLimit(reset);
+      }
       const users = await ctx.prisma.user.findMany({
         where: { businessId: input.businessId },
       });
@@ -22,6 +31,10 @@ export const usersRouter = createTRPCRouter({
   getUserById: privateProcedure
     .input(z.object({ userId: z.string().optional() }))
     .query(async ({ ctx, input }) => {
+      const { success, reset } = await rateLimit.limit(ctx.currentUser.id);
+      if (!success) {
+        calculateTimeLeftForLimit(reset);
+      }
       const { userId } = input;
       if (!userId || userId === undefined) {
         return null;
@@ -43,6 +56,10 @@ export const usersRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
+      const { success, reset } = await rateLimit.limit(ctx.currentUser.id);
+      if (!success) {
+        calculateTimeLeftForLimit(reset);
+      }
       const user = await ctx.prisma.user.upsert({
         where: { id: ctx.currentUser.id },
         update: {

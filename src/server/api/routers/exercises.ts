@@ -1,5 +1,6 @@
 import { z } from "zod";
 import {
+  calculateTimeLeftForLimit,
   createTRPCRouter,
   privateProcedure,
   rateLimit,
@@ -8,6 +9,10 @@ import { TRPCError } from "@trpc/server";
 
 export const exercisesRouter = createTRPCRouter({
   getAllById: privateProcedure.query(async ({ ctx }) => {
+    const { success, reset } = await rateLimit.limit(ctx.currentUser.id);
+    if (!success) {
+      calculateTimeLeftForLimit(reset);
+    }
     const exercises = await ctx.prisma.exercise.findMany({
       where: { authorId: ctx.currentUser.id },
       orderBy: {
@@ -26,9 +31,10 @@ export const exercisesRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const { success } = await rateLimit.limit(ctx.currentUser.id);
-      if (!success) throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
-
+      const { success, reset } = await rateLimit.limit(ctx.currentUser.id);
+      if (!success) {
+        calculateTimeLeftForLimit(reset);
+      }
       const exercise = await ctx.prisma.exercise.create({
         data: {
           name: input.name,
@@ -50,8 +56,10 @@ export const exercisesRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const { success } = await rateLimit.limit(ctx.currentUser.id);
-      if (!success) throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
+      const { success, reset } = await rateLimit.limit(ctx.currentUser.id);
+      if (!success) {
+        calculateTimeLeftForLimit(reset);
+      }
 
       const updatedExercise = await ctx.prisma.exercise.update({
         where: { id: input.exerciseId },
@@ -74,15 +82,7 @@ export const exercisesRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { success, reset } = await rateLimit.limit(ctx.currentUser.id);
       if (!success) {
-        const currentTimestampMs = Date.now();
-        const timeLeftInSeconds = Math.ceil(
-          (reset - currentTimestampMs) / 1000
-        );
-
-        throw new TRPCError({
-          code: "TOO_MANY_REQUESTS",
-          message: `Rate limit exceeded.|${timeLeftInSeconds}`,
-        });
+        calculateTimeLeftForLimit(reset);
       }
       const deletedExercise = await ctx.prisma.exercise.delete({
         where: { id: input.exerciseId },
