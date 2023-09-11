@@ -12,10 +12,13 @@ generator client {
 }
 
 model User {
-    id         String  @unique
+    id         String    @unique
     fullName   String
     email      String?
     businessId String?
+    Business   Business? @relation(fields: [businessId], references: [id])
+
+    @@index([businessId])
 }
 
 model Exercise {
@@ -57,6 +60,7 @@ model Business {
     id        String   @id @default(cuid())
     name      String
     ownerId   String
+    users     User[]
     createdAt DateTime @default(now())
 
     @@index([ownerId])

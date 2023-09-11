@@ -11,15 +11,9 @@ import { EditIcon } from "lucide-react";
 import { useState } from "react";
 
 type editExerciseModalProps = {
-  userFullName: string;
-  userId: string;
   exerciseId: string;
 };
-export function ExerciseEditModal({
-  userFullName,
-  userId,
-  exerciseId,
-}: editExerciseModalProps) {
+export function ExerciseEditModal({ exerciseId }: editExerciseModalProps) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -41,8 +35,6 @@ export function ExerciseEditModal({
           <ExerciseForm
             setOpen={setOpen}
             updateForm={true}
-            userFullName={userFullName}
-            userId={userId}
             exerciseId={exerciseId}
           />
         </div>

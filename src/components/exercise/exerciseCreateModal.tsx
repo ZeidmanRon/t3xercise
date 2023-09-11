@@ -9,11 +9,7 @@ import {
 import { ExerciseForm } from "./exerciseForm";
 import { useState } from "react";
 
-type userProps = {
-  userFullName: string;
-  userId: string;
-};
-export function ExerciseEditModal({ userFullName, userId }: userProps) {
+export function ExerciseEditModal() {
   const [open, setOpen] = useState(false);
 
   return (
@@ -26,12 +22,7 @@ export function ExerciseEditModal({ userFullName, userId }: userProps) {
           <DialogTitle>יצירת תרגיל</DialogTitle>
         </DialogHeader>
         <div className="flex-1">
-          <ExerciseForm
-            setOpen={setOpen}
-            updateForm={false}
-            userFullName={userFullName}
-            userId={userId}
-          />
+          <ExerciseForm setOpen={setOpen} updateForm={false} />
         </div>
       </DialogContent>
     </Dialog>

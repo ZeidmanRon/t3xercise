@@ -1,37 +1,42 @@
 import Layout from "~/components/layout/layout";
 import { api } from "~/utils/api";
-import { useUser } from "@clerk/nextjs";
-import { Button } from "~/components/ui/button";
+import LoadingPage from "~/components/layout/loading";
+import NoBusiness from "~/components/business/noBusiness";
 
 export default function Business() {
-  const { user } = useUser();
+  const {
+    data: businessId,
+    isLoading: businessIdLoading,
+    error: userError,
+  } = api.users.getBusiness.useQuery();
+  const {
+    data: business,
+    isLoading: businessLoading,
+    fetchStatus,
+    error: businessError,
+  } = api.businesses.getBusiness.useQuery(
+    {
+      id: businessId!,
+    },
+    {
+      enabled: !!businessId,
+    }
+  );
 
-  if (!user) {
-    // todo: change to PageNotFound component
-    return <div>user not exist</div>;
-  }
-  const { data: dbUser, isLoading: isLoading3 } =
-    api.users.getUserById.useQuery({
-      userId: user.id,
-    });
-
-  if (isLoading3) {
-    // todo: change to Loading component
-    return <div>Loading...</div>;
-  }
-  if (!dbUser && !isLoading3) {
-    // todo: change to PageNotFound component
-
-    return <Button>some test</Button>;
+  if (businessIdLoading || (businessLoading && fetchStatus !== "idle")) {
+    // user
+    return <LoadingPage />;
   }
   return (
-    <Layout userFullName={user.fullName!} userImageUrl={user.imageUrl}>
-      <div className="flex items-center">
-        <div className="flex w-full flex-col p-4">
+    <Layout>
+      <div className="flex h-full w-full">
+        {userError ?? businessError ? (
+          <NoBusiness />
+        ) : (
           <h1 className="mb-1 text-center text-2xl font-semibold">
-            Logged User: {user.fullName}
+            business?.name
           </h1>
-        </div>
+        )}
       </div>
     </Layout>
   );

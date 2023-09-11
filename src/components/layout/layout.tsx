@@ -8,17 +8,12 @@ import Link from "next/link";
 
 interface LayoutProps {
   children: ReactNode;
-  userFullName: string;
-  userImageUrl: string;
 }
 
-export default function Layout({
-  children,
-  userFullName,
-  userImageUrl,
-}: LayoutProps) {
+export default function Layout({ children }: LayoutProps) {
+  const { user } = useUser();
   return (
-    <div>
+    <div className="flex-1">
       <div className="flex w-full justify-center border-b border-slate-300 p-2 text-xl shadow-md">
         <Navbar />
         <Button
@@ -31,15 +26,15 @@ export default function Layout({
         </Button>
         <div className="absolute left-3 top-3 flex items-center justify-end">
           <Label className="ml-3 hidden md:block" htmlFor="username">
-            {userFullName}
+            {user?.fullName}
           </Label>
           <Avatar>
-            <AvatarImage src={userImageUrl} />
-            <AvatarFallback>{userFullName?.at(0)}</AvatarFallback>
+            <AvatarImage src={user?.imageUrl} />
+            <AvatarFallback>{user?.fullName?.at(0)}</AvatarFallback>
           </Avatar>
         </div>
       </div>
-      <div className="flex-grow">{children}</div>
+      <div className="h-full w-full">{children}</div>
       {/* Add footer or other elements here */}
     </div>
   );

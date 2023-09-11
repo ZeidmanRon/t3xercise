@@ -8,26 +8,29 @@ import {
 } from "~/server/api/trpc";
 
 export const businessesRouter = createTRPCRouter({
-  getBusiness: privateProcedure.query(async ({ ctx }) => {
-    const { success, reset } = await rateLimit.limit(ctx.currentUser.id);
-    if (!success) {
-      calculateTimeLeftForLimit(reset);
-    }
-    const dbUser = await ctx.prisma.user.findUnique({
-      where: { id: ctx.currentUser.id },
-    });
-    const business = await ctx.prisma.business.findMany({
-      where: { id: dbUser!.businessId ?? "" },
-    });
-
-    if (!business) {
-      throw new TRPCError({
-        code: "NOT_FOUND",
-        message: "Business not found",
+  getBusiness: privateProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const { success, reset } = await rateLimit.limit(ctx.currentUser.id);
+      if (!success) {
+        calculateTimeLeftForLimit(reset);
+      }
+      const business = await ctx.prisma.business.findUnique({
+        where: { id: input.id },
       });
-    }
-    return business;
-  }),
+      console.log("business: ", business);
+      if (!business) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Business not found",
+        });
+      }
+      return business;
+    }),
 
   getBusinessesByName: privateProcedure
     .input(z.object({ businessName: z.string() }))

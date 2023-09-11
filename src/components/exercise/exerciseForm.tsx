@@ -63,16 +63,12 @@ const muscleGroups = [
 ] as const;
 
 type exerciseFormProps = {
-  userFullName: string;
-  userId: string;
   updateForm: boolean;
   exerciseId?: string;
   setOpen: Dispatch<SetStateAction<boolean>>;
 };
 
 export function ExerciseForm({
-  userFullName,
-  userId,
   updateForm,
   exerciseId,
   setOpen,
@@ -103,8 +99,6 @@ export function ExerciseForm({
     createExercise({
       name: data.name,
       category: data.category,
-      authorName: userFullName,
-      authorId: userId,
       desc: data.desc,
     });
     form.reset();
@@ -114,8 +108,6 @@ export function ExerciseForm({
       exerciseId: exerciseId!,
       name: data.name,
       category: data.category,
-      authorName: userFullName,
-      authorId: userId,
       desc: data.desc,
     });
     form.reset();

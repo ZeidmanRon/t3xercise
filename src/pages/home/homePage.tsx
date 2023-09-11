@@ -3,19 +3,16 @@ import Layout from "~/components/layout/layout";
 import { api } from "~/utils/api";
 import { Button } from "~/components/ui/button";
 import Link from "next/link";
-import { useUser } from "@clerk/nextjs";
 import LoadingPage from "~/components/layout/loading";
 
 export default function HomePage() {
-  const { user, isLoaded: userLoaded } = useUser();
   const { data, isLoading: workoutsLoading } =
     api.workouts.getMostUpdated.useQuery();
 
-  if (!user || !userLoaded) return <div />;
   if (workoutsLoading || !data) return <LoadingPage />;
 
   return (
-    <Layout userFullName={user.fullName!} userImageUrl={user.imageUrl}>
+    <Layout>
       {/* <CreateExerciseWizard /> */}
       <div className="flex items-center">
         <div className="flex w-full flex-col p-4">
