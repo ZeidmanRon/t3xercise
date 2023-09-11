@@ -2,26 +2,20 @@ import { z } from "zod";
 import {
   createTRPCRouter,
   privateProcedure,
-  publicProcedure,
   rateLimit,
 } from "~/server/api/trpc";
 import { TRPCError } from "@trpc/server";
 
 export const exercisesRouter = createTRPCRouter({
-  getAllById: publicProcedure
-    .input(
-      z.object({
-        currUserId: z.string(),
-      })
-    )
-    .query(({ ctx, input }) => {
-      return ctx.prisma.exercise.findMany({
-        where: { authorId: input.currUserId },
-        orderBy: {
-          updatedAt: "desc",
-        },
-      });
-    }),
+  getAllById: privateProcedure.query(async ({ ctx }) => {
+    const exercises = await ctx.prisma.exercise.findMany({
+      where: { authorId: ctx.currentUser.id },
+      orderBy: {
+        updatedAt: "desc",
+      },
+    });
+    return exercises;
+  }),
 
   create: privateProcedure
     .input(
@@ -35,7 +29,7 @@ export const exercisesRouter = createTRPCRouter({
       const { success } = await rateLimit.limit(ctx.currentUser.id);
       if (!success) throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
 
-      const user = await ctx.prisma.exercise.create({
+      const exercise = await ctx.prisma.exercise.create({
         data: {
           name: input.name,
           desc: input.desc ?? "",
@@ -44,7 +38,7 @@ export const exercisesRouter = createTRPCRouter({
           authorName: `${ctx.currentUser.firstName} ${ctx.currentUser.lastName}`,
         },
       });
-      return user;
+      return exercise;
     }),
   update: privateProcedure
     .input(
@@ -59,7 +53,7 @@ export const exercisesRouter = createTRPCRouter({
       const { success } = await rateLimit.limit(ctx.currentUser.id);
       if (!success) throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
 
-      const updatedUser = await ctx.prisma.exercise.update({
+      const updatedExercise = await ctx.prisma.exercise.update({
         where: { id: input.exerciseId },
         data: {
           name: input.name,
@@ -69,7 +63,7 @@ export const exercisesRouter = createTRPCRouter({
           authorName: `${ctx.currentUser.firstName} ${ctx.currentUser.lastName}`,
         },
       });
-      return updatedUser;
+      return updatedExercise;
     }),
   delete: privateProcedure
     .input(
@@ -90,9 +84,9 @@ export const exercisesRouter = createTRPCRouter({
           message: `Rate limit exceeded.|${timeLeftInSeconds}`,
         });
       }
-      const updatedUser = await ctx.prisma.exercise.delete({
+      const deletedExercise = await ctx.prisma.exercise.delete({
         where: { id: input.exerciseId },
       });
-      return updatedUser;
+      return deletedExercise;
     }),
 });
