@@ -55,9 +55,11 @@ const muscleGroups = [
   { label: "ישבן", value: "ישבן" },
   { label: "רגליים", value: "רגליים" },
   { label: "גב", value: "גב" },
+  { label: "בטן", value: "בטן" },
   { label: "חזה", value: "חזה" },
   { label: "כתפיים", value: "כתפיים" },
   { label: "ידיים", value: "ידיים" },
+  { label: "אירובי", value: "אירובי" },
 ] as const;
 
 type exerciseFormProps = {

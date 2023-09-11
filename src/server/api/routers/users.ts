@@ -1,14 +1,20 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import {
+  calculateTimeLeftForLimit,
+  createTRPCRouter,
+  privateProcedure,
+  rateLimit,
+} from "~/server/api/trpc";
 
 export const usersRouter = createTRPCRouter({
-  getAll: publicProcedure.query(({ ctx }) => {
-    return ctx.prisma.user.findMany();
-  }),
-  getUsersOfBusiness: publicProcedure
+  getUsersOfBusiness: privateProcedure
     .input(z.object({ businessId: z.string() }))
     .query(async ({ ctx, input }) => {
+      const { success, reset } = await rateLimit.limit(ctx.currentUser.id);
+      if (!success) {
+        calculateTimeLeftForLimit(reset);
+      }
       const users = await ctx.prisma.user.findMany({
         where: { businessId: input.businessId },
       });
@@ -22,9 +28,13 @@ export const usersRouter = createTRPCRouter({
 
       return users;
     }),
-  getUserById: publicProcedure
+  getUserById: privateProcedure
     .input(z.object({ userId: z.string().optional() }))
     .query(async ({ ctx, input }) => {
+      const { success, reset } = await rateLimit.limit(ctx.currentUser.id);
+      if (!success) {
+        calculateTimeLeftForLimit(reset);
+      }
       const { userId } = input;
       if (!userId || userId === undefined) {
         return null;
@@ -39,27 +49,28 @@ export const usersRouter = createTRPCRouter({
       }
       return user;
     }),
-  upsert: publicProcedure
+  upsert: privateProcedure
     .input(
       z.object({
-        userId: z.string(),
-        fullName: z.string(),
-        email: z.string().optional(),
         businessId: z.string().optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
+      const { success, reset } = await rateLimit.limit(ctx.currentUser.id);
+      if (!success) {
+        calculateTimeLeftForLimit(reset);
+      }
       const user = await ctx.prisma.user.upsert({
-        where: { id: input.userId },
+        where: { id: ctx.currentUser.id },
         update: {
-          fullName: input.fullName,
-          email: input.email,
+          fullName: `${ctx.currentUser.firstName} ${ctx.currentUser.lastName}`,
+          email: ctx.currentUser.emailAddresses[0]?.emailAddress,
           businessId: input.businessId,
         },
         create: {
-          id: input.userId,
-          fullName: input.fullName,
-          email: input.email,
+          id: ctx.currentUser.id,
+          fullName: `${ctx.currentUser.firstName} ${ctx.currentUser.lastName}`,
+          email: ctx.currentUser.emailAddresses[0]?.emailAddress,
           businessId: input.businessId,
         },
       });

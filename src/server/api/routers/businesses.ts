@@ -1,23 +1,47 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import {
+  calculateTimeLeftForLimit,
+  createTRPCRouter,
+  privateProcedure,
+  rateLimit,
+} from "~/server/api/trpc";
 
 export const businessesRouter = createTRPCRouter({
-  getBusinessById: publicProcedure
-    .input(z.object({ businessId: z.string() }))
-    .query(async ({ ctx, input }) => {
-      if (input.businessId === null) return null;
-      const business = await ctx.prisma.business.findMany({
-        where: { id: input.businessId },
+  getBusiness: privateProcedure.query(async ({ ctx }) => {
+    const { success, reset } = await rateLimit.limit(ctx.currentUser.id);
+    if (!success) {
+      calculateTimeLeftForLimit(reset);
+    }
+    const dbUser = await ctx.prisma.user.findUnique({
+      where: { id: ctx.currentUser.id },
+    });
+    const business = await ctx.prisma.business.findMany({
+      where: { id: dbUser!.businessId ?? "" },
+    });
+
+    if (!business) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Business not found",
       });
+    }
+    return business;
+  }),
 
-      if (!business) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Business not found",
-        });
+  getBusinessesByName: privateProcedure
+    .input(z.object({ businessName: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const { success, reset } = await rateLimit.limit(ctx.currentUser.id);
+      if (!success) {
+        calculateTimeLeftForLimit(reset);
       }
-
-      return business;
+      if (input.businessName === "") {
+      }
+      const businesses = await ctx.prisma.business.findMany({
+        where: { name: { contains: input.businessName } },
+        take: 20,
+      });
+      return businesses;
     }),
 });
