@@ -13,8 +13,8 @@ interface LayoutProps {
 export default function Layout({ children }: LayoutProps) {
   const { user } = useUser();
   return (
-    <div className="flex-1">
-      <div className="flex w-full justify-center border-b border-slate-300 p-2 text-xl shadow-md">
+    <div className="relative flex h-full w-full flex-col">
+      <div className="sticky left-0 top-0 z-50 flex w-full justify-center border-b border-slate-300 bg-white p-2 text-xl shadow-md">
         <Navbar />
         <Button
           asChild
@@ -34,7 +34,7 @@ export default function Layout({ children }: LayoutProps) {
           </Avatar>
         </div>
       </div>
-      <div className="h-full w-full">{children}</div>
+      <div className="flex h-full w-full flex-col">{children}</div>
       {/* Add footer or other elements here */}
     </div>
   );

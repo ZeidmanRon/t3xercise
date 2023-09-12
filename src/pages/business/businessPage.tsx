@@ -29,7 +29,7 @@ export default function Business() {
   }
   return (
     <Layout>
-      <div className="flex h-full w-full">
+      <div className="absolute left-0 top-0 h-full w-full">
         {userError ?? businessError ? (
           <NoBusiness />
         ) : (
