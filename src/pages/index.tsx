@@ -4,17 +4,15 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { api } from "~/utils/api";
 
-export default function Home() {
+export default function LandingPage() {
   const { user, isLoaded, isSignedIn } = useUser();
   const router = useRouter();
-  const { mutate: upsertUser } = api.users.upsert.useMutation({});
 
   useEffect(() => {
     if (user && isLoaded && isSignedIn) {
-      upsertUser({});
       void router.push("/home");
     }
-  }, [isLoaded, isSignedIn, router, upsertUser, user]);
+  }, [isLoaded, isSignedIn, router, user]);
 
   return (
     <>

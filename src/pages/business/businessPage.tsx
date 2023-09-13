@@ -9,7 +9,7 @@ import { Label } from "@radix-ui/react-label";
 
 export default function Business() {
   // todo: how to update user's businessId:
-  // api.users.test.useQuery({ businessId: "clmhxrcq30001vxnc6i4rtz4j" });
+  // api.users.UpdateUserBusiness.useQuery({ businessId: "clmhxrcq30001vxnc6i4rtz4j" });
 
   const { user, isLoaded } = useUser();
 
