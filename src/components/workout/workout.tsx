@@ -31,6 +31,7 @@ export const WorkoutSkeleton: React.FC<WorkoutProps> = ({ workout }) => {
 
     setTimePassed(timePassedString);
   }, [workout.updatedAt]);
+  const english = /^[A-Za-z0-9 ]*$/;
 
   return (
     <div className="w-full rounded-lg p-4">
@@ -39,7 +40,9 @@ export const WorkoutSkeleton: React.FC<WorkoutProps> = ({ workout }) => {
           <h2 className="text-xl font-semibold">{workout.title}</h2>
         </div>
         <p className="w-auto text-xs font-semibold text-gray-400">
-          @{workout.authorId}
+          {english.test(workout.authorName)
+            ? `${workout.authorName}@`
+            : `@${workout.authorName}`}
         </p>
       </div>
       <div className="max-h-12 overflow-y-auto">

@@ -14,7 +14,7 @@ export const businessesRouter = createTRPCRouter({
         id: z.string(),
       })
     )
-    .query(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }) => {
       const { success, reset } = await rateLimit.limit(ctx.currentUser.id);
       if (!success) {
         calculateTimeLeftForLimit(reset);

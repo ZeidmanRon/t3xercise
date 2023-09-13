@@ -40,7 +40,7 @@ const Navbar: React.FC = () => {
           <SheetTitle>T3XERCISE</SheetTitle>
         </SheetHeader>
         <Button asChild variant={"default"} className="bg-indigo-400">
-          <Link href="/home">
+          <Link href="/">
             לדף הראשי
             <HomeIcon className="m-1" />
           </Link>
@@ -68,7 +68,7 @@ const Navbar: React.FC = () => {
           </Link>
         </Button>
         <Button variant="link">
-          <SignOutButton signOutCallback={() => router.push("/")}>
+          <SignOutButton signOutCallback={() => router.push("/sign-in")}>
             <p className="flex gap-3">
               התנתקות
               <LogOutIcon />

@@ -1,3 +1,4 @@
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import {
   calculateTimeLeftForLimit,
@@ -5,6 +6,7 @@ import {
   privateProcedure,
   rateLimit,
 } from "~/server/api/trpc";
+import { clerkClient } from "@clerk/nextjs";
 
 export const workoutsRouter = createTRPCRouter({
   getAll: privateProcedure.query(async ({ ctx }) => {
@@ -12,7 +14,7 @@ export const workoutsRouter = createTRPCRouter({
     if (!success) {
       calculateTimeLeftForLimit(reset);
     }
-    const businesses = await ctx.prisma.workout.findMany({
+    const workouts = await ctx.prisma.workout.findMany({
       where: {
         authorId: ctx.currentUser.id,
       },
@@ -20,7 +22,13 @@ export const workoutsRouter = createTRPCRouter({
         updatedAt: "desc",
       },
     });
-    return businesses;
+    if (!workouts) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "No Workouts associated with this user",
+      });
+    }
+    return workouts;
   }),
   getMostUpdated: privateProcedure.query(async ({ ctx }) => {
     const { success, reset } = await rateLimit.limit(ctx.currentUser.id);
@@ -36,6 +44,13 @@ export const workoutsRouter = createTRPCRouter({
       },
       take: 10,
     });
+
+    if (!lastUpdatedWorkouts) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "No Workouts associated with this user",
+      });
+    }
     return lastUpdatedWorkouts;
   }),
   getWorkoutById: privateProcedure
@@ -52,7 +67,10 @@ export const workoutsRouter = createTRPCRouter({
         },
       });
       if (!workout) {
-        return null;
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Invalid Workout ID provided",
+        });
       }
       return workout;
     }),

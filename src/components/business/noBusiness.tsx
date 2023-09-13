@@ -4,7 +4,7 @@ import { Label } from "../ui/label";
 
 export default function NoBusiness() {
   return (
-    <div className="flex h-full w-full flex-col items-center justify-center space-y-7 py-4  text-center">
+    <div className="flex h-full w-full flex-col items-center justify-center space-y-7 py-4 text-center">
       <div className="flex flex-col p-3 text-center">
         <Label className="text-xl">ברוכים הבאים!</Label>
         <Label className="text-sm">
