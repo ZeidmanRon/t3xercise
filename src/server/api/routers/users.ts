@@ -1,3 +1,4 @@
+import { clerkClient } from "@clerk/nextjs";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import {
@@ -73,6 +74,23 @@ export const usersRouter = createTRPCRouter({
         message: "Business not found",
       });
     }
-    user!.businessId;
+    return user!.businessId;
   }),
+
+  test: privateProcedure
+    .input(
+      z.object({
+        businessId: z.string(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      await clerkClient.users.updateUserMetadata(ctx.currentUser.id, {
+        publicMetadata: { businessId: input.businessId },
+      });
+      // await clerkClient.users.updateUserMetadata(ctx.currentUser.id, {
+      //   publicMetadata: {
+      //     businessId: input.businessId,
+      //   },
+      // });
+    }),
 });
