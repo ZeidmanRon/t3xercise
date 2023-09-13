@@ -1,43 +1,43 @@
-import Head from "next/head";
-import { useUser, SignIn } from "@clerk/nextjs";
-import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { WorkoutList } from "~/components/workout/workoutList";
+import Layout from "~/components/layout/layout";
 import { api } from "~/utils/api";
+import { Button } from "~/components/ui/button";
+import Link from "next/link";
+import LoadingPage from "~/components/layout/loading";
+import { Label } from "~/components/ui/label";
 
-export default function LandingPage() {
-  const { user, isLoaded, isSignedIn } = useUser();
-  const router = useRouter();
+export default function HomePage() {
+  const {
+    data,
+    isLoading: workoutsLoading,
+    isError,
+  } = api.workouts.getMostUpdated.useQuery();
 
-  useEffect(() => {
-    if (user && isLoaded && isSignedIn) {
-      void router.push("/home");
-    }
-  }, [isLoaded, isSignedIn, router, user]);
+  if (workoutsLoading) return <LoadingPage />;
 
   return (
-    <>
-      <Head>
-        <title>T3xercise</title>
-        <meta
-          name="description"
-          content="Unleash Your Trainer Potential: Effortlessly Craft Customized Workouts, Share Exercises, and Organize Your Fitness Arsenal – All in One Place!"
-        />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <main className="flex flex-1 justify-center">
-        <div className="flex flex-1 flex-col items-center justify-center text-center text-stone-600">
-          <div dir="ltr">
-            <h1 className="handwrite text-[4rem] tracking-tight">T3XERCISE</h1>
-            <h1 className="handwrite -mt-5 text-[3rem] tracking-tight">
-              Build a
-              <span className="handwrite text-[hsl(247,100%,70%)]">
-                Workout
-              </span>
-            </h1>
-            <div className="mt-10">{isSignedIn ? "" : <SignIn />}</div>
+    <Layout>
+      {/* <CreateExerciseWizard /> */}
+      <div className="flex items-center">
+        <div className="flex w-full flex-col p-4">
+          <Label className="mb-1 text-xl font-semibold">
+            אימונים האחרונים:
+          </Label>
+          {isError ? (
+            <Label>אין אימונים</Label>
+          ) : (
+            <WorkoutList workouts={data} />
+          )}
+          <div className="flex w-full flex-col items-center justify-center pt-4">
+            <Button variant={"outline"} className="w-auto px-10">
+              הוספת אימון
+            </Button>
+            <Button variant={"outline"} className="mt-2 h-10 w-auto px-20">
+              <Link href="/workouts">לכל האימונים</Link>
+            </Button>
           </div>
         </div>
-      </main>
-    </>
+      </div>
+    </Layout>
   );
 }

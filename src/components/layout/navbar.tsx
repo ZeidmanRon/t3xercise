@@ -68,7 +68,7 @@ const Navbar: React.FC = () => {
           </Link>
         </Button>
         <Button variant="link">
-          <SignOutButton signOutCallback={() => router.push("/")}>
+          <SignOutButton signOutCallback={() => router.push("/sign-in")}>
             <p className="flex gap-3">
               התנתקות
               <LogOutIcon />
