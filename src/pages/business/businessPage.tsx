@@ -2,40 +2,44 @@ import Layout from "~/components/layout/layout";
 import { api } from "~/utils/api";
 import LoadingPage from "~/components/layout/loading";
 import NoBusiness from "~/components/business/noBusiness";
+import { useUser } from "@clerk/nextjs";
+import { useEffect } from "react";
+import { Business } from "@prisma/client";
+import { Label } from "@radix-ui/react-label";
 
 export default function Business() {
-  const {
-    data: businessId,
-    isLoading: businessIdLoading,
-    error: userError,
-  } = api.users.getBusiness.useQuery();
-  const {
-    data: business,
-    isLoading: businessLoading,
-    fetchStatus,
-    error: businessError,
-  } = api.businesses.getBusiness.useQuery(
-    {
-      id: businessId!,
-    },
-    {
-      enabled: !!businessId,
-    }
-  );
+  // todo: how to update user's businessId:
+  // api.users.test.useQuery({ businessId: "clmhxrcq30001vxnc6i4rtz4j" });
 
-  if (businessIdLoading || (businessLoading && fetchStatus !== "idle")) {
+  const { user, isLoaded } = useUser();
+
+  const {
+    data,
+    mutate: getBusiness,
+    isLoading: businessLoading,
+  } = api.businesses.getBusiness.useMutation({});
+
+  useEffect(() => {
+    if (isLoaded) {
+      getBusiness({ id: user?.publicMetadata.businessId as string });
+    }
+  }, [getBusiness, isLoaded, user?.publicMetadata.businessId]);
+
+  if (businessLoading || !isLoaded) {
     // user
     return <LoadingPage />;
   }
   return (
     <Layout>
-      <div className="absolute left-0 top-0 h-full w-full">
-        {userError ?? businessError ? (
+      <div className="flex flex-1 flex-col">
+        {!data?.name ? (
           <NoBusiness />
         ) : (
-          <h1 className="mb-1 text-center text-2xl font-semibold">
-            business?.name
-          </h1>
+          <div className="flex-1 p-4">
+            <Label className="flex items-center justify-center text-xl font-semibold">
+              {data.name}
+            </Label>
+          </div>
         )}
       </div>
     </Layout>
