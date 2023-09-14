@@ -5,6 +5,7 @@ import { Button } from "~/components/ui/button";
 import Link from "next/link";
 import LoadingPage from "~/components/layout/loading";
 import { Label } from "~/components/ui/label";
+import { AddWorkoutButton } from "../components/AddWorkoutButton";
 
 export default function HomePage() {
   const {
@@ -29,9 +30,7 @@ export default function HomePage() {
             <WorkoutList workouts={data} />
           )}
           <div className="flex w-full flex-col items-center justify-center pt-4">
-            <Button variant={"outline"} className="w-auto px-10">
-              הוספת אימון
-            </Button>
+            <AddWorkoutButton></AddWorkoutButton>
             <Button variant={"outline"} className="mt-2 h-10 w-auto px-20">
               <Link href="/workouts">לכל האימונים</Link>
             </Button>
