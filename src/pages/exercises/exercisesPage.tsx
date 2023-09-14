@@ -1,7 +1,7 @@
 import Layout from "~/components/layout/layout";
 import { ExerciseList } from "~/components/exercise/exerciseList";
 import { api } from "~/utils/api";
-import { ExerciseEditModal } from "~/components/exercise/exerciseCreateModal";
+import { ExerciseCreateModal } from "~/components/exercise/exerciseCreateModal";
 import LoadingPage from "~/components/layout/loading";
 
 export default function Exercises() {
@@ -18,7 +18,7 @@ export default function Exercises() {
           <ExerciseList exercises={[...data]} />
           <br />
           <div className="mt-3 flex flex-col items-center justify-center">
-            <ExerciseEditModal />
+            <ExerciseCreateModal />
           </div>
         </div>
       </div>

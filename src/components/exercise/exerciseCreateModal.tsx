@@ -9,7 +9,7 @@ import {
 import { ExerciseForm } from "./exerciseForm";
 import { useState } from "react";
 
-export function ExerciseEditModal() {
+export function ExerciseCreateModal() {
   const [open, setOpen] = useState(false);
 
   return (
