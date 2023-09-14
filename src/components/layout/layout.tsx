@@ -22,7 +22,7 @@ export default function Layout({ children }: LayoutProps) {
           size={"lg"}
           variant={"ghost"}
         >
-          <Link href="/home">T3XERCISE</Link>
+          <Link href="/">T3XERCISE</Link>
         </Button>
         <div className="absolute left-3 top-3 flex items-center justify-end">
           <Label className="ml-3 hidden md:block" htmlFor="username">

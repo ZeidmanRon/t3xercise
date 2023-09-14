@@ -9,7 +9,7 @@ export default function SignInPage() {
 
   useEffect(() => {
     if (user && isLoaded && isSignedIn) {
-      void router.push("/home");
+      void router.push("/");
     }
   }, [isLoaded, isSignedIn, router, user]);
 
