@@ -1,16 +1,51 @@
-import { Label } from "../ui/label";
-import MuscleGroupDynamicTable from "./muscleGroupDynamicTable";
+// YourParentComponent.tsx
+import React, { useState } from "react";
+import MuscleGroupDynamicTable, {
+  type GroupMuscleInput,
+} from "./muscleGroupDynamicTable";
 
-export default function WorkoutLayout() {
+const YourParentComponent: React.FC = () => {
+  const [groupMuscleInputs, setGroupMuscleInputs] = useState<
+    GroupMuscleInput[]
+  >([
+    // Initialize with some default data if needed
+    { groupMuscle: "", numberOfExercises: 1 },
+  ]);
+
+  const handleGroupMuscleInputChange = (
+    index: number,
+    field: string,
+    value: string | number
+  ) => {
+    const updatedInputs = [...groupMuscleInputs];
+    updatedInputs[index][field] = value;
+    setGroupMuscleInputs(updatedInputs);
+  };
+
+  const handleRemoveRow = (index: number) => {
+    const updatedInputs = [...groupMuscleInputs];
+    updatedInputs.splice(index, 1);
+    setGroupMuscleInputs(updatedInputs);
+  };
+
+  const handleAddRow = () => {
+    setGroupMuscleInputs([
+      ...groupMuscleInputs,
+      { groupMuscle: "", numberOfExercises: 1 },
+    ]);
+  };
+
   return (
-    <div className="flex h-full w-full flex-col">
-      <div className="flex flex-col text-right">
-        <Label className="text-sm">מבנה האימון:</Label>
-      </div>
+    <div>
       <MuscleGroupDynamicTable
-        muscleInputs={[{ category: "testCategory", numberOfExercises: 3 }]}
+        groupMuscleInputs={groupMuscleInputs}
+        onGroupMuscleInputChange={handleGroupMuscleInputChange}
+        onRemoveRow={handleRemoveRow}
+        onAddRow={handleAddRow}
       />
-      <div className="flex flex-col p-3 text-center"></div>
+      <button onClick={handleAddRow}>Add Row</button>
     </div>
   );
-}
+};
+
+export default YourParentComponent;
