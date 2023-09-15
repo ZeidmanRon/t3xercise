@@ -1,6 +1,6 @@
 import { type Exercise } from "@prisma/client";
 import React from "react"; // we need this to make JSX compile
-import { ExerciseSkeleton } from "./exerciseSkeleton";
+import { ExerciseSkeleton } from "./exerciseListItem";
 import { ScrollArea } from "~/components/ui/scroll-area";
 
 type ExerciseProps = {

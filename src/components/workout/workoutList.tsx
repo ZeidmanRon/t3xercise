@@ -1,5 +1,5 @@
 import React from "react"; // we need this to make JSX compile
-import { WorkoutSkeleton } from "./workout";
+import { WorkoutSkeleton } from "./workoutListItem";
 import { type Workout } from "@prisma/client";
 
 type WorkoutProps = {

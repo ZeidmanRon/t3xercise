@@ -29,7 +29,7 @@ import {
   PopoverTrigger,
 } from "~/components/ui/popover";
 import { LoadingSpinner } from "../layout/loading";
-import { type Dispatch, type SetStateAction } from "react";
+import { useState, type Dispatch, type SetStateAction } from "react";
 
 export const FormSchema = z.object({
   name: z
@@ -65,27 +65,27 @@ const muscleGroups = [
 type exerciseFormProps = {
   updateForm: boolean;
   exerciseId?: string;
-  setOpen: Dispatch<SetStateAction<boolean>>;
+  setOpenExerciseForm: Dispatch<SetStateAction<boolean>>;
 };
 
 export function ExerciseForm({
   updateForm,
   exerciseId,
-  setOpen,
+  setOpenExerciseForm,
 }: exerciseFormProps) {
   const utils = api.useContext();
   const { mutate: createExercise, isLoading: isCreatingExercise } =
     api.exercises.create.useMutation({
       async onSuccess() {
         await utils.exercises.getAllById.invalidate();
-        setOpen(false);
+        setOpenExerciseForm(false);
       },
     });
   const { mutate: updateExercise, isLoading: isUpdatingExercise } =
     api.exercises.update.useMutation({
       async onSuccess() {
         await utils.exercises.getAllById.invalidate();
-        setOpen(false);
+        setOpenExerciseForm(false);
       },
     });
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -94,6 +94,7 @@ export function ExerciseForm({
       name: "",
     },
   });
+  const [openMuscleGroup, setOpenMuscleGroup] = useState(false);
 
   function onSubmitCreate(data: z.infer<typeof FormSchema>) {
     createExercise({
@@ -175,7 +176,7 @@ export function ExerciseForm({
           render={({ field }) => (
             <FormItem className="flex flex-col">
               <FormLabel>קבוצת שריר</FormLabel>
-              <Popover>
+              <Popover open={openMuscleGroup} onOpenChange={setOpenMuscleGroup}>
                 <PopoverTrigger asChild>
                   <FormControl>
                     <Button
@@ -206,6 +207,7 @@ export function ExerciseForm({
                           key={muscleGroup.value}
                           onSelect={() => {
                             form.setValue("category", muscleGroup.value);
+                            setOpenMuscleGroup(false);
                           }}
                         >
                           <Check

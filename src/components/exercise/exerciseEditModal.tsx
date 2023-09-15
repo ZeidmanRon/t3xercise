@@ -33,7 +33,7 @@ export function ExerciseEditModal({ exerciseId }: editExerciseModalProps) {
         </DialogHeader>
         <div className="flex-1">
           <ExerciseForm
-            setOpen={setOpen}
+            setOpenExerciseForm={setOpen}
             updateForm={true}
             exerciseId={exerciseId}
           />

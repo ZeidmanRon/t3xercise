@@ -10,10 +10,10 @@ import { ExerciseForm } from "./exerciseForm";
 import { useState } from "react";
 
 export function ExerciseCreateModal() {
-  const [open, setOpen] = useState(false);
+  const [openExerciseForm, setOpenExerciseForm] = useState(false);
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={openExerciseForm} onOpenChange={setOpenExerciseForm}>
       <DialogTrigger asChild>
         <Button variant="outline">תרגיל חדש</Button>
       </DialogTrigger>
@@ -22,7 +22,10 @@ export function ExerciseCreateModal() {
           <DialogTitle>יצירת תרגיל</DialogTitle>
         </DialogHeader>
         <div className="flex-1">
-          <ExerciseForm setOpen={setOpen} updateForm={false} />
+          <ExerciseForm
+            setOpenExerciseForm={setOpenExerciseForm}
+            updateForm={false}
+          />
         </div>
       </DialogContent>
     </Dialog>
