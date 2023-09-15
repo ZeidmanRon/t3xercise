@@ -131,47 +131,6 @@ export function ExerciseForm({
       >
         <FormField
           control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>שם התרגיל</FormLabel>
-              <FormControl>
-                <Input
-                  className={cn(
-                    "resize-none",
-                    !field.value && "font-light text-muted-foreground"
-                  )}
-                  autoComplete="off"
-                  placeholder="שם התרגיל"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="desc"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>אופן הביצוע</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="ניתן לפרט על התרגיל או על אופן הביצוע"
-                  className={cn(
-                    "resize-none",
-                    !field.value && "font-light text-muted-foreground"
-                  )}
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
           name="category"
           render={({ field }) => (
             <FormItem className="flex flex-col">
@@ -229,6 +188,48 @@ export function ExerciseForm({
             </FormItem>
           )}
         />
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>שם התרגיל</FormLabel>
+              <FormControl>
+                <Input
+                  className={cn(
+                    "resize-none",
+                    !field.value && "font-light text-muted-foreground"
+                  )}
+                  autoComplete="off"
+                  placeholder="שם התרגיל"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="desc"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>אופן הביצוע</FormLabel>
+              <FormControl>
+                <Textarea
+                  placeholder="ניתן לפרט על התרגיל או על אופן הביצוע"
+                  className={cn(
+                    "resize-none",
+                    !field.value && "font-light text-muted-foreground"
+                  )}
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         <div className="flex w-full justify-center">
           <Button className="w-auto font-light" type="submit">
             יצירת תרגיל
