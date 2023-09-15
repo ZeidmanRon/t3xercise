@@ -60,7 +60,7 @@ const muscleGroups = [
   { label: "כתפיים", value: "כתפיים" },
   { label: "ידיים", value: "ידיים" },
   { label: "אירובי", value: "אירובי" },
-] as const;
+];
 
 type exerciseFormProps = {
   updateForm: boolean;
@@ -203,10 +203,10 @@ export function ExerciseForm({
                     <CommandGroup>
                       {muscleGroups.map((muscleGroup) => (
                         <CommandItem
-                          value={muscleGroup.label}
-                          key={muscleGroup.value}
-                          onSelect={() => {
-                            form.setValue("category", muscleGroup.value);
+                          value={muscleGroup.value}
+                          key={muscleGroup.label}
+                          onSelect={(currentValue) => {
+                            form.setValue("category", currentValue);
                             setOpenMuscleGroup(false);
                           }}
                         >

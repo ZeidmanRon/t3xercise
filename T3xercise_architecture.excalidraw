@@ -4,6 +4,35 @@
   "source": "https://excalidraw.com",
   "elements": [
     {
+      "id": "ULtA_aPprLwHgkdgLC9cn",
+      "type": "rectangle",
+      "x": -10314.384852304742,
+      "y": -10240.453923867466,
+      "width": 416.25,
+      "height": 613.75,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "#b2f2bb",
+      "fillStyle": "hachure",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 0,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "roundness": {
+        "type": 3
+      },
+      "seed": 750309798,
+      "version": 133,
+      "versionNonce": 341798566,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1694778958150,
+      "link": null,
+      "locked": false
+    },
+    {
       "type": "rectangle",
       "version": 5828,
       "versionNonce": 1911154278,
