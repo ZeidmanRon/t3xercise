@@ -13,6 +13,7 @@ import WorkoutLayout from "./workoutLayout";
 import Link from "next/link";
 import { api } from "~/utils/api";
 import { LoadingSpinner } from "../layout/loading";
+import Swal from "sweetalert2";
 
 export function WorkoutCreateModal() {
   const [openWorkoutDialog, setOpenWorkoutDialog] = useState(false);
@@ -28,7 +29,7 @@ export function WorkoutCreateModal() {
     mutate: getRandomExercises,
     data,
     isLoading,
-    isError,
+    error,
   } = api.exercises.getRandomExercises.useMutation({});
 
   //* exercisesPerX represents the number of the exercises the user demands.
@@ -44,14 +45,37 @@ export function WorkoutCreateModal() {
   ];
 
   useEffect(() => {
-    if (data) console.log(data);
-  });
+    if (!isLoading && data) {
+      setOpenWorkoutDialog(false);
+      console.log(data);
+    }
+    if (error) {
+      setOpenWorkoutDialog(false);
+      void Swal.fire({
+        title: "שגיאה!",
+        text: error.message,
+        icon: "error",
+        confirmButtonText: "אוקיי",
+      });
+    }
+  }, [data, error, isLoading]);
 
   function handleSubmit() {
+    const totalNumberOfExercises = values.reduce((total, value) => {
+      return total + value.numberOfExercises;
+    }, 0);
+    if (totalNumberOfExercises < 5) {
+      setOpenWorkoutDialog(false);
+      void Swal.fire({
+        title: "שגיאה!",
+        text: "לא ניתן ליצור אימון עם מתחת ל5 תרגילים",
+        icon: "error",
+        confirmButtonText: "אוקיי",
+      });
+      return;
+    }
     console.log("\n\nמספר התרגילים פר קבוצת שריר");
     getRandomExercises(values);
-
-    //todo *: show a loading while fetching
 
     //todo 1: generate random exercises
 
@@ -64,7 +88,6 @@ export function WorkoutCreateModal() {
       setter(0);
     });
     // 5 close dialog
-    setOpenWorkoutDialog(false);
   }
   const setters = [
     { setter: setExercisesPerBooty, category: "ישבן" },
@@ -78,45 +101,49 @@ export function WorkoutCreateModal() {
   ];
 
   // isUpdatingWorkout
-  return isLoading ? (
-    <div className="flex min-h-[400px] items-center justify-center">
-      <LoadingSpinner size={40} />
-    </div>
-  ) : (
+  return (
     <Dialog open={openWorkoutDialog} onOpenChange={setOpenWorkoutDialog}>
       <DialogTrigger asChild>
         <Button variant={"outline"}>הוספת אימון</Button>
       </DialogTrigger>
       <DialogContent className="flex h-auto w-11/12 flex-col">
-        <DialogHeader className="">
-          <DialogTitle>יצירת אימון</DialogTitle>
-        </DialogHeader>
-        <div className="flex w-full flex-1 flex-col items-center justify-center space-y-2">
-          <WorkoutLayout setters={setters} />
-          <div className="flex items-center">
-            <Switch dir="ltr" id="include-business-exercises" />
-            <Label
-              htmlFor="include-business-exercises"
-              className="pr-2 text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-            >
-              לכלול תרגילים מיתר המאמנים בעסק?
-            </Label>
+        {isLoading ? (
+          <div className="flex min-h-[400px] items-center justify-center">
+            <LoadingSpinner size={40} />
           </div>
-          <form
-            onSubmit={(event) => {
-              event.preventDefault();
-              handleSubmit();
-            }}
-          >
-            <Button>צור אימון</Button>
-          </form>
-          <Label className="pt-5">
-            או{" "}
-            <Link href={"#"} className="text-blue-500">
-              הוספת אימון קיים
-            </Link>
-          </Label>
-        </div>
+        ) : (
+          <>
+            <DialogHeader className="">
+              <DialogTitle>יצירת אימון</DialogTitle>
+            </DialogHeader>
+            <div className="flex w-full flex-1 flex-col items-center justify-center space-y-2">
+              <WorkoutLayout setters={setters} />
+              <div className="flex items-center">
+                <Switch dir="ltr" id="include-business-exercises" />
+                <Label
+                  htmlFor="include-business-exercises"
+                  className="pr-2 text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                >
+                  לכלול תרגילים מיתר המאמנים בעסק?
+                </Label>
+              </div>
+              <form
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  handleSubmit();
+                }}
+              >
+                <Button>צור אימון</Button>
+              </form>
+              <Label className="pt-5">
+                או{" "}
+                <Link href={"#"} className="text-blue-500">
+                  הוספת אימון קיים
+                </Link>
+              </Label>
+            </div>
+          </>
+        )}
       </DialogContent>
     </Dialog>
   );

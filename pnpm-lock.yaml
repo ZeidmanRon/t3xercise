@@ -104,6 +104,9 @@ dependencies:
   superjson:
     specifier: ^1.13.1
     version: 1.13.1
+  sweetalert2:
+    specifier: ^11.7.28
+    version: 11.7.28
   switch:
     specifier: ^0.0.0
     version: 0.0.0
@@ -4966,6 +4969,10 @@ packages:
   /supports-preserve-symlinks-flag@1.0.0:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
+
+  /sweetalert2@11.7.28:
+    resolution: {integrity: sha512-9895DVuYTDlV4Hx4IJablFKMdSqzwpy0PKycztbO4cXnOeVMmw55weOq4gcZAh3/tAyunCKjApFDrlSAcswwcA==}
+    dev: false
 
   /switch@0.0.0:
     resolution: {integrity: sha512-Pvi4hlAXWHEIT+4XlQEPPIQ02hRzvn38K/cnZ5sZeM11FsDPoXvBD6i/zyVxFK6cgqSlS8sA5/sIwUGp9+ZMhw==}

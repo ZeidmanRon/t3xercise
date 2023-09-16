@@ -121,7 +121,7 @@ export const exercisesRouter = createTRPCRouter({
             if (numberOfExercises > RandomExercises.length) {
               throw new TRPCError({
                 code: "UNPROCESSABLE_CONTENT",
-                message: `אין מספיק תרגילים מסוג: ${category}`,
+                message: `אין מספיק תרגילי ${category}`,
               });
             }
 
