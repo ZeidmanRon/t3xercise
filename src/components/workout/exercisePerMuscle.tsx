@@ -9,11 +9,11 @@ import {
 import { Separator } from "~/components/ui/separator";
 
 type muscleGroup = {
-  label: string;
+  category: string;
   setExercisesPerMuscle: React.Dispatch<React.SetStateAction<number>>;
 };
 export default function ExercisePerMuscle({
-  label,
+  category,
   setExercisesPerMuscle,
 }: muscleGroup) {
   function handleSelectChange(value: string) {
@@ -21,9 +21,9 @@ export default function ExercisePerMuscle({
   }
 
   return (
-    <div className="flex flex-col" key={label}>
+    <div className="flex flex-col" key={category}>
       <div className="flex h-12 w-full items-center justify-between px-2 text-sm">
-        תרגילי {label}
+        תרגילי {category}
         <Select dir="rtl" onValueChange={handleSelectChange}>
           <SelectTrigger className="w-16">
             <SelectValue placeholder="" />

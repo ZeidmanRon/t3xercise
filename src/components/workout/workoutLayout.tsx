@@ -6,7 +6,7 @@ import ExercisePerMuscle from "./exercisePerMuscle";
 interface ChildComponentProps {
   setters: {
     setter: React.Dispatch<React.SetStateAction<number>>;
-    label: string;
+    category: string;
   }[];
 }
 export default function WorkoutLayout({ setters }: ChildComponentProps) {
@@ -18,11 +18,11 @@ export default function WorkoutLayout({ setters }: ChildComponentProps) {
 
       <div className="flex h-full w-full justify-center p-4">
         <ScrollArea dir="rtl" className=" h-auto max-h-[15rem] w-full px-4">
-          {setters.map(({ setter, label }) => (
+          {setters.map(({ setter, category }) => (
             <ExercisePerMuscle
               setExercisesPerMuscle={setter}
-              key={label}
-              label={label}
+              key={category}
+              category={category}
             />
           ))}
         </ScrollArea>

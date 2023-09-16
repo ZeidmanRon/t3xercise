@@ -6,11 +6,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "~/components/ui/dialog";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Switch } from "~/components/ui/switch";
 import { Label } from "~/components/ui/label";
 import WorkoutLayout from "./workoutLayout";
 import Link from "next/link";
+import { api } from "~/utils/api";
+import { LoadingSpinner } from "../layout/loading";
 
 export function WorkoutCreateModal() {
   const [openWorkoutDialog, setOpenWorkoutDialog] = useState(false);
@@ -22,22 +24,35 @@ export function WorkoutCreateModal() {
   const [exercisesPerShoulders, setExercisesPerShoulders] = useState(0);
   const [exercisesPerHands, setExercisesPerHands] = useState(0);
   const [exercisesPerAerobic, setExercisesPerAerobic] = useState(0);
+  const {
+    mutate: getRandomExercises,
+    data,
+    isLoading,
+    isError,
+  } = api.exercises.getRandomExercises.useMutation({});
 
+  //* exercisesPerX represents the number of the exercises the user demands.
   const values = [
-    { value: exercisesPerBooty, label: "ישבן" },
-    { value: exercisesPerLegs, label: "רגליים" },
-    { value: exercisesPerBack, label: "גב" },
-    { value: exercisesPerAbs, label: "בטן" },
-    { value: exercisesPerChest, label: "חזה" },
-    { value: exercisesPerShoulders, label: "כתפיים" },
-    { value: exercisesPerHands, label: "ידיים" },
-    { value: exercisesPerAerobic, label: "אירובי" },
+    { numberOfExercises: exercisesPerBooty, category: "ישבן" },
+    { numberOfExercises: exercisesPerLegs, category: "רגליים" },
+    { numberOfExercises: exercisesPerBack, category: "גב" },
+    { numberOfExercises: exercisesPerAbs, category: "בטן" },
+    { numberOfExercises: exercisesPerChest, category: "חזה" },
+    { numberOfExercises: exercisesPerShoulders, category: "כתפיים" },
+    { numberOfExercises: exercisesPerHands, category: "ידיים" },
+    { numberOfExercises: exercisesPerAerobic, category: "אירובי" },
   ];
+
+  useEffect(() => {
+    if (data) console.log(data);
+  });
+
   function handleSubmit() {
     console.log("\n\nמספר התרגילים פר קבוצת שריר");
-    values.map((value) => {
-      console.log(value);
-    });
+    getRandomExercises(values);
+
+    //todo *: show a loading while fetching
+
     //todo 1: generate random exercises
 
     //todo 2: create new workout with the generated exercises
@@ -48,19 +63,26 @@ export function WorkoutCreateModal() {
     setters.map(({ setter }) => {
       setter(0);
     });
+    // 5 close dialog
+    setOpenWorkoutDialog(false);
   }
   const setters = [
-    { setter: setExercisesPerBooty, label: "ישבן" },
-    { setter: setExercisesPerLegs, label: "רגליים" },
-    { setter: setExercisesPerBack, label: "גב" },
-    { setter: setExercisesPerAbs, label: "בטן" },
-    { setter: setExercisesPerChest, label: "חזה" },
-    { setter: setExercisesPerShoulders, label: "כתפיים" },
-    { setter: setExercisesPerHands, label: "ידיים" },
-    { setter: setExercisesPerAerobic, label: "אירובי" },
+    { setter: setExercisesPerBooty, category: "ישבן" },
+    { setter: setExercisesPerLegs, category: "רגליים" },
+    { setter: setExercisesPerBack, category: "גב" },
+    { setter: setExercisesPerAbs, category: "בטן" },
+    { setter: setExercisesPerChest, category: "חזה" },
+    { setter: setExercisesPerShoulders, category: "כתפיים" },
+    { setter: setExercisesPerHands, category: "ידיים" },
+    { setter: setExercisesPerAerobic, category: "אירובי" },
   ];
 
-  return (
+  // isUpdatingWorkout
+  return isLoading ? (
+    <div className="flex min-h-[400px] items-center justify-center">
+      <LoadingSpinner size={40} />
+    </div>
+  ) : (
     <Dialog open={openWorkoutDialog} onOpenChange={setOpenWorkoutDialog}>
       <DialogTrigger asChild>
         <Button variant={"outline"}>הוספת אימון</Button>
@@ -84,10 +106,9 @@ export function WorkoutCreateModal() {
             onSubmit={(event) => {
               event.preventDefault();
               handleSubmit();
-              setOpenWorkoutDialog(false);
             }}
           >
-            <Button type="submit">צור אימון</Button>
+            <Button>צור אימון</Button>
           </form>
           <Label className="pt-5">
             או{" "}
