@@ -55,10 +55,6 @@ export const workoutsRouter = createTRPCRouter({
   getWorkoutById: privateProcedure
     .input(z.object({ workoutId: z.string() }))
     .query(async ({ ctx, input }) => {
-      const { success, reset } = await rateLimit.limit(ctx.currentUser.id);
-      if (!success) {
-        calculateTimeLeftForLimit(reset);
-      }
       const { workoutId } = input;
       const workout = await ctx.prisma.workout.findUnique({
         where: {
@@ -71,7 +67,10 @@ export const workoutsRouter = createTRPCRouter({
           message: "Invalid Workout ID provided",
         });
       }
-      return workout;
+      const workoutExercises = await ctx.prisma.exercisesOnWorkouts.findMany({
+        where: { workoutId: workout.id },
+      });
+      return { workout, workoutExercises };
     }),
   create: privateProcedure
     .input(
@@ -108,5 +107,30 @@ export const workoutsRouter = createTRPCRouter({
       });
 
       return createdWorkout;
+    }),
+  delete: privateProcedure
+    .input(
+      z.object({
+        workoutId: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { success, reset } = await rateLimit.limit(ctx.currentUser.id);
+      if (!success) {
+        calculateTimeLeftForLimit(reset);
+      }
+      try {
+        const { workoutId } = input;
+        await ctx.prisma.exercisesOnWorkouts.deleteMany({
+          where: { workoutId: workoutId },
+        });
+
+        await ctx.prisma.workout.delete({
+          where: { id: workoutId },
+        });
+      } catch (err) {
+        console.log("at @{delete_workout} error:", err);
+        throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+      }
     }),
 });

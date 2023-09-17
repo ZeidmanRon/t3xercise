@@ -1,10 +1,16 @@
 import { type Workout } from "@prisma/client";
 import React, { useEffect, useState } from "react"; // we need this to make JSX compile
-
+import { Badge } from "../ui/badge";
+import { api } from "~/utils/api";
+import { Skeleton } from "~/components/ui/skeleton";
+import { WorkoutDeleteModal } from "./wokroutDeleteModal";
 type WorkoutProps = {
   workout: Workout;
 };
 export const WorkoutSkeleton: React.FC<WorkoutProps> = ({ workout }) => {
+  const { data, isLoading } = api.workouts.getWorkoutById.useQuery({
+    workoutId: workout.id,
+  });
   const [timePassed, setTimePassed] = useState<string>("");
   useEffect(() => {
     // Calculate the time difference between the current date and workout's updatedAt property
@@ -33,12 +39,39 @@ export const WorkoutSkeleton: React.FC<WorkoutProps> = ({ workout }) => {
   }, [workout.updatedAt]);
   const english = /^[A-Za-z0-9 ]*$/;
 
-  return (
-    <div className="w-full rounded-lg p-4">
+  return isLoading ? (
+    <div className="flex flex-col space-y-2 p-2">
+      <div className="flex h-5 items-center justify-between">
+        <Skeleton className="h-5 w-24" />
+      </div>
+      <div className="flex h-5 items-center justify-between">
+        <Skeleton className="h-3 w-14" />
+        <Skeleton className="h-3 w-20" />
+      </div>
+      <div className="space-y-2">
+        <Skeleton className="h-2 w-3/4" />
+        <Skeleton className="h-2 w-1/2" />
+      </div>
+    </div>
+  ) : (
+    <div className="flex h-auto w-full flex-col rounded-lg px-2 pb-2">
       <div className="top mb-1 flex w-full items-center justify-between">
         <div className="flex flex-col">
           <h2 className="text-xl font-semibold">{workout.title}</h2>
         </div>
+        <div className="min-w-max">
+          {/* <WorkoutEditModal workout={workout} />*/}
+          <WorkoutDeleteModal workoutId={workout.id} />
+        </div>
+      </div>
+      <div className="mb-1 flex w-full items-start justify-between ">
+        <Badge
+          className="text-center text-[0.6rem] font-semibold text-gray-600"
+          variant="outline"
+        >
+          {data!.workoutExercises.length}
+          {" תרגילים"}
+        </Badge>
         <p className="w-auto text-xs font-semibold text-gray-400">
           {english.test(workout.authorName)
             ? `${workout.authorName}@`
