@@ -9,13 +9,14 @@ import {
 import { ExerciseForm } from "./exerciseForm";
 import { EditIcon } from "lucide-react";
 import { useState } from "react";
+import { type Exercise } from "@prisma/client";
 
 type editExerciseModalProps = {
-  exerciseId: string;
+  exercise: Exercise;
 };
-export function ExerciseEditModal({ exerciseId }: editExerciseModalProps) {
-  const [open, setOpen] = useState(false);
 
+export function ExerciseEditModal({ exercise }: editExerciseModalProps) {
+  const [open, setOpen] = useState(false);
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -35,7 +36,7 @@ export function ExerciseEditModal({ exerciseId }: editExerciseModalProps) {
           <ExerciseForm
             setOpenExerciseForm={setOpen}
             updateForm={true}
-            exerciseId={exerciseId}
+            exercise={exercise}
           />
         </div>
       </DialogContent>

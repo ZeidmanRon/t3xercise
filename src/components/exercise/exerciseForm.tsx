@@ -30,6 +30,7 @@ import {
 } from "~/components/ui/popover";
 import { LoadingSpinner } from "../layout/loading";
 import { useState, type Dispatch, type SetStateAction } from "react";
+import { type Exercise } from "@prisma/client";
 
 export const FormSchema = z.object({
   name: z
@@ -64,13 +65,13 @@ const muscleGroups = [
 
 type exerciseFormProps = {
   updateForm: boolean;
-  exerciseId?: string;
+  exercise?: Exercise;
   setOpenExerciseForm: Dispatch<SetStateAction<boolean>>;
 };
 
 export function ExerciseForm({
   updateForm,
-  exerciseId,
+  exercise,
   setOpenExerciseForm,
 }: exerciseFormProps) {
   const utils = api.useContext();
@@ -91,7 +92,9 @@ export function ExerciseForm({
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      name: "",
+      category: updateForm ? exercise!.category : "",
+      name: updateForm ? exercise!.name : "",
+      desc: updateForm ? exercise!.desc : "",
     },
   });
   const [openMuscleGroup, setOpenMuscleGroup] = useState(false);
@@ -106,7 +109,7 @@ export function ExerciseForm({
   }
   function onSubmitUpdate(data: z.infer<typeof FormSchema>) {
     updateExercise({
-      exerciseId: exerciseId!,
+      exerciseId: exercise!.id,
       name: data.name,
       category: data.category,
       desc: data.desc,

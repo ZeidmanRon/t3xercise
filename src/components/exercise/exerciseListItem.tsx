@@ -16,7 +16,7 @@ export const ExerciseSkeleton = ({ exercise }: ExerciseProps) => (
         <h2 className="text-md font-semibold">{exercise.name}</h2>
       </div>
       <div className="min-w-max">
-        <ExerciseEditModal exerciseId={exercise.id} />
+        <ExerciseEditModal exercise={exercise} />
         <ExerciseDeleteModal exerciseId={exercise.id} />
       </div>
     </div>
