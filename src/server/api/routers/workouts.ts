@@ -60,17 +60,17 @@ export const workoutsRouter = createTRPCRouter({
         where: {
           id: workoutId,
         },
+        include: {
+          ExercisesOnWorkouts: true, // Include the related exercises
+        },
       });
       if (!workout) {
         throw new TRPCError({
           code: "NOT_FOUND",
-          message: "Invalid Workout ID provided",
+          message: "Invalid Workout ID",
         });
       }
-      const workoutExercises = await ctx.prisma.exercisesOnWorkouts.findMany({
-        where: { workoutId: workout.id },
-      });
-      return { workout, workoutExercises };
+      return workout;
     }),
   create: privateProcedure
     .input(

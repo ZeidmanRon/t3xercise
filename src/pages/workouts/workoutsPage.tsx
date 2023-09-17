@@ -4,7 +4,7 @@ import { api } from "~/utils/api";
 import LoadingPage from "~/components/layout/loading";
 import { WorkoutCreateModal } from "~/components/workout/workoutCreateModal";
 
-export default function WorkoutPage() {
+export default function WorkoutsPage() {
   const { data, isLoading: workoutsLoading } = api.workouts.getAll.useQuery();
   if (workoutsLoading || !data) return <LoadingPage />;
 

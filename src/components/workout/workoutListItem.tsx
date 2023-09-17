@@ -69,7 +69,7 @@ export const WorkoutSkeleton: React.FC<WorkoutProps> = ({ workout }) => {
           className="text-center text-[0.6rem] font-semibold text-gray-600"
           variant="outline"
         >
-          {data!.workoutExercises.length}
+          {data!.ExercisesOnWorkouts.length}
           {" תרגילים"}
         </Badge>
         <p className="w-auto text-xs font-semibold text-gray-400">
