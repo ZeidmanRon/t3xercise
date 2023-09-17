@@ -14,9 +14,25 @@ import Link from "next/link";
 import { api } from "~/utils/api";
 import { LoadingSpinner } from "../layout/loading";
 import Swal from "sweetalert2";
+import { type Exercise } from "@prisma/client";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "~/components/ui/form";
+import { Input } from "~/components/ui/input";
 
 export function WorkoutCreateModal() {
+  const utils = api.useContext();
   const [openWorkoutDialog, setOpenWorkoutDialog] = useState(false);
+  const [displayLoadingDialog, setDisplayLoadingDialog] = useState(false);
+  const [workoutName, setWorkoutName] = useState("");
   const [exercisesPerBooty, setExercisesPerBooty] = useState(0);
   const [exercisesPerLegs, setExercisesPerLegs] = useState(0);
   const [exercisesPerBack, setExercisesPerBack] = useState(0);
@@ -27,10 +43,21 @@ export function WorkoutCreateModal() {
   const [exercisesPerAerobic, setExercisesPerAerobic] = useState(0);
   const {
     mutate: getRandomExercises,
-    data,
-    isLoading,
-    error,
+    data: generatedExercises,
+    isLoading: isLoadingExercises,
+    error: ExericseError,
   } = api.exercises.getRandomExercises.useMutation({});
+  const {
+    mutate: createWorkout,
+    data: workoutData,
+    isLoading: isLoadingWorkout,
+    error: workoutError,
+  } = api.workouts.create.useMutation({
+    async onSuccess() {
+      await utils.workouts.getMostUpdated.invalidate();
+      await utils.workouts.getAll.invalidate();
+    },
+  });
 
   //* exercisesPerX represents the number of the exercises the user demands.
   const values = [
@@ -43,24 +70,49 @@ export function WorkoutCreateModal() {
     { numberOfExercises: exercisesPerHands, category: "ידיים" },
     { numberOfExercises: exercisesPerAerobic, category: "אירובי" },
   ];
-
+  // useEffect for loading screen
   useEffect(() => {
-    if (!isLoading && data) {
-      setOpenWorkoutDialog(false);
-      console.log(data);
+    if (isLoadingExercises || isLoadingWorkout) {
+      setDisplayLoadingDialog(true);
+      return;
     }
-    if (error) {
+    setDisplayLoadingDialog(false);
+  }, [isLoadingExercises, isLoadingWorkout]);
+
+  //useEffect for showing Errors
+  useEffect(() => {
+    if (ExericseError ?? workoutError) {
       setOpenWorkoutDialog(false);
       void Swal.fire({
         title: "שגיאה!",
-        text: error.message,
+        text: ExericseError?.message ?? workoutError?.message,
         icon: "error",
         confirmButtonText: "אוקיי",
       });
     }
-  }, [data, error, isLoading]);
+  }, [ExericseError, workoutError]);
 
-  function handleSubmit() {
+  useEffect(() => {
+    if (!generatedExercises || generatedExercises.length === 0) return;
+    const generatedExercisesIds = generatedExercises.map(
+      (exercise: Exercise) => exercise.id
+    );
+    createWorkout({
+      selectedExercisesIds: generatedExercisesIds,
+      title: workoutName,
+    });
+    generatedExercises.splice(0, generatedExercises.length);
+  }, [createWorkout, generatedExercises, workoutName]);
+
+  //useEffect for done creating workout
+  useEffect(() => {
+    if (workoutData) {
+      setOpenWorkoutDialog(false);
+    }
+  }, [ExericseError, workoutData]);
+
+  function handleSubmit(data: z.infer<typeof FormSchema>) {
+    setWorkoutName(data.workoutName);
     const totalNumberOfExercises = values.reduce((total, value) => {
       return total + value.numberOfExercises;
     }, 0);
@@ -68,27 +120,23 @@ export function WorkoutCreateModal() {
       setOpenWorkoutDialog(false);
       void Swal.fire({
         title: "שגיאה!",
-        text: "לא ניתן ליצור אימון עם מתחת ל5 תרגילים",
+        text: "אימון חייב לכלול לפחות 5 תרגילים",
         icon: "error",
         confirmButtonText: "אוקיי",
+        allowOutsideClick: true,
+        position: "center",
       });
-      return;
+    } else {
+      // generate random exercises
+      getRandomExercises(values);
     }
-    console.log("\n\nמספר התרגילים פר קבוצת שריר");
-    getRandomExercises(values);
-
-    //todo 1: generate random exercises
-
-    //todo 2: create new workout with the generated exercises
-
-    //todo 3: invalidate workouts (refresh get workouts datad from the DB)
-
-    //4: reset exercises per muscleGroup values
+    //reset dialog variables
+    form.resetField("workoutName");
     setters.map(({ setter }) => {
       setter(0);
     });
-    // 5 close dialog
   }
+
   const setters = [
     { setter: setExercisesPerBooty, category: "ישבן" },
     { setter: setExercisesPerLegs, category: "רגליים" },
@@ -99,7 +147,15 @@ export function WorkoutCreateModal() {
     { setter: setExercisesPerHands, category: "ידיים" },
     { setter: setExercisesPerAerobic, category: "אירובי" },
   ];
+  const FormSchema = z.object({
+    workoutName: z.string({ required_error: "חסר" }).min(3, {
+      message: "לפחות 3 אותיות",
+    }),
+  });
 
+  const form = useForm<z.infer<typeof FormSchema>>({
+    resolver: zodResolver(FormSchema),
+  });
   // isUpdatingWorkout
   return (
     <Dialog open={openWorkoutDialog} onOpenChange={setOpenWorkoutDialog}>
@@ -107,7 +163,7 @@ export function WorkoutCreateModal() {
         <Button variant={"outline"}>הוספת אימון</Button>
       </DialogTrigger>
       <DialogContent className="flex h-auto w-11/12 flex-col">
-        {isLoading ? (
+        {displayLoadingDialog ? (
           <div className="flex min-h-[400px] items-center justify-center">
             <LoadingSpinner size={40} />
           </div>
@@ -127,14 +183,28 @@ export function WorkoutCreateModal() {
                   לכלול תרגילים מיתר המאמנים בעסק?
                 </Label>
               </div>
-              <form
-                onSubmit={(event) => {
-                  event.preventDefault();
-                  handleSubmit();
-                }}
-              >
-                <Button>צור אימון</Button>
-              </form>
+              <Form {...form}>
+                <form
+                  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                  onSubmit={form.handleSubmit(handleSubmit)}
+                  className="w-2/3 space-y-6"
+                >
+                  <FormField
+                    control={form.control}
+                    name="workoutName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>שם האימון</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <Button type="submit">צור אימון</Button>
+                </form>
+              </Form>
               <Label className="pt-5">
                 או{" "}
                 <Link href={"#"} className="text-blue-500">

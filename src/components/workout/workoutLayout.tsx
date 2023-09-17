@@ -16,8 +16,8 @@ export default function WorkoutLayout({ setters }: ChildComponentProps) {
         <Label className="text-sm">מבנה האימון:</Label>
       </div>
 
-      <div className="flex h-full w-full justify-center p-4">
-        <ScrollArea dir="rtl" className=" h-auto max-h-[15rem] w-full px-4">
+      <div className="flex h-full w-full justify-center px-4">
+        <ScrollArea dir="rtl" className=" h-auto max-h-[12rem] w-full px-4">
           {setters.map(({ setter, category }) => (
             <ExercisePerMuscle
               setExercisesPerMuscle={setter}
