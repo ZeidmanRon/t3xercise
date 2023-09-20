@@ -169,9 +169,6 @@ export function WorkoutCreateModal() {
           </div>
         ) : (
           <>
-            <DialogHeader className="">
-              <DialogTitle>יצירת אימון</DialogTitle>
-            </DialogHeader>
             <div className="flex w-full flex-1 flex-col items-center justify-center space-y-2">
               <WorkoutLayout setters={setters} />
               <div className="flex items-center">
@@ -202,7 +199,9 @@ export function WorkoutCreateModal() {
                       </FormItem>
                     )}
                   />
-                  <Button type="submit">צור אימון</Button>
+                  <div className="flex items-center justify-center">
+                    <Button type="submit">צור אימון</Button>
+                  </div>
                 </form>
               </Form>
               <Label className="pt-5">
