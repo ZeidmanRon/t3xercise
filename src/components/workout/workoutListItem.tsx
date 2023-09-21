@@ -4,10 +4,14 @@ import { Badge } from "../ui/badge";
 import { api } from "~/utils/api";
 import { Skeleton } from "~/components/ui/skeleton";
 import { WorkoutDeleteModal } from "./wokroutDeleteModal";
+import { Button } from "~/components/ui/button";
+import { EyeIcon } from "lucide-react";
+import { useRouter } from "next/router";
 type WorkoutProps = {
   workout: Workout;
 };
 export const WorkoutSkeleton: React.FC<WorkoutProps> = ({ workout }) => {
+  const router = useRouter();
   const { data, isLoading } = api.workouts.getWorkoutById.useQuery({
     workoutId: workout.id,
   });
@@ -61,6 +65,16 @@ export const WorkoutSkeleton: React.FC<WorkoutProps> = ({ workout }) => {
         </div>
         <div className="min-w-max">
           {/* <WorkoutEditModal workout={workout} />*/}
+          <Button
+            onClick={() => {
+              void router.push(`workouts/${workout.id}`);
+            }}
+            className=" rounded-full text-[0.6rem]"
+            size={"sm"}
+            variant={"ghost"}
+          >
+            <EyeIcon size={16} />
+          </Button>
           <WorkoutDeleteModal workoutId={workout.id} />
         </div>
       </div>
