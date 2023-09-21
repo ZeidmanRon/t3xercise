@@ -22,6 +22,21 @@ export const exercisesRouter = createTRPCRouter({
     });
     return exercises;
   }),
+  getExercises: privateProcedure
+    .input(z.array(z.string()))
+    .mutation(async ({ ctx, input }) => {
+      const exercises: Exercise[] = await ctx.prisma.exercise.findMany({
+        where: {
+          id: {
+            in: input,
+          },
+        },
+        orderBy: {
+          category: "asc",
+        },
+      });
+      return exercises;
+    }),
 
   create: privateProcedure
     .input(
