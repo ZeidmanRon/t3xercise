@@ -133,4 +133,48 @@ export const workoutsRouter = createTRPCRouter({
         throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
       }
     }),
+  removeExerciseFromWorkout: privateProcedure
+    .input(
+      z.object({
+        workoutId: z.string(),
+        exerciseId: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { success, reset } = await rateLimit.limit(ctx.currentUser.id);
+      if (!success) {
+        calculateTimeLeftForLimit(reset);
+      }
+      try {
+        const { workoutId, exerciseId } = input;
+        await ctx.prisma.exercisesOnWorkouts.deleteMany({
+          where: { workoutId: workoutId, exerciseId: exerciseId },
+        });
+      } catch (err) {
+        console.log("at @remove_exercise_from_workout error:", err);
+        throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+      }
+    }),
+  addExerciseToWorkout: privateProcedure
+    .input(
+      z.object({
+        workoutId: z.string(),
+        exerciseId: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { success, reset } = await rateLimit.limit(ctx.currentUser.id);
+      if (!success) {
+        calculateTimeLeftForLimit(reset);
+      }
+      try {
+        const { workoutId, exerciseId } = input;
+        await ctx.prisma.exercisesOnWorkouts.create({
+          data: { exerciseId: exerciseId, workoutId: workoutId },
+        });
+      } catch (err) {
+        console.log("at @remove_exercise_from_workout error:", err);
+        throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+      }
+    }),
 });
