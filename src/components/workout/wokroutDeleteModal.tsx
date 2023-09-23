@@ -50,7 +50,7 @@ export function WorkoutDeleteModal({ workoutId }: editWorkoutModalProps) {
       </DialogTrigger>
       <DialogContent className="flex h-auto w-3/4 flex-col items-center justify-center">
         <DialogHeader className="h-fit">
-          <DialogTitle>{isAlert ? "שגיאה" : "למחוק את התרגיל?"}</DialogTitle>
+          <DialogTitle>{isAlert ? "שגיאה" : "למחוק את האימון?"}</DialogTitle>
         </DialogHeader>
         {isAlert ? (
           <RateLimitAlert
@@ -59,7 +59,7 @@ export function WorkoutDeleteModal({ workoutId }: editWorkoutModalProps) {
             setAlert={setAlert}
           />
         ) : isDeleting ? (
-          <LoadingSpinner />
+          <LoadingSpinner size={40} />
         ) : (
           <Button
             variant={"destructive"}

@@ -4,7 +4,7 @@ import { api } from "~/utils/api";
 import PageNotFound from "../404";
 import { useEffect } from "react";
 import Layout from "~/components/layout/layout";
-import { ExerciseList } from "~/components/exercise/exerciseList";
+import { WorkoutExerciseList } from "~/components/workoutExercises/workoutExerciseList";
 
 export default function WorkoutPage() {
   const router = useRouter();
@@ -45,12 +45,15 @@ export default function WorkoutPage() {
       <div className="flex items-center">
         <div className="flex w-full flex-col p-4">
           <div className="flex w-full justify-center">
-            <h1 className="w-auto rounded-xl border p-1 text-center text-2xl font-normal">
-              דף אימון - {workout.title}
+            <h1 className="w-auto border-b-2 p-1 text-center text-2xl font-normal">
+              {workout.title}
             </h1>
           </div>
-          <h1 className="-mb-1 font-semibold"> תרגילים:</h1>
-          <ExerciseList exercises={exercisesOfWorkout} />
+          <h1 className="font-semibold"> תרגילים:</h1>
+          <WorkoutExerciseList
+            workoutId={router.query.workoutId as string}
+            exercises={exercisesOfWorkout}
+          />
         </div>
       </div>
     </Layout>
