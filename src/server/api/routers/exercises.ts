@@ -9,19 +9,30 @@ import { TRPCError } from "@trpc/server";
 import { type Exercise } from "@prisma/client";
 
 export const exercisesRouter = createTRPCRouter({
-  getAllById: privateProcedure.query(async ({ ctx }) => {
-    const { success, reset } = await rateLimit.limit(ctx.currentUser.id);
-    if (!success) {
-      calculateTimeLeftForLimit(reset);
-    }
-    const exercises = await ctx.prisma.exercise.findMany({
-      where: { authorId: ctx.currentUser.id },
-      orderBy: {
-        updatedAt: "desc",
-      },
-    });
-    return exercises;
-  }),
+  getAllById: privateProcedure
+    .input(z.object({ category: z.string().nullable() }))
+    .query(async ({ ctx, input }) => {
+      const { success, reset } = await rateLimit.limit(ctx.currentUser.id);
+      if (!success) {
+        calculateTimeLeftForLimit(reset);
+      }
+      const { category } = input;
+
+      const exercises = category
+        ? await ctx.prisma.exercise.findMany({
+            where: { authorId: ctx.currentUser.id, category: category },
+            orderBy: {
+              updatedAt: "desc",
+            },
+          })
+        : await ctx.prisma.exercise.findMany({
+            where: { authorId: ctx.currentUser.id },
+            orderBy: {
+              updatedAt: "desc",
+            },
+          });
+      return exercises;
+    }),
   getExercises: privateProcedure
     .input(z.array(z.string()))
     .mutation(async ({ ctx, input }) => {
