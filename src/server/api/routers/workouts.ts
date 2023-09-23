@@ -169,6 +169,10 @@ export const workoutsRouter = createTRPCRouter({
       }
       try {
         const { workoutId, exerciseId } = input;
+        const exercise = await ctx.prisma.exercise.findUnique({
+          where: { id: exerciseId },
+        });
+        if (!exercise) throw new TRPCError({ code: "NOT_FOUND" });
         await ctx.prisma.exercisesOnWorkouts.create({
           data: { exerciseId: exerciseId, workoutId: workoutId },
         });

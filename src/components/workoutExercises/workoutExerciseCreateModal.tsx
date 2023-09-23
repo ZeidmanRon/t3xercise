@@ -7,18 +7,17 @@ import {
   DialogTrigger,
 } from "~/components/ui/dialog";
 import { useState } from "react";
-import { api } from "~/utils/api";
+import { WorkoutExerciseForm } from "../workout/workoutExerciseForm";
 
-export function WorkoutExerciseCreateModal() {
+interface WorkoutExerciseCreateModal {
+  workoutId: string;
+  exercisesId: string[];
+}
+export function WorkoutExerciseCreateModal({
+  workoutId,
+  exercisesId,
+}: WorkoutExerciseCreateModal) {
   const [openModal, setOpenModal] = useState(false);
-  const utils = api.useContext();
-  const { mutate: addExercise, isLoading: isAddingExercise } =
-    api.workouts.addExerciseToWorkout.useMutation({
-      async onSuccess() {
-        await utils.exercises.getAllById.invalidate();
-        setOpenModal(false);
-      },
-    });
 
   return (
     <Dialog open={openModal} onOpenChange={setOpenModal}>
@@ -27,10 +26,15 @@ export function WorkoutExerciseCreateModal() {
           הוספת תרגיל
         </Button>
       </DialogTrigger>
-      <DialogContent className="flex h-auto min-h-[400px] w-11/12 flex-col">
+      <DialogContent className="top-60 flex h-auto w-11/12 flex-col">
         <DialogHeader className="h-fit">
           <DialogTitle>הוספת תרגיל לאימון</DialogTitle>
         </DialogHeader>
+        <WorkoutExerciseForm
+          workoutId={workoutId}
+          setOpenModal={setOpenModal}
+          exercisesId={exercisesId}
+        />
       </DialogContent>
     </Dialog>
   );

@@ -14,7 +14,7 @@ export default function HomePage() {
     isError,
   } = api.workouts.getMostUpdated.useQuery();
 
-  if (workoutsLoading) return <LoadingPage />;
+  if (workoutsLoading || !data) return <LoadingPage />;
 
   return (
     <Layout>

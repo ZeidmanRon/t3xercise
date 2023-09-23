@@ -31,7 +31,7 @@ export function ExerciseDeleteModal({ exerciseId }: editExerciseModalProps) {
         console.log(opts.message, opts.data!.code);
       },
       async onSuccess() {
-        await utils.exercises.getAllById.invalidate();
+        await utils.exercises.getAll.invalidate();
         setOpen(false);
       },
     });
@@ -58,7 +58,7 @@ export function ExerciseDeleteModal({ exerciseId }: editExerciseModalProps) {
             setAlert={setAlert}
           />
         ) : isDeleting ? (
-          <LoadingSpinner size={40}/>
+          <LoadingSpinner size={40} />
         ) : (
           <Button
             variant={"destructive"}

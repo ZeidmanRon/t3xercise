@@ -5,6 +5,7 @@ import PageNotFound from "../404";
 import { useEffect } from "react";
 import Layout from "~/components/layout/layout";
 import { WorkoutExerciseList } from "~/components/workoutExercises/workoutExerciseList";
+import { Label } from "~/components/ui/label";
 
 export default function WorkoutPage() {
   const router = useRouter();
@@ -49,7 +50,7 @@ export default function WorkoutPage() {
               {workout.title}
             </h1>
           </div>
-          <h1 className="font-semibold"> תרגילים:</h1>
+          <Label className="p-1 font-semibold"> תרגילים:</Label>
           <WorkoutExerciseList
             workoutId={router.query.workoutId as string}
             exercises={exercisesOfWorkout}

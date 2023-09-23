@@ -9,28 +9,34 @@ import { TRPCError } from "@trpc/server";
 import { type Exercise } from "@prisma/client";
 
 export const exercisesRouter = createTRPCRouter({
-  getAllById: privateProcedure
-    .input(z.object({ category: z.string().nullable() }))
-    .query(async ({ ctx, input }) => {
+  getAll: privateProcedure.query(async ({ ctx }) => {
+    const { success, reset } = await rateLimit.limit(ctx.currentUser.id);
+    if (!success) {
+      calculateTimeLeftForLimit(reset);
+    }
+
+    const exercises = await ctx.prisma.exercise.findMany({
+      where: { authorId: ctx.currentUser.id },
+      orderBy: {
+        updatedAt: "desc",
+      },
+    });
+    return exercises;
+  }),
+  getAllOfCategory: privateProcedure
+    .input(z.string())
+    .mutation(async ({ ctx, input }) => {
       const { success, reset } = await rateLimit.limit(ctx.currentUser.id);
       if (!success) {
         calculateTimeLeftForLimit(reset);
       }
-      const { category } = input;
 
-      const exercises = category
-        ? await ctx.prisma.exercise.findMany({
-            where: { authorId: ctx.currentUser.id, category: category },
-            orderBy: {
-              updatedAt: "desc",
-            },
-          })
-        : await ctx.prisma.exercise.findMany({
-            where: { authorId: ctx.currentUser.id },
-            orderBy: {
-              updatedAt: "desc",
-            },
-          });
+      const exercises = await ctx.prisma.exercise.findMany({
+        where: { authorId: ctx.currentUser.id, category: input },
+        orderBy: {
+          name: "asc",
+        },
+      });
       return exercises;
     }),
   getExercises: privateProcedure

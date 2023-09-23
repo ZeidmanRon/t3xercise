@@ -10,8 +10,7 @@ export default function PageNotFound({
   message,
   secondMessage,
 }: PageNotFoundProps) {
-  const { data, isLoading: exercisesLoading } =
-    api.exercises.getAllById.useQuery();
+  const { data, isLoading: exercisesLoading } = api.exercises.getAll.useQuery();
 
   if (exercisesLoading || !data) return <LoadingPage />;
 
