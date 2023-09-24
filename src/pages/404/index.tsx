@@ -1,16 +1,16 @@
 import Layout from "~/components/layout/layout";
-import { ExerciseList } from "~/components/exercise/exerciseList";
 import { api } from "~/utils/api";
-import { ExerciseCreateModal } from "~/components/exercise/exerciseCreateModal";
 import LoadingPage from "~/components/layout/loading";
 import { Label } from "~/components/ui/label";
-import { HomeIcon } from "lucide-react";
-import Link from "next/link";
-import { Button } from "~/components/ui/button";
-
-export default function Exercises() {
-  const { data, isLoading: exercisesLoading } =
-    api.exercises.getAllById.useQuery();
+interface PageNotFoundProps {
+  message?: string;
+  secondMessage?: string;
+}
+export default function PageNotFound({
+  message,
+  secondMessage,
+}: PageNotFoundProps) {
+  const { data, isLoading: exercisesLoading } = api.exercises.getAll.useQuery();
 
   if (exercisesLoading || !data) return <LoadingPage />;
 
@@ -21,12 +21,17 @@ export default function Exercises() {
         className="flex flex-1 flex-col items-center justify-center"
       >
         <div className="flex w-full items-center justify-center p-4 text-center">
-          <Label className="mb-1 border-r border-gray-300 py-4 pr-5 text-4xl font-semibold ">
+          <Label className="mb-1 border-r border-gray-300 py-5 pr-5 text-4xl font-semibold ">
             404
           </Label>
-          <Label className="text-md mb-1 py-5 pl-5 font-normal">
-            This page could not be found
-          </Label>
+          <div className="flex flex-col space-y-1">
+            <Label className="text-md pl-5 font-normal">
+              {message ? message : "This page could not be found\n"}
+            </Label>
+            <Label className="text-md pl-5 font-normal">
+              {secondMessage ?? ""}
+            </Label>
+          </div>
         </div>
       </div>
     </Layout>

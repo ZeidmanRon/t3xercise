@@ -5,8 +5,7 @@ import { ExerciseCreateModal } from "~/components/exercise/exerciseCreateModal";
 import LoadingPage from "~/components/layout/loading";
 
 export default function Exercises() {
-  const { data, isLoading: exercisesLoading } =
-    api.exercises.getAllById.useQuery();
+  const { data, isLoading: exercisesLoading } = api.exercises.getAll.useQuery();
 
   if (exercisesLoading || !data) return <LoadingPage />;
 

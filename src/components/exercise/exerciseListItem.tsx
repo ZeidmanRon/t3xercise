@@ -3,19 +3,20 @@ import React from "react"; // we need this to make JSX compile
 import { ExerciseEditModal } from "./exerciseEditModal";
 import { ExerciseDeleteModal } from "./exerciseDeleteModal";
 import { Badge } from "~/components/ui/badge";
+import { ScrollArea } from "~/components/ui/scroll-area";
 
 type ExerciseProps = {
   exercise: Exercise;
 };
 const english = /^[A-Za-z0-9 ]*$/;
 export const ExerciseSkeleton = ({ exercise }: ExerciseProps) => (
-  <div className="flex w-full flex-col rounded-lg px-2 pb-2">
+  <div className="flex h-auto w-full flex-col rounded-lg px-2 pb-2">
     <div className="top mb-1 flex w-full items-center justify-between">
       <div className="flex flex-col">
         <h2 className="text-md font-semibold">{exercise.name}</h2>
       </div>
       <div className="min-w-max">
-        <ExerciseEditModal exerciseId={exercise.id} />
+        <ExerciseEditModal exercise={exercise} />
         <ExerciseDeleteModal exerciseId={exercise.id} />
       </div>
     </div>
@@ -34,9 +35,8 @@ export const ExerciseSkeleton = ({ exercise }: ExerciseProps) => (
           : `@${exercise.authorName}`}
       </p>
     </div>
-
-    <div className="max-h-12 min-h-[2rem] overflow-y-auto">
+    <ScrollArea dir="rtl" className="max-h-12 min-h-[1rem] overflow-y-auto">
       <p className="text-xs text-gray-400">{exercise.desc}</p>
-    </div>
+    </ScrollArea>
   </div>
 );

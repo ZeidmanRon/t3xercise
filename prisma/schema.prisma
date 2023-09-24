@@ -28,6 +28,7 @@ model Exercise {
     category            String
     authorId            String
     authorName          String
+    businessId          String?
     updatedAt           DateTime              @updatedAt
     ExercisesOnWorkouts ExercisesOnWorkouts[]
 

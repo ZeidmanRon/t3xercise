@@ -29,7 +29,8 @@ import {
   PopoverTrigger,
 } from "~/components/ui/popover";
 import { LoadingSpinner } from "../layout/loading";
-import { type Dispatch, type SetStateAction } from "react";
+import { useState, type Dispatch, type SetStateAction } from "react";
+import { type Exercise } from "@prisma/client";
 
 export const FormSchema = z.object({
   name: z
@@ -51,7 +52,7 @@ export const FormSchema = z.object({
   }),
 });
 
-const muscleGroups = [
+export const muscleGroups = [
   { label: "ישבן", value: "ישבן" },
   { label: "רגליים", value: "רגליים" },
   { label: "גב", value: "גב" },
@@ -60,40 +61,43 @@ const muscleGroups = [
   { label: "כתפיים", value: "כתפיים" },
   { label: "ידיים", value: "ידיים" },
   { label: "אירובי", value: "אירובי" },
-] as const;
+];
 
 type exerciseFormProps = {
   updateForm: boolean;
-  exerciseId?: string;
-  setOpen: Dispatch<SetStateAction<boolean>>;
+  exercise?: Exercise;
+  setOpenExerciseForm: Dispatch<SetStateAction<boolean>>;
 };
 
 export function ExerciseForm({
   updateForm,
-  exerciseId,
-  setOpen,
+  exercise,
+  setOpenExerciseForm,
 }: exerciseFormProps) {
   const utils = api.useContext();
   const { mutate: createExercise, isLoading: isCreatingExercise } =
     api.exercises.create.useMutation({
       async onSuccess() {
-        await utils.exercises.getAllById.invalidate();
-        setOpen(false);
+        await utils.exercises.getAll.invalidate();
+        setOpenExerciseForm(false);
       },
     });
   const { mutate: updateExercise, isLoading: isUpdatingExercise } =
     api.exercises.update.useMutation({
       async onSuccess() {
-        await utils.exercises.getAllById.invalidate();
-        setOpen(false);
+        await utils.exercises.getAll.invalidate();
+        setOpenExerciseForm(false);
       },
     });
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      name: "",
+      category: updateForm ? exercise!.category : "",
+      name: updateForm ? exercise!.name : "",
+      desc: updateForm ? exercise!.desc : "",
     },
   });
+  const [openMuscleGroup, setOpenMuscleGroup] = useState(false);
 
   function onSubmitCreate(data: z.infer<typeof FormSchema>) {
     createExercise({
@@ -105,7 +109,7 @@ export function ExerciseForm({
   }
   function onSubmitUpdate(data: z.infer<typeof FormSchema>) {
     updateExercise({
-      exerciseId: exerciseId!,
+      exerciseId: exercise!.id,
       name: data.name,
       category: data.category,
       desc: data.desc,
@@ -128,6 +132,61 @@ export function ExerciseForm({
         }
         className=" w-full space-y-4"
       >
+        <FormField
+          control={form.control}
+          name="category"
+          render={({ field }) => (
+            <FormItem className="flex flex-col">
+              <FormLabel>קבוצת שריר</FormLabel>
+              <Popover open={openMuscleGroup} onOpenChange={setOpenMuscleGroup}>
+                <PopoverTrigger asChild>
+                  <FormControl>
+                    <Button
+                      variant="outline"
+                      role="combobox"
+                      className={cn(
+                        "w-full justify-between",
+                        !field.value && "font-light text-muted-foreground"
+                      )}
+                    >
+                      {!field.value ? "בחר/י קבוצת שריר" : field.value}
+                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                    </Button>
+                  </FormControl>
+                </PopoverTrigger>
+                <PopoverContent className="w-full p-0">
+                  <Command>
+                    <CommandInput placeholder="חפש/י קבוצת שריר" />
+                    <CommandEmpty>לא קיימת קבוצת שריר זו</CommandEmpty>
+                    <CommandGroup>
+                      {muscleGroups.map((muscleGroup) => (
+                        <CommandItem
+                          value={muscleGroup.value}
+                          key={muscleGroup.label}
+                          onSelect={(currentValue) => {
+                            form.setValue("category", currentValue);
+                            setOpenMuscleGroup(false);
+                          }}
+                        >
+                          <Check
+                            className={cn(
+                              "mr-2 h-4 w-4",
+                              muscleGroup.value === field.value
+                                ? "opacity-100"
+                                : "opacity-0"
+                            )}
+                          />
+                          {muscleGroup.label}
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  </Command>
+                </PopoverContent>
+              </Popover>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <FormField
           control={form.control}
           name="name"
@@ -169,64 +228,7 @@ export function ExerciseForm({
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="category"
-          render={({ field }) => (
-            <FormItem className="flex flex-col">
-              <FormLabel>קבוצת שריר</FormLabel>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <FormControl>
-                    <Button
-                      variant="outline"
-                      role="combobox"
-                      className={cn(
-                        "w-full justify-between",
-                        !field.value && "font-light text-muted-foreground"
-                      )}
-                    >
-                      {field.value
-                        ? muscleGroups.find(
-                            (muscleGroup) => muscleGroup.value === field.value
-                          )?.label
-                        : "בחר/י קבוצת שריר"}
-                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                    </Button>
-                  </FormControl>
-                </PopoverTrigger>
-                <PopoverContent className="w-full p-0">
-                  <Command>
-                    <CommandInput placeholder="חפש/י קבוצת שריר" />
-                    <CommandEmpty>לא קיימת קבוצת שריר זו</CommandEmpty>
-                    <CommandGroup>
-                      {muscleGroups.map((muscleGroup) => (
-                        <CommandItem
-                          value={muscleGroup.label}
-                          key={muscleGroup.value}
-                          onSelect={() => {
-                            form.setValue("category", muscleGroup.value);
-                          }}
-                        >
-                          <Check
-                            className={cn(
-                              "mr-2 h-4 w-4",
-                              muscleGroup.value === field.value
-                                ? "opacity-100"
-                                : "opacity-0"
-                            )}
-                          />
-                          {muscleGroup.label}
-                        </CommandItem>
-                      ))}
-                    </CommandGroup>
-                  </Command>
-                </PopoverContent>
-              </Popover>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+
         <div className="flex w-full justify-center">
           <Button className="w-auto font-light" type="submit">
             יצירת תרגיל

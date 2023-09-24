@@ -6,13 +6,15 @@ import {
   rateLimit,
 } from "~/server/api/trpc";
 import { TRPCError } from "@trpc/server";
+import { type Exercise } from "@prisma/client";
 
 export const exercisesRouter = createTRPCRouter({
-  getAllById: privateProcedure.query(async ({ ctx }) => {
+  getAll: privateProcedure.query(async ({ ctx }) => {
     const { success, reset } = await rateLimit.limit(ctx.currentUser.id);
     if (!success) {
       calculateTimeLeftForLimit(reset);
     }
+
     const exercises = await ctx.prisma.exercise.findMany({
       where: { authorId: ctx.currentUser.id },
       orderBy: {
@@ -21,6 +23,37 @@ export const exercisesRouter = createTRPCRouter({
     });
     return exercises;
   }),
+  getAllOfCategory: privateProcedure
+    .input(z.string())
+    .mutation(async ({ ctx, input }) => {
+      const { success, reset } = await rateLimit.limit(ctx.currentUser.id);
+      if (!success) {
+        calculateTimeLeftForLimit(reset);
+      }
+
+      const exercises = await ctx.prisma.exercise.findMany({
+        where: { authorId: ctx.currentUser.id, category: input },
+        orderBy: {
+          name: "asc",
+        },
+      });
+      return exercises;
+    }),
+  getExercises: privateProcedure
+    .input(z.array(z.string()))
+    .mutation(async ({ ctx, input }) => {
+      const exercises: Exercise[] = await ctx.prisma.exercise.findMany({
+        where: {
+          id: {
+            in: input,
+          },
+        },
+        orderBy: {
+          category: "asc",
+        },
+      });
+      return exercises;
+    }),
 
   create: privateProcedure
     .input(
@@ -46,6 +79,7 @@ export const exercisesRouter = createTRPCRouter({
       });
       return exercise;
     }),
+
   update: privateProcedure
     .input(
       z.object({
@@ -73,6 +107,7 @@ export const exercisesRouter = createTRPCRouter({
       });
       return updatedExercise;
     }),
+
   delete: privateProcedure
     .input(
       z.object({
@@ -88,5 +123,99 @@ export const exercisesRouter = createTRPCRouter({
         where: { id: input.exerciseId },
       });
       return deletedExercise;
+    }),
+
+  getRandomExercises: privateProcedure
+    .input(
+      z.array(
+        z.object({
+          numberOfExercises: z.number(),
+          category: z.string(),
+        })
+      )
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { success, reset } = await rateLimit.limit(ctx.currentUser.id);
+      if (!success) {
+        calculateTimeLeftForLimit(reset);
+      }
+
+      const exercisePromises = input.map(
+        async ({ category, numberOfExercises }) => {
+          if (numberOfExercises > 0) {
+            const RandomExercises: Exercise[] = await ctx.prisma.$queryRaw`
+             SELECT * FROM Exercise
+             WHERE authorId = ${ctx.currentUser.id}
+             AND category = ${category}
+             ORDER BY RAND()
+             LIMIT ${numberOfExercises}`;
+
+            if (numberOfExercises > RandomExercises.length) {
+              throw new TRPCError({
+                code: "UNPROCESSABLE_CONTENT",
+                message: `אין מספיק תרגילי ${category}`,
+              });
+            }
+
+            return RandomExercises;
+          }
+          // Return an empty array for conditions not met
+          return [];
+        }
+      );
+
+      const ExerciseList: Exercise[] = (await Promise.all(exercisePromises))
+        .filter((exercises) => exercises.length > 0) // Filter out empty arrays
+        .flat();
+
+      console.log("outside", ExerciseList);
+      return ExerciseList;
+    }),
+
+  getRandomExercisesWithBusiness: privateProcedure
+    .input(
+      z.array(
+        z.object({
+          numberOfExercises: z.number(),
+          category: z.string(),
+        })
+      )
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { success, reset } = await rateLimit.limit(ctx.currentUser.id);
+      if (!success) {
+        calculateTimeLeftForLimit(reset);
+      }
+
+      const exercisePromises = input.map(
+        async ({ category, numberOfExercises }) => {
+          if (numberOfExercises > 0) {
+            const RandomExercises: Exercise[] = await ctx.prisma.$queryRaw`
+              SELECT * FROM Exercise
+              WHERE businessId = ${ctx.currentUser.publicMetadata.businessId}
+              AND category = ${category}
+              ORDER BY RAND()
+              LIMIT ${numberOfExercises}`;
+
+            if (numberOfExercises > RandomExercises.length) {
+              throw new TRPCError({
+                code: "UNPROCESSABLE_CONTENT",
+                message: `אין מספיק תרגילים מסוג: ${category}`,
+              });
+            }
+
+            return RandomExercises;
+          }
+          // Return an empty array for conditions not met
+          return [];
+        }
+      );
+
+      const ExerciseList: Exercise[] = (await Promise.all(exercisePromises))
+        .filter((exercises) => exercises.length > 0) // Filter out empty arrays
+        .flat();
+
+      console.log("outside", ExerciseList);
+      return ExerciseList;
     }),
 });

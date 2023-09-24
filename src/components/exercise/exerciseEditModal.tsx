@@ -9,13 +9,14 @@ import {
 import { ExerciseForm } from "./exerciseForm";
 import { EditIcon } from "lucide-react";
 import { useState } from "react";
+import { type Exercise } from "@prisma/client";
 
 type editExerciseModalProps = {
-  exerciseId: string;
+  exercise: Exercise;
 };
-export function ExerciseEditModal({ exerciseId }: editExerciseModalProps) {
-  const [open, setOpen] = useState(false);
 
+export function ExerciseEditModal({ exercise }: editExerciseModalProps) {
+  const [open, setOpen] = useState(false);
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -27,15 +28,15 @@ export function ExerciseEditModal({ exerciseId }: editExerciseModalProps) {
           <EditIcon size={16} />
         </Button>
       </DialogTrigger>
-      <DialogContent className="flex h-auto min-h-[400px] w-3/4 flex-col">
+      <DialogContent className="flex h-auto min-h-[400px] w-11/12 flex-col">
         <DialogHeader className="h-fit">
           <DialogTitle>עריכה</DialogTitle>
         </DialogHeader>
         <div className="flex-1">
           <ExerciseForm
-            setOpen={setOpen}
+            setOpenExerciseForm={setOpen}
             updateForm={true}
-            exerciseId={exerciseId}
+            exercise={exercise}
           />
         </div>
       </DialogContent>

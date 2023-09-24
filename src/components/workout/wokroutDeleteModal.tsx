@@ -12,18 +12,18 @@ import { api } from "~/utils/api";
 import { LoadingSpinner } from "../layout/loading";
 import RateLimitAlert from "../rateLimitAlert";
 
-type editExerciseModalProps = {
-  exerciseId: string;
+type editWorkoutModalProps = {
+  workoutId: string;
 };
-export function ExerciseDeleteModal({ exerciseId }: editExerciseModalProps) {
+export function WorkoutDeleteModal({ workoutId }: editWorkoutModalProps) {
   const [open, setOpen] = useState(false);
   const [isAlert, setAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [alertCode, setAlertCode] = useState("");
   const utils = api.useContext();
 
-  const { mutate: deleteExercise, isLoading: isDeleting } =
-    api.exercises.delete.useMutation({
+  const { mutate: deleteWorkout, isLoading: isDeleting } =
+    api.workouts.delete.useMutation({
       onError(opts) {
         setAlertCode(opts.data!.code);
         setAlertMessage(opts.message);
@@ -31,7 +31,8 @@ export function ExerciseDeleteModal({ exerciseId }: editExerciseModalProps) {
         console.log(opts.message, opts.data!.code);
       },
       async onSuccess() {
-        await utils.exercises.getAll.invalidate();
+        await utils.workouts.getAll.invalidate();
+        await utils.workouts.getMostUpdated.invalidate();
         setOpen(false);
       },
     });
@@ -44,12 +45,12 @@ export function ExerciseDeleteModal({ exerciseId }: editExerciseModalProps) {
           size={"sm"}
           variant={"ghost"}
         >
-          <TrashIcon size={24} />
+          <TrashIcon size={16} />
         </Button>
       </DialogTrigger>
       <DialogContent className="flex h-auto w-3/4 flex-col items-center justify-center">
         <DialogHeader className="h-fit">
-          <DialogTitle>{isAlert ? "שגיאה" : "למחוק את התרגיל?"}</DialogTitle>
+          <DialogTitle>{isAlert ? "שגיאה" : "למחוק את האימון?"}</DialogTitle>
         </DialogHeader>
         {isAlert ? (
           <RateLimitAlert
@@ -63,7 +64,7 @@ export function ExerciseDeleteModal({ exerciseId }: editExerciseModalProps) {
           <Button
             variant={"destructive"}
             onClick={() => {
-              deleteExercise({ exerciseId });
+              deleteWorkout({ workoutId: workoutId });
             }}
           >
             מחיקה
