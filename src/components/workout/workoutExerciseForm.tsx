@@ -28,6 +28,7 @@ import {
 } from "~/components/ui/popover";
 import { LoadingSpinner } from "../layout/loading";
 import { useState, type Dispatch, type SetStateAction, useEffect } from "react";
+import { useExercises } from "~/pages/workouts/[workoutId]";
 
 export const FormSchema = z.object({
   exerciseName: z.string({ required_error: "נא לבחור תרגיל" }),
@@ -50,15 +51,15 @@ export const muscleGroups = [
 
 type workoutExerciseFormProps = {
   workoutId: string;
-  exercisesId: string[];
   setOpenModal: Dispatch<SetStateAction<boolean>>;
 };
 
 export function WorkoutExerciseForm({
   workoutId,
-  exercisesId,
   setOpenModal,
 }: workoutExerciseFormProps) {
+  const workoutExercises = useExercises();
+
   const utils = api.useContext();
   const { mutate: addExercise, isLoading: isAddingExercise } =
     api.workouts.addExerciseToWorkout.useMutation({
@@ -76,16 +77,16 @@ export function WorkoutExerciseForm({
   const [openExerciseList, setOpenExerciseList] = useState(false);
   useEffect(() => {
     if (!exercisesOfCategory) return;
-    exercisesId.forEach((exercisesId) => {
+    workoutExercises.forEach((Exercise) => {
       const indexToRemove = exercisesOfCategory.findIndex(
-        (exercise) => exercise.id === exercisesId
+        (exercise) => exercise.id === Exercise.id
       );
 
       if (indexToRemove !== -1) {
         exercisesOfCategory.splice(indexToRemove, 1);
       }
     });
-  }, [exercisesId, exercisesOfCategory]);
+  }, [exercisesOfCategory, workoutExercises]);
 
   function onSubmitCreate(data: z.infer<typeof FormSchema>) {
     addExercise({

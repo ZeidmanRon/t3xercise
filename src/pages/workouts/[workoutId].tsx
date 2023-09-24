@@ -2,12 +2,26 @@ import { useRouter } from "next/router";
 import LoadingPage from "~/components/layout/loading";
 import { api } from "~/utils/api";
 import PageNotFound from "../404";
-import { useEffect } from "react";
 import Layout from "~/components/layout/layout";
 import { WorkoutExerciseList } from "~/components/workoutExercises/workoutExerciseList";
 import { Label } from "~/components/ui/label";
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { type Exercise } from "@prisma/client";
+
+const ExercisesContext = createContext({});
+
+export function useExercises() {
+  const exercises = useContext(ExercisesContext);
+
+  if (exercises === undefined) {
+    throw new Error("useExercises must be used within a ExercisesProvider");
+  }
+
+  return exercises as Exercise[]; // Assuming exercises is an array of Exercise
+}
 
 export default function WorkoutPage() {
+  const [workoutExercises, setWorkoutExercises] = useState([{}]); // Initial value is an empty array
   const router = useRouter();
   const {
     data: workout,
@@ -33,6 +47,11 @@ export default function WorkoutPage() {
     getExercises(exercisesIds);
   }, [getExercises, workout]);
 
+  useEffect(() => {
+    if (!exercisesOfWorkout) return;
+    setWorkoutExercises(exercisesOfWorkout);
+  }, [exercisesOfWorkout]);
+
   if (error) {
     const secondMessage = "the workout does not exist or it has been deleted";
     return (
@@ -51,10 +70,9 @@ export default function WorkoutPage() {
             </h1>
           </div>
           <Label className="p-1 font-semibold"> תרגילים:</Label>
-          <WorkoutExerciseList
-            workoutId={router.query.workoutId as string}
-            exercises={exercisesOfWorkout}
-          />
+          <ExercisesContext.Provider value={workoutExercises}>
+            <WorkoutExerciseList workoutId={router.query.workoutId as string} />
+          </ExercisesContext.Provider>
         </div>
       </div>
     </Layout>

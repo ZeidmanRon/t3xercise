@@ -11,11 +11,9 @@ import { WorkoutExerciseForm } from "../workout/workoutExerciseForm";
 
 interface WorkoutExerciseCreateModal {
   workoutId: string;
-  exercisesId: string[];
 }
 export function WorkoutExerciseCreateModal({
   workoutId,
-  exercisesId,
 }: WorkoutExerciseCreateModal) {
   const [openModal, setOpenModal] = useState(false);
 
@@ -33,7 +31,6 @@ export function WorkoutExerciseCreateModal({
         <WorkoutExerciseForm
           workoutId={workoutId}
           setOpenModal={setOpenModal}
-          exercisesId={exercisesId}
         />
       </DialogContent>
     </Dialog>
