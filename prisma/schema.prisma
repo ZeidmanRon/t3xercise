@@ -1,68 +1,65 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-datasource db {
-    provider     = "mysql"
-    url          = env("DATABASE_URL")
-    relationMode = "prisma"
+generator client {
+  provider = "prisma-client-js"
 }
 
-generator client {
-    provider = "prisma-client-js"
+datasource db {
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
 }
 
 model User {
-    id         String    @unique
-    fullName   String
-    email      String?
-    businessId String?
-    Business   Business? @relation(fields: [businessId], references: [id])
+  id         String    @unique
+  fullName   String
+  email      String?
+  businessId String?
+  Business   Business? @relation(fields: [businessId], references: [id])
 
-    @@index([businessId])
+  @@index([businessId])
 }
 
 model Exercise {
-    id                  String                @id @default(cuid())
-    name                String
-    desc                String
-    category            String
-    authorId            String
-    authorName          String
-    businessId          String?
-    updatedAt           DateTime              @updatedAt
-    ExercisesOnWorkouts ExercisesOnWorkouts[]
+  id                  String                @id @default(cuid())
+  name                String
+  desc                String
+  category            String
+  authorId            String
+  authorName          String
+  updatedAt           DateTime              @updatedAt
+  businessId          String?
+  ExercisesOnWorkouts ExercisesOnWorkouts[]
 
-    @@index([authorId])
+  @@index([authorId])
 }
 
 model Workout {
-    id                  String                @id @default(cuid())
-    title               String
-    authorId            String
-    authorName          String
-    updatedAt           DateTime              @updatedAt
-    ExercisesOnWorkouts ExercisesOnWorkouts[]
+  id                  String                @id @default(cuid())
+  title               String
+  authorId            String
+  authorName          String
+  updatedAt           DateTime              @updatedAt
+  ExercisesOnWorkouts ExercisesOnWorkouts[]
 
-    @@index([authorId])
+  @@index([authorId])
 }
 
 model ExercisesOnWorkouts {
-    exercise   Exercise @relation(fields: [exerciseId], references: [id])
-    exerciseId String
-    workout    Workout  @relation(fields: [workoutId], references: [id])
-    workoutId  String
+  exerciseId String
+  workoutId  String
+  exercise   Exercise @relation(fields: [exerciseId], references: [id])
+  workout    Workout  @relation(fields: [workoutId], references: [id])
 
-    @@id([exerciseId, workoutId])
-    @@index([workoutId])
-    @@index([exerciseId])
+  @@id([exerciseId, workoutId])
+  @@index([workoutId])
+  @@index([exerciseId])
 }
 
 model Business {
-    id        String   @id @default(cuid())
-    name      String
-    ownerId   String
-    users     User[]
-    createdAt DateTime @default(now())
+  id        String   @id @default(cuid())
+  name      String
+  ownerId   String
+  createdAt DateTime @default(now())
+  users     User[]
 
-    @@index([ownerId])
+  @@index([ownerId])
 }

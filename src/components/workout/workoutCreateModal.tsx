@@ -156,14 +156,14 @@ export function WorkoutCreateModal() {
       <DialogTrigger asChild>
         <Button variant={"outline"}>הוספת אימון</Button>
       </DialogTrigger>
-      <DialogContent className="flex h-auto w-11/12 flex-col">
+      <DialogContent className="top-72 flex h-auto w-11/12 flex-col">
         {displayLoadingDialog ? (
           <div className="flex min-h-[400px] items-center justify-center">
             <LoadingSpinner size={40} />
           </div>
         ) : (
           <>
-            <div className="flex w-full flex-1 flex-col items-center justify-center space-y-2">
+            <div className="flex w-full flex-1 flex-col items-center justify-center space-y-2 pt-3">
               <WorkoutLayout setters={setters} />
               <div className="flex items-center">
                 <Switch dir="ltr" id="include-business-exercises" />
@@ -178,7 +178,7 @@ export function WorkoutCreateModal() {
                 <form
                   // eslint-disable-next-line @typescript-eslint/no-misused-promises
                   onSubmit={form.handleSubmit(handleSubmit)}
-                  className="w-2/3 space-y-6"
+                  className="w-2/3 space-y-1"
                 >
                   <FormField
                     control={form.control}
