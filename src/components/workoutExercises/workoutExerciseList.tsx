@@ -2,11 +2,11 @@ import React from "react"; // we need this to make JSX compile
 import { WorkoutExerciseListItem } from "./workoutExerciseListItem";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { Separator } from "~/components/ui/separator";
-import { WorkoutExerciseCreateModal } from "./workoutExerciseCreateModal";
 import { useExercises } from "~/pages/workouts/[workoutId]";
 
 type ExerciseProps = {
   workoutId: string;
+  set: number;
 };
 
 export function WorkoutExerciseList({ workoutId }: ExerciseProps) {
@@ -25,9 +25,6 @@ export function WorkoutExerciseList({ workoutId }: ExerciseProps) {
           </div>
         ))}
       </ScrollArea>
-      <div className="flex w-full justify-center p-2">
-        <WorkoutExerciseCreateModal workoutId={workoutId} />
-      </div>
     </div>
   );
 }

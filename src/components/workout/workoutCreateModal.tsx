@@ -1,14 +1,11 @@
 import { Button } from "~/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "~/components/ui/dialog";
 import { useEffect, useState } from "react";
-import { Switch } from "~/components/ui/switch";
 import { Label } from "~/components/ui/label";
-import WorkoutLayout from "./workoutLayout";
 import Link from "next/link";
 import { api } from "~/utils/api";
 import { LoadingSpinner } from "../layout/loading";
 import Swal from "sweetalert2";
-import { type Exercise } from "@prisma/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -21,11 +18,21 @@ import {
   FormMessage,
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "~/components/ui/popover";
+import { Check, ChevronsUpDown } from "lucide-react";
+import { cn } from "~/lib/utils";
+
+import { Command, CommandGroup, CommandItem } from "~/components/ui/command";
 
 export function WorkoutCreateModal() {
   const utils = api.useContext();
   const [openWorkoutDialog, setOpenWorkoutDialog] = useState(false);
   const [displayLoadingDialog, setDisplayLoadingDialog] = useState(false);
+  const [openSupersets, setOpenSupersets] = useState(false);
 
   const {
     mutate: createWorkout,
@@ -71,6 +78,7 @@ export function WorkoutCreateModal() {
   function handleSubmit(data: z.infer<typeof FormSchema>) {
     createWorkout({
       title: data.workoutName,
+      sets: parseInt(data.sets),
     }); //reset dialog variables
     form.resetField("workoutName");
   }
@@ -79,6 +87,7 @@ export function WorkoutCreateModal() {
     workoutName: z.string({ required_error: "חסר" }).min(3, {
       message: "לפחות 3 אותיות",
     }),
+    sets: z.string({ required_error: "חסר" }),
   });
 
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -90,7 +99,7 @@ export function WorkoutCreateModal() {
       <DialogTrigger asChild>
         <Button variant={"outline"}>הוספת אימון</Button>
       </DialogTrigger>
-      <DialogContent className="top-72 flex h-auto w-11/12 flex-col">
+      <DialogContent className="top-52 flex h-auto w-11/12 flex-col">
         {displayLoadingDialog ? (
           <div className="flex min-h-[180px] items-center justify-center py-10">
             <LoadingSpinner size={40} />
@@ -112,6 +121,63 @@ export function WorkoutCreateModal() {
                       <FormControl>
                         <Input autoComplete="off" {...field} />
                       </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="sets"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col">
+                      <FormLabel>סופרסטים</FormLabel>
+                      <Popover
+                        open={openSupersets}
+                        onOpenChange={setOpenSupersets}
+                      >
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button
+                              variant="outline"
+                              role="combobox"
+                              className={cn(
+                                "w-full justify-between",
+                                !field.value &&
+                                  "font-light text-muted-foreground"
+                              )}
+                            >
+                              {field.value ?? "בחר/י מספר סופרסטים"}
+                              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-full p-0">
+                          <Command>
+                            <CommandGroup>
+                              {[1, 2, 3, 4, 5].map((number) => (
+                                <CommandItem
+                                  value={`${number}`}
+                                  key={number}
+                                  onSelect={(currentValue) => {
+                                    form.setValue("sets", currentValue);
+                                    setOpenSupersets(false);
+                                  }}
+                                >
+                                  <Check
+                                    className={cn(
+                                      "mr-2 h-4 w-4",
+                                      `${number}` === field.value
+                                        ? "opacity-100"
+                                        : "opacity-0"
+                                    )}
+                                  />
+                                  {number}
+                                </CommandItem>
+                              ))}
+                            </CommandGroup>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
                       <FormMessage />
                     </FormItem>
                   )}

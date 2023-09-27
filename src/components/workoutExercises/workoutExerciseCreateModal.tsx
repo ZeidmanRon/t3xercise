@@ -7,7 +7,7 @@ import {
   DialogTrigger,
 } from "~/components/ui/dialog";
 import { useState } from "react";
-import { WorkoutExerciseForm } from "../workout/workoutExerciseForm";
+import { WorkoutExerciseForm } from "./workoutExerciseForm";
 
 interface WorkoutExerciseCreateModal {
   workoutId: string;

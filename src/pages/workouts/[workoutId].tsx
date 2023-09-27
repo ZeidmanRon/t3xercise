@@ -7,8 +7,9 @@ import { WorkoutExerciseList } from "~/components/workoutExercises/workoutExerci
 import { Label } from "~/components/ui/label";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { type Exercise } from "@prisma/client";
+import { WorkoutExerciseCreateModal } from "~/components/workoutExercises/workoutExerciseCreateModal";
 
-const ExercisesContext = createContext({});
+const ExercisesContext = createContext([{}]);
 
 export function useExercises() {
   const exercises = useContext(ExercisesContext);
@@ -21,23 +22,26 @@ export function useExercises() {
 }
 
 export default function WorkoutPage() {
-  const [workoutExercises, setWorkoutExercises] = useState([{}]); // Initial value is an empty array
   const router = useRouter();
+  const [workoutId, setWorkoutId] = useState("");
+  const [workoutExercises, setWorkoutExercises] = useState([{}]);
+
   const {
     data: workout,
     error,
     refetch,
   } = api.workouts.getWorkoutById.useQuery({
-    workoutId: router.query.workoutId as string, // Ensure it's cast to string
+    workoutId: workoutId,
   });
   const { mutate: getExercises, data: exercisesOfWorkout } =
     api.exercises.getExercises.useMutation();
 
   useEffect(() => {
     if (router.isReady) {
+      setWorkoutId(router.query.workoutId as string);
       refetch;
     }
-  }, [refetch, router.isReady]);
+  }, [router.isReady]);
 
   useEffect(() => {
     if (!workout) return;
@@ -58,21 +62,24 @@ export default function WorkoutPage() {
       <PageNotFound message={error?.data?.code} secondMessage={secondMessage} />
     );
   }
-  if (!workout || !exercisesOfWorkout) return <LoadingPage />;
+  if (!workout || !exercisesOfWorkout || !workoutId) return <LoadingPage />;
 
   return (
     <Layout>
-      <div className="flex items-center">
+      <div className="flex flex-col items-center">
         <div className="flex w-full flex-col p-4">
           <div className="flex w-full justify-center">
             <h1 className="w-auto border-b-2 p-1 text-center text-2xl font-normal">
               {workout.title}
             </h1>
           </div>
-          <Label className="p-1 font-semibold"> תרגילים:</Label>
+          <Label className="p-1 font-semibold"> סטים:</Label>
           <ExercisesContext.Provider value={workoutExercises}>
-            <WorkoutExerciseList workoutId={router.query.workoutId as string} />
+            <WorkoutExerciseList workoutId={workoutId} set={1} />
           </ExercisesContext.Provider>
+        </div>
+        <div className="flex w-full justify-center p-2">
+          <WorkoutExerciseCreateModal workoutId={workoutId} />
         </div>
       </div>
     </Layout>

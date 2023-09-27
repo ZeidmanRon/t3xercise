@@ -59,8 +59,10 @@ export function WorkoutExerciseForm({
   setOpenModal,
 }: workoutExerciseFormProps) {
   const workoutExercises = useExercises();
-
   const utils = api.useContext();
+  const [openMuscleGroup, setOpenMuscleGroup] = useState(false);
+  const [openExerciseList, setOpenExerciseList] = useState(false);
+
   const { mutate: addExercise, isLoading: isAddingExercise } =
     api.workouts.addExerciseToWorkout.useMutation({
       async onSuccess() {
@@ -68,15 +70,16 @@ export function WorkoutExerciseForm({
         setOpenModal(false);
       },
     });
+
   const { mutate: getExercises, data: exercisesOfCategory } =
     api.exercises.getAllOfCategory.useMutation({});
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   });
-  const [openMuscleGroup, setOpenMuscleGroup] = useState(false);
-  const [openExerciseList, setOpenExerciseList] = useState(false);
+
   useEffect(() => {
-    if (!exercisesOfCategory) return;
+    if (!exercisesOfCategory || workoutExercises.length === 0) return;
     workoutExercises.forEach((Exercise) => {
       const indexToRemove = exercisesOfCategory.findIndex(
         (exercise) => exercise.id === Exercise.id

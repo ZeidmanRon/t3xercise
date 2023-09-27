@@ -77,6 +77,7 @@ export const workoutsRouter = createTRPCRouter({
       z.object({
         // Exercise ID Array
         title: z.string(),
+        sets: z.number(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -84,10 +85,11 @@ export const workoutsRouter = createTRPCRouter({
       if (!success) {
         calculateTimeLeftForLimit(reset);
       }
-      const { title } = input;
+      const { title, sets } = input;
       const createdWorkout = await ctx.prisma.workout.create({
         data: {
           title: title,
+          sets: sets,
           authorId: ctx.currentUser.id,
           authorName: `${ctx.currentUser.firstName} ${ctx.currentUser.lastName}`,
         },
