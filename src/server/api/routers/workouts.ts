@@ -76,7 +76,6 @@ export const workoutsRouter = createTRPCRouter({
     .input(
       z.object({
         // Exercise ID Array
-        selectedExercisesIds: z.array(z.string()),
         title: z.string(),
       })
     )
@@ -85,7 +84,7 @@ export const workoutsRouter = createTRPCRouter({
       if (!success) {
         calculateTimeLeftForLimit(reset);
       }
-      const { selectedExercisesIds: selectedExerises, title } = input;
+      const { title } = input;
       const createdWorkout = await ctx.prisma.workout.create({
         data: {
           title: title,
@@ -93,21 +92,10 @@ export const workoutsRouter = createTRPCRouter({
           authorName: `${ctx.currentUser.firstName} ${ctx.currentUser.lastName}`,
         },
       });
-      const exerciseWorkoutRelationships = selectedExerises.map(
-        (exerciseId) => {
-          return {
-            exerciseId: exerciseId,
-            workoutId: createdWorkout.id, // Use the ID of the newly created workout
-          };
-        }
-      );
-
-      await ctx.prisma.exercisesOnWorkouts.createMany({
-        data: exerciseWorkoutRelationships,
-      });
 
       return createdWorkout;
     }),
+
   delete: privateProcedure
     .input(
       z.object({
