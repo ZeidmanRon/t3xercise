@@ -149,6 +149,7 @@ export const workoutsRouter = createTRPCRouter({
     .input(
       z.object({
         workoutId: z.string(),
+        set: z.number(),
         exerciseId: z.string(),
       })
     )
@@ -158,13 +159,13 @@ export const workoutsRouter = createTRPCRouter({
         calculateTimeLeftForLimit(reset);
       }
       try {
-        const { workoutId, exerciseId } = input;
+        const { workoutId, exerciseId, set } = input;
         const exerciseToAdd = await ctx.prisma.exercise.findUnique({
           where: { id: exerciseId },
         });
         if (!exerciseToAdd) throw new TRPCError({ code: "NOT_FOUND" });
         await ctx.prisma.exercisesOnWorkouts.create({
-          data: { exerciseId: exerciseId, workoutId: workoutId },
+          data: { exerciseId: exerciseId, workoutId: workoutId, set: set },
         });
         return exerciseToAdd;
       } catch (err) {

@@ -75,11 +75,11 @@ export default function WorkoutPage() {
           </div>
           <Label className="p-1 font-semibold"> סטים:</Label>
           <ExercisesContext.Provider value={workoutExercises}>
-            <WorkoutExerciseList workoutId={workoutId} set={1} />
+            <WorkoutExerciseList workout={workout} />
           </ExercisesContext.Provider>
         </div>
         <div className="flex w-full justify-center p-2">
-          <WorkoutExerciseCreateModal workoutId={workoutId} />
+          <WorkoutExerciseCreateModal workout={workout} />
         </div>
       </div>
     </Layout>
