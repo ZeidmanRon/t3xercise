@@ -75,10 +75,10 @@ export default function WorkoutPage() {
           </div>
           <ExercisesContext.Provider value={workoutExercises}>
             {[...Array(workout.sets).keys()].map((set) => (
-              <>
+              <div key={set + 1} className="p-3">
                 <Label className="p-1 font-semibold"> סט-{set + 1}:</Label>
                 <WorkoutExerciseList workout={workout} set={set + 1} />
-              </>
+              </div>
             ))}
           </ExercisesContext.Provider>
         </div>

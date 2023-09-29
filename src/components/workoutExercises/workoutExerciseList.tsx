@@ -40,15 +40,16 @@ export function WorkoutExerciseList({ workout, set }: ExerciseProps) {
     <div className="flex w-full flex-col justify-center">
       <ScrollArea
         dir="rtl"
-        className="h-auto max-h-96 w-full rounded-md border px-2"
+        className="max-h-40 min-h-[1rem] w-full overflow-y-auto rounded-md border px-2"
       >
         {exercisesOfSet.map((exercise, index) => (
           <div key={index} className="w-full">
             <WorkoutExerciseListItem
               workoutId={workout.id}
               exercise={exercise}
+              set={set}
             />
-            {index !== workoutExercises.length - 1 ? <Separator /> : ""}
+            {index !== exercisesOfSet.length - 1 ? <Separator /> : ""}
           </div>
         ))}
       </ScrollArea>
