@@ -38,6 +38,7 @@ model Workout {
   authorId            String
   authorName          String
   updatedAt           DateTime              @updatedAt
+  sets                Int
   ExercisesOnWorkouts ExercisesOnWorkouts[]
 
   @@index([authorId])
@@ -46,6 +47,7 @@ model Workout {
 model ExercisesOnWorkouts {
   exerciseId String
   workoutId  String
+  set        Int
   exercise   Exercise @relation(fields: [exerciseId], references: [id])
   workout    Workout  @relation(fields: [workoutId], references: [id])
 

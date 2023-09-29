@@ -1,7 +1,7 @@
 import { type AppType } from "next/app";
 import { api } from "~/utils/api";
 import "~/styles/globals.css";
-import { ClerkProvider } from "@clerk/nextjs";
+import { ClerkProvider, RedirectToSignUp, SignedOut } from "@clerk/nextjs";
 
 const MyApp: AppType = ({ Component, pageProps }) => {
   return (
@@ -10,12 +10,14 @@ const MyApp: AppType = ({ Component, pageProps }) => {
       appearance={{
         elements: {
           headerSubtitle: "hidden",
-          footer: "hidden",
         },
         layout: {},
       }}
     >
       <Component {...pageProps} />
+      <SignedOut>
+        <RedirectToSignUp />
+      </SignedOut>
     </ClerkProvider>
   );
 };

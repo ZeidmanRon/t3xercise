@@ -29,10 +29,12 @@ import {
 import { LoadingSpinner } from "../layout/loading";
 import { useState, type Dispatch, type SetStateAction, useEffect } from "react";
 import { useExercises } from "~/pages/workouts/[workoutId]";
+import { Exercise } from "@prisma/client";
 
 export const FormSchema = z.object({
   exerciseName: z.string({ required_error: "נא לבחור תרגיל" }),
   exerciseId: z.string(),
+  exerciseSet: z.number(),
   category: z.string({
     required_error: "נא לבחור קבוצת שריר",
   }),
@@ -51,16 +53,21 @@ export const muscleGroups = [
 
 type workoutExerciseFormProps = {
   workoutId: string;
+  sets: number;
   setOpenModal: Dispatch<SetStateAction<boolean>>;
 };
 
 export function WorkoutExerciseForm({
   workoutId,
+  sets,
   setOpenModal,
 }: workoutExerciseFormProps) {
   const workoutExercises = useExercises();
-
   const utils = api.useContext();
+  const [openMuscleGroup, setOpenMuscleGroup] = useState(false);
+  const [openExerciseList, setOpenExerciseList] = useState(false);
+  const [openSetList, setOpenSetList] = useState(false);
+
   const { mutate: addExercise, isLoading: isAddingExercise } =
     api.workouts.addExerciseToWorkout.useMutation({
       async onSuccess() {
@@ -68,15 +75,16 @@ export function WorkoutExerciseForm({
         setOpenModal(false);
       },
     });
+
   const { mutate: getExercises, data: exercisesOfCategory } =
     api.exercises.getAllOfCategory.useMutation({});
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   });
-  const [openMuscleGroup, setOpenMuscleGroup] = useState(false);
-  const [openExerciseList, setOpenExerciseList] = useState(false);
+
   useEffect(() => {
-    if (!exercisesOfCategory) return;
+    if (!exercisesOfCategory || workoutExercises.length === 0) return;
     workoutExercises.forEach((Exercise) => {
       const indexToRemove = exercisesOfCategory.findIndex(
         (exercise) => exercise.id === Exercise.id
@@ -91,6 +99,7 @@ export function WorkoutExerciseForm({
   function onSubmitCreate(data: z.infer<typeof FormSchema>) {
     addExercise({
       workoutId: workoutId,
+      set: data.exerciseSet,
       exerciseId: data.exerciseId,
     });
     form.reset();
@@ -163,73 +172,133 @@ export function WorkoutExerciseForm({
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="exerciseName"
-          render={({ field }) => (
-            <FormItem className="flex flex-col">
-              <FormLabel>תרגיל</FormLabel>
-              <Popover
-                open={openExerciseList}
-                onOpenChange={setOpenExerciseList}
-              >
-                <PopoverTrigger disabled={!exercisesOfCategory} asChild>
-                  <FormControl>
-                    <Button
-                      variant="outline"
-                      role="combobox"
-                      className={cn(
-                        "w-full justify-between",
-                        !field.value && "font-light text-muted-foreground"
-                      )}
-                    >
-                      {field.value ?? "בחר/י תרגיל"}
-                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                    </Button>
-                  </FormControl>
-                </PopoverTrigger>
-                <PopoverContent className="w-full p-0">
-                  <Command>
-                    <CommandInput
-                      placeholder={
-                        exercisesOfCategory?.length
-                          ? "חפש/י קבוצת שריר"
-                          : `לא נותרו תרגילי ${form.getValues("category")}`
-                      }
-                    />
-                    <CommandEmpty>לא קיים תרגיל עם שם זה</CommandEmpty>
-                    <CommandGroup>
-                      {!!exercisesOfCategory
-                        ? exercisesOfCategory.map((exercise) => (
+        <div className="flex w-full justify-center">
+          <FormField
+            control={form.control}
+            name="exerciseName"
+            render={({ field }) => (
+              <FormItem className="flex flex-col pl-4">
+                <FormLabel>תרגיל</FormLabel>
+                <Popover
+                  open={openExerciseList}
+                  onOpenChange={setOpenExerciseList}
+                >
+                  <PopoverTrigger disabled={!exercisesOfCategory} asChild>
+                    <FormControl>
+                      <Button
+                        variant="outline"
+                        role="combobox"
+                        className={cn(
+                          "w-full justify-between",
+                          !field.value && "font-light text-muted-foreground"
+                        )}
+                      >
+                        {field.value ?? "בחר/י תרגיל"}
+                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-full">
+                    <Command>
+                      <CommandInput
+                        placeholder={
+                          exercisesOfCategory?.length
+                            ? "חפש/י קבוצת שריר"
+                            : `לא נותרו תרגילי ${form.getValues("category")}`
+                        }
+                      />
+                      <CommandEmpty>לא קיים תרגיל עם שם זה</CommandEmpty>
+                      <CommandGroup>
+                        {!!exercisesOfCategory
+                          ? exercisesOfCategory.map((exercise) => (
+                              <CommandItem
+                                value={exercise.name}
+                                key={exercise.id}
+                                onSelect={(currentValue) => {
+                                  form.setValue("exerciseName", currentValue);
+                                  form.setValue("exerciseId", exercise.id);
+                                  setOpenExerciseList(false);
+                                }}
+                              >
+                                <Check
+                                  className={cn(
+                                    "mr-2 h-4 w-4",
+                                    exercise.id === field.value
+                                      ? "opacity-100"
+                                      : "opacity-0"
+                                  )}
+                                />
+                                {exercise.name}
+                              </CommandItem>
+                            ))
+                          : null}
+                      </CommandGroup>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="exerciseSet"
+            render={({ field }) => (
+              <FormItem className="flex min-w-[100px] flex-col pr-4">
+                <FormLabel>סט</FormLabel>
+                <Popover open={openSetList} onOpenChange={setOpenSetList}>
+                  <PopoverTrigger disabled={!exercisesOfCategory} asChild>
+                    <FormControl>
+                      <Button
+                        variant="outline"
+                        role="combobox"
+                        className={cn(
+                          "w-full justify-between",
+                          !field.value && "font-light text-muted-foreground"
+                        )}
+                      >
+                        {field.value ?? ""}
+                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-full">
+                    <Command>
+                      <CommandGroup>
+                        {[...Array(sets).keys()]
+                          .map((i) => i + 1)
+                          .map((number) => (
                             <CommandItem
-                              value={exercise.name}
-                              key={exercise.id}
+                              value={`${number}`}
+                              key={number}
                               onSelect={(currentValue) => {
-                                form.setValue("exerciseName", currentValue);
-                                form.setValue("exerciseId", exercise.id);
-                                setOpenExerciseList(false);
+                                form.setValue(
+                                  "exerciseSet",
+                                  parseInt(currentValue)
+                                );
+                                setOpenSetList(false);
                               }}
                             >
                               <Check
                                 className={cn(
                                   "mr-2 h-4 w-4",
-                                  exercise.id === field.value
+                                  number === field.value
                                     ? "opacity-100"
                                     : "opacity-0"
                                 )}
                               />
-                              {exercise.name}
+                              {number}
                             </CommandItem>
-                          ))
-                        : null}
-                    </CommandGroup>
-                  </Command>
-                </PopoverContent>
-              </Popover>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+                          ))}
+                      </CommandGroup>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
         <div className="flex w-full justify-center">
           <Button className="w-auto font-light" type="submit">
             יצירת תרגיל

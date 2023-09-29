@@ -76,8 +76,8 @@ export const workoutsRouter = createTRPCRouter({
     .input(
       z.object({
         // Exercise ID Array
-        selectedExercisesIds: z.array(z.string()),
         title: z.string(),
+        sets: z.number(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -85,29 +85,19 @@ export const workoutsRouter = createTRPCRouter({
       if (!success) {
         calculateTimeLeftForLimit(reset);
       }
-      const { selectedExercisesIds: selectedExerises, title } = input;
+      const { title, sets } = input;
       const createdWorkout = await ctx.prisma.workout.create({
         data: {
           title: title,
+          sets: sets,
           authorId: ctx.currentUser.id,
           authorName: `${ctx.currentUser.firstName} ${ctx.currentUser.lastName}`,
         },
       });
-      const exerciseWorkoutRelationships = selectedExerises.map(
-        (exerciseId) => {
-          return {
-            exerciseId: exerciseId,
-            workoutId: createdWorkout.id, // Use the ID of the newly created workout
-          };
-        }
-      );
-
-      await ctx.prisma.exercisesOnWorkouts.createMany({
-        data: exerciseWorkoutRelationships,
-      });
 
       return createdWorkout;
     }),
+
   delete: privateProcedure
     .input(
       z.object({
@@ -159,6 +149,7 @@ export const workoutsRouter = createTRPCRouter({
     .input(
       z.object({
         workoutId: z.string(),
+        set: z.number(),
         exerciseId: z.string(),
       })
     )
@@ -168,13 +159,13 @@ export const workoutsRouter = createTRPCRouter({
         calculateTimeLeftForLimit(reset);
       }
       try {
-        const { workoutId, exerciseId } = input;
+        const { workoutId, exerciseId, set } = input;
         const exerciseToAdd = await ctx.prisma.exercise.findUnique({
           where: { id: exerciseId },
         });
         if (!exerciseToAdd) throw new TRPCError({ code: "NOT_FOUND" });
         await ctx.prisma.exercisesOnWorkouts.create({
-          data: { exerciseId: exerciseId, workoutId: workoutId },
+          data: { exerciseId: exerciseId, workoutId: workoutId, set: set },
         });
         return exerciseToAdd;
       } catch (err) {

@@ -7,13 +7,14 @@ import {
   DialogTrigger,
 } from "~/components/ui/dialog";
 import { useState } from "react";
-import { WorkoutExerciseForm } from "../workout/workoutExerciseForm";
+import { WorkoutExerciseForm } from "./workoutExerciseForm";
+import { type Workout } from "@prisma/client";
 
 interface WorkoutExerciseCreateModal {
-  workoutId: string;
+  workout: Workout;
 }
 export function WorkoutExerciseCreateModal({
-  workoutId,
+  workout,
 }: WorkoutExerciseCreateModal) {
   const [openModal, setOpenModal] = useState(false);
 
@@ -29,7 +30,8 @@ export function WorkoutExerciseCreateModal({
           <DialogTitle>הוספת תרגיל לאימון</DialogTitle>
         </DialogHeader>
         <WorkoutExerciseForm
-          workoutId={workoutId}
+          workoutId={workout.id}
+          sets={workout.sets}
           setOpenModal={setOpenModal}
         />
       </DialogContent>

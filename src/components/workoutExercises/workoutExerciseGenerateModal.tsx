@@ -17,11 +17,13 @@ import Swal from "sweetalert2";
 type editExerciseModalProps = {
   exercise: Exercise;
   workoutId: string;
+  set: number;
 };
 
 export function WorkoutExerciseGenerateModal({
   exercise,
   workoutId,
+  set,
 }: editExerciseModalProps) {
   const workoutExercises = useExercises();
   const [openDialog, setOpenDialog] = useState(false);
@@ -83,7 +85,11 @@ export function WorkoutExerciseGenerateModal({
     const randomExercise = exercisesOfCategory[randomIndex];
 
     deleteExercise({ workoutId: workoutId, exerciseId: exercise.id });
-    addExercise({ exerciseId: randomExercise!.id, workoutId: workoutId });
+    addExercise({
+      exerciseId: randomExercise!.id,
+      workoutId: workoutId,
+      set: set,
+    });
   }
 
   return (
