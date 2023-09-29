@@ -28,7 +28,7 @@ export function ExerciseEditModal({ exercise }: editExerciseModalProps) {
           <EditIcon size={16} />
         </Button>
       </DialogTrigger>
-      <DialogContent className="flex h-auto min-h-[400px] w-11/12 flex-col">
+      <DialogContent className="top-60 flex h-auto min-h-[230px] w-11/12 flex-col">
         <DialogHeader className="h-fit">
           <DialogTitle>עריכה</DialogTitle>
         </DialogHeader>

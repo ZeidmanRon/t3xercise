@@ -13,7 +13,6 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "~/components/ui/form";
 import {
@@ -47,9 +46,11 @@ export const FormSchema = z.object({
       message: "הפירוט ארוך מדי",
     })
     .optional(),
-  category: z.string({
-    required_error: "נא לבחור קבוצת שריר",
-  }),
+  category: z
+    .string({
+      required_error: "נא לבחור קבוצת שריר",
+    })
+    .min(2, { message: "נא להזין קבוצת שריר" }),
 });
 
 export const muscleGroups = [
@@ -118,7 +119,7 @@ export function ExerciseForm({
   }
 
   return isCreatingExercise || isUpdatingExercise ? (
-    <div className="flex min-h-[400px] items-center justify-center">
+    <div className="flex min-h-[245px] items-center justify-center">
       <LoadingSpinner size={40} />
     </div>
   ) : (
@@ -130,14 +131,13 @@ export function ExerciseForm({
             ? form.handleSubmit(onSubmitUpdate)
             : form.handleSubmit(onSubmitCreate)
         }
-        className=" w-full space-y-4"
+        className="w-full  space-y-4"
       >
         <FormField
           control={form.control}
           name="category"
           render={({ field }) => (
             <FormItem className="flex flex-col">
-              <FormLabel>קבוצת שריר</FormLabel>
               <Popover open={openMuscleGroup} onOpenChange={setOpenMuscleGroup}>
                 <PopoverTrigger asChild>
                   <FormControl>
@@ -154,7 +154,7 @@ export function ExerciseForm({
                     </Button>
                   </FormControl>
                 </PopoverTrigger>
-                <PopoverContent className="w-full p-0">
+                <PopoverContent className=" w-full p-0">
                   <Command>
                     <CommandInput placeholder="חפש/י קבוצת שריר" />
                     <CommandEmpty>לא קיימת קבוצת שריר זו</CommandEmpty>
@@ -192,7 +192,6 @@ export function ExerciseForm({
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>שם התרגיל</FormLabel>
               <FormControl>
                 <Input
                   className={cn(
@@ -213,7 +212,6 @@ export function ExerciseForm({
           name="desc"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>אופן הביצוע</FormLabel>
               <FormControl>
                 <Textarea
                   placeholder="ניתן לפרט על התרגיל או על אופן הביצוע"
