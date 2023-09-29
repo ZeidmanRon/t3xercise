@@ -38,7 +38,7 @@ model Workout {
   authorId            String
   authorName          String
   updatedAt           DateTime              @updatedAt
-  sets                Int
+  sets                Int                   @default(5)
   ExercisesOnWorkouts ExercisesOnWorkouts[]
 
   @@index([authorId])

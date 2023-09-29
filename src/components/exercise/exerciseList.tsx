@@ -9,8 +9,8 @@ type ExerciseProps = {
 };
 
 export const ExerciseList = ({ exercises }: ExerciseProps) => (
-  <div className="flex w-full justify-center">
-    <ScrollArea dir="rtl" className="max-h-96 w-full rounded-md border px-2">
+  <div className="flex max-h-[450px] flex-1 justify-center">
+    <ScrollArea dir="rtl" className="flex-1 rounded-md border px-2">
       {exercises.map((exercise, index) => (
         <div className="w-full" key={exercise.id}>
           <ExerciseSkeleton exercise={exercise} />

@@ -17,11 +17,11 @@ export function WorkoutCreateModal() {
       </DialogTrigger>
       <DialogContent className="top-52 flex h-auto w-11/12">
         {displayLoadingDialog ? (
-          <div className="flex min-h-[180px] flex-1 items-center justify-center py-10">
+          <div className="flex h-auto flex-1 items-center justify-center py-10">
             <LoadingSpinner size={40} />
           </div>
         ) : (
-          <div className="flex min-h-[180px] w-full flex-1 items-center justify-center">
+          <div className="flex h-auto w-full flex-1 items-center justify-center">
             <WorkoutForm
               setDisplayLoadingDialog={setDisplayLoadingDialog}
               setOpenWorkoutDialog={setOpenWorkoutDialog}

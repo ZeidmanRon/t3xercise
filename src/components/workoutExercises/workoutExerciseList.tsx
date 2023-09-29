@@ -40,10 +40,8 @@ export function WorkoutExerciseList({ workout, set }: ExerciseProps) {
   return exercisesOfSet.length ? (
     <div className="flex w-full flex-col justify-center p-3">
       <Label className="p-1 font-semibold"> סט-{set}:</Label>
-      <ScrollArea
-        dir="rtl"
-        className="max-h-40 min-h-[1rem] w-full overflow-y-auto rounded-md border px-2"
-      >
+
+      <div className="rounded-lg border px-2 py-1 shadow-sm">
         {exercisesOfSet.map((exercise, index) => (
           <div key={index} className="w-full">
             <WorkoutExerciseListItem
@@ -54,7 +52,7 @@ export function WorkoutExerciseList({ workout, set }: ExerciseProps) {
             {index !== exercisesOfSet.length - 1 ? <Separator /> : ""}
           </div>
         ))}
-      </ScrollArea>
+      </div>
     </div>
   ) : (
     <></>

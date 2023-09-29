@@ -7,16 +7,10 @@ import {
   FormMessage,
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "~/components/ui/popover";
-import { Check, ChevronsUpDown } from "lucide-react";
+
 import { cn } from "~/lib/utils";
 
-import { Command, CommandGroup, CommandItem } from "~/components/ui/command";
-import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
+import { useEffect, type Dispatch, type SetStateAction } from "react";
 import { api } from "~/utils/api";
 import Swal from "sweetalert2";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -34,7 +28,6 @@ export default function WorkoutForm({
   setOpenWorkoutDialog,
 }: WorkoutFormProps) {
   const utils = api.useContext();
-  const [openSupersets, setOpenSupersets] = useState(false);
 
   const { mutate: createWorkout, error: workoutError } =
     api.workouts.create.useMutation({
@@ -50,7 +43,6 @@ export default function WorkoutForm({
     workoutName: z.string({ required_error: "חסר" }).min(3, {
       message: "לפחות 3 אותיות",
     }),
-    sets: z.string({ required_error: "חסר" }),
   });
 
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -64,6 +56,7 @@ export default function WorkoutForm({
   useEffect(() => {
     if (workoutError) {
       setOpenWorkoutDialog(false);
+      setDisplayLoadingDialog(false);
       void Swal.fire({
         title: "שגיאה!",
         text: workoutError?.message,
@@ -77,7 +70,6 @@ export default function WorkoutForm({
     setDisplayLoadingDialog(true);
     createWorkout({
       title: data.workoutName,
-      sets: parseInt(data.sets),
     }); //reset dialog variables
     form.resetField("workoutName");
   }
@@ -105,58 +97,6 @@ export default function WorkoutForm({
                   {...field}
                 />
               </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="sets"
-          render={({ field }) => (
-            <FormItem className="flex flex-col">
-              <Popover open={openSupersets} onOpenChange={setOpenSupersets}>
-                <PopoverTrigger asChild>
-                  <FormControl>
-                    <Button
-                      variant="outline"
-                      role="combobox"
-                      className={cn(
-                        "w-full justify-between",
-                        !field.value && "font-light text-muted-foreground"
-                      )}
-                    >
-                      {field.value ?? "מספר סטים"}
-                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                    </Button>
-                  </FormControl>
-                </PopoverTrigger>
-                <PopoverContent className="w-full p-0">
-                  <Command>
-                    <CommandGroup>
-                      {[1, 2, 3, 4, 5].map((number) => (
-                        <CommandItem
-                          value={`${number}`}
-                          key={number}
-                          onSelect={(currentValue) => {
-                            form.setValue("sets", currentValue);
-                            setOpenSupersets(false);
-                          }}
-                        >
-                          <Check
-                            className={cn(
-                              "mr-2 h-4 w-4",
-                              `${number}` === field.value
-                                ? "opacity-100"
-                                : "opacity-0"
-                            )}
-                          />
-                          {number}
-                        </CommandItem>
-                      ))}
-                    </CommandGroup>
-                  </Command>
-                </PopoverContent>
-              </Popover>
               <FormMessage />
             </FormItem>
           )}

@@ -7,6 +7,7 @@ import { WorkoutExerciseList } from "~/components/workoutExercises/workoutExerci
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { type Exercise } from "@prisma/client";
 import { WorkoutExerciseCreateModal } from "~/components/workoutExercises/workoutExerciseCreateModal";
+import { ScrollArea } from "~/components/ui/scroll-area";
 
 const ExercisesContext = createContext([{}]);
 
@@ -66,21 +67,26 @@ export default function WorkoutPage() {
 
   return (
     <Layout>
-      <div className="flex flex-col items-center">
+      <div className="flex h-fit flex-col items-center">
         <div className="flex w-full flex-col p-4">
           <div className="flex w-full justify-center">
-            <h1 className="w-auto border-b-2 p-1 text-center text-2xl font-normal">
+            <h1 className=" m-4 w-auto border-b-2 text-center text-2xl font-normal">
               {workout.title}
             </h1>
           </div>
           <ExercisesContext.Provider value={workoutExercises}>
-            {[...Array(workout.sets).keys()].map((set) => (
-              <WorkoutExerciseList
-                key={set + 1}
-                workout={workout}
-                set={set + 1}
-              />
-            ))}
+            <ScrollArea
+              dir="rtl"
+              className="max-h-[450px] w-full flex-grow overflow-y-auto rounded-md border px-2"
+            >
+              {[...Array(workout.sets).keys()].map((set) => (
+                <WorkoutExerciseList
+                  key={set + 1}
+                  workout={workout}
+                  set={set + 1}
+                />
+              ))}
+            </ScrollArea>
           </ExercisesContext.Provider>
         </div>
         <div className="flex w-full justify-center p-2">

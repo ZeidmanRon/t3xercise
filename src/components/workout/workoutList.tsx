@@ -8,8 +8,11 @@ type WorkoutProps = {
 };
 
 export const WorkoutList = ({ workouts }: WorkoutProps) => (
-  <div className="flex w-full justify-center">
-    <ScrollArea dir="rtl" className="max-h-96 w-full rounded-md border px-2">
+  <div className="flex h-full w-full justify-center">
+    <ScrollArea
+      dir="rtl"
+      className="max-h-[450px] w-full rounded-md border px-2"
+    >
       {workouts.length === 0 ? (
         <div className="flex justify-center p-3">לא קיימים אימונים</div>
       ) : (

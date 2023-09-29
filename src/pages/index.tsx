@@ -19,8 +19,8 @@ export default function HomePage() {
   return (
     <Layout>
       {/* <CreateExerciseWizard /> */}
-      <div className="flex items-center">
-        <div className="flex w-full flex-col p-4">
+      <div className="flex flex-1 flex-col items-center justify-between p-4">
+        <div className="flex h-5/6 w-full flex-col">
           <Label className="mb-1 text-xl font-semibold">
             אימונים האחרונים:
           </Label>
@@ -29,12 +29,12 @@ export default function HomePage() {
           ) : (
             <WorkoutList workouts={data} />
           )}
-          <div className="flex w-full flex-col items-center justify-center pt-4">
-            <WorkoutCreateModal />
-            <Button variant={"outline"} className="mt-2 h-10 w-auto px-20">
-              <Link href="/workouts">לכל האימונים</Link>
-            </Button>
-          </div>
+        </div>
+        <div className="flex h-1/6 flex-col items-center justify-center">
+          <WorkoutCreateModal />
+          <Button variant={"outline"} className="mt-2 h-10 w-auto px-20">
+            <Link href="/workouts">לכל האימונים</Link>
+          </Button>
         </div>
       </div>
     </Layout>
