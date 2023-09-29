@@ -3,7 +3,8 @@ import { WorkoutExerciseListItem } from "./workoutExerciseListItem";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { Separator } from "~/components/ui/separator";
 import { useExercises } from "~/pages/workouts/[workoutId]";
-import { Exercise, type Workout } from "@prisma/client";
+import { type Exercise } from "@prisma/client";
+import { Label } from "~/components/ui/label";
 
 type ExerciseProps = {
   workout: {
@@ -36,8 +37,9 @@ export function WorkoutExerciseList({ workout, set }: ExerciseProps) {
       }
     }
   });
-  return (
-    <div className="flex w-full flex-col justify-center">
+  return exercisesOfSet.length ? (
+    <div className="flex w-full flex-col justify-center p-3">
+      <Label className="p-1 font-semibold"> סט-{set}:</Label>
       <ScrollArea
         dir="rtl"
         className="max-h-40 min-h-[1rem] w-full overflow-y-auto rounded-md border px-2"
@@ -54,5 +56,7 @@ export function WorkoutExerciseList({ workout, set }: ExerciseProps) {
         ))}
       </ScrollArea>
     </div>
+  ) : (
+    <></>
   );
 }

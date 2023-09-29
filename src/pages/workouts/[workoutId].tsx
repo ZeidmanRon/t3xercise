@@ -4,7 +4,6 @@ import { api } from "~/utils/api";
 import PageNotFound from "../404";
 import Layout from "~/components/layout/layout";
 import { WorkoutExerciseList } from "~/components/workoutExercises/workoutExerciseList";
-import { Label } from "~/components/ui/label";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { type Exercise } from "@prisma/client";
 import { WorkoutExerciseCreateModal } from "~/components/workoutExercises/workoutExerciseCreateModal";
@@ -41,6 +40,7 @@ export default function WorkoutPage() {
       setWorkoutId(router.query.workoutId as string);
       refetch;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.isReady]);
 
   useEffect(() => {
@@ -75,10 +75,11 @@ export default function WorkoutPage() {
           </div>
           <ExercisesContext.Provider value={workoutExercises}>
             {[...Array(workout.sets).keys()].map((set) => (
-              <div key={set + 1} className="p-3">
-                <Label className="p-1 font-semibold"> סט-{set + 1}:</Label>
-                <WorkoutExerciseList workout={workout} set={set + 1} />
-              </div>
+              <WorkoutExerciseList
+                key={set + 1}
+                workout={workout}
+                set={set + 1}
+              />
             ))}
           </ExercisesContext.Provider>
         </div>
