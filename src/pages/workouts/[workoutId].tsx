@@ -73,13 +73,19 @@ export default function WorkoutPage() {
               {workout.title}
             </h1>
           </div>
-          <Label className="p-1 font-semibold"> סטים:</Label>
           <ExercisesContext.Provider value={workoutExercises}>
-            <WorkoutExerciseList workout={workout} />
+            {[...Array(workout.sets).keys()].map((set) => (
+              <>
+                <Label className="p-1 font-semibold"> סט-{set + 1}:</Label>
+                <WorkoutExerciseList workout={workout} set={set + 1} />
+              </>
+            ))}
           </ExercisesContext.Provider>
         </div>
         <div className="flex w-full justify-center p-2">
-          <WorkoutExerciseCreateModal workout={workout} />
+          <ExercisesContext.Provider value={workoutExercises}>
+            <WorkoutExerciseCreateModal workout={workout} />
+          </ExercisesContext.Provider>
         </div>
       </div>
     </Layout>

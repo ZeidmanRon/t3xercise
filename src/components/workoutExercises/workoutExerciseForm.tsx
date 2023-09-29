@@ -29,6 +29,7 @@ import {
 import { LoadingSpinner } from "../layout/loading";
 import { useState, type Dispatch, type SetStateAction, useEffect } from "react";
 import { useExercises } from "~/pages/workouts/[workoutId]";
+import { Exercise } from "@prisma/client";
 
 export const FormSchema = z.object({
   exerciseName: z.string({ required_error: "נא לבחור תרגיל" }),

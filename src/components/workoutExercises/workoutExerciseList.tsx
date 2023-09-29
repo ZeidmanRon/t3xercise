@@ -3,22 +3,46 @@ import { WorkoutExerciseListItem } from "./workoutExerciseListItem";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { Separator } from "~/components/ui/separator";
 import { useExercises } from "~/pages/workouts/[workoutId]";
-import { type Workout } from "@prisma/client";
+import { Exercise, type Workout } from "@prisma/client";
 
 type ExerciseProps = {
-  workout: Workout;
+  workout: {
+    ExercisesOnWorkouts: {
+      exerciseId: string;
+      workoutId: string;
+      set: number;
+    }[];
+  } & {
+    id: string;
+    title: string;
+    authorId: string;
+    authorName: string;
+    updatedAt: Date;
+    sets: number;
+  };
+  set: number;
 };
 
-export function WorkoutExerciseList({ workout }: ExerciseProps) {
+export function WorkoutExerciseList({ workout, set }: ExerciseProps) {
+  const exercisesOfSet: Exercise[] = [];
   const workoutExercises = useExercises();
-
+  workout.ExercisesOnWorkouts.map((exerciseOnWorkout) => {
+    if (exerciseOnWorkout.set === set) {
+      const foundExercise = workoutExercises.find(
+        (workout) => workout.id === exerciseOnWorkout.exerciseId
+      );
+      if (foundExercise) {
+        exercisesOfSet.push(foundExercise);
+      }
+    }
+  });
   return (
     <div className="flex w-full flex-col justify-center">
       <ScrollArea
         dir="rtl"
         className="h-auto max-h-96 w-full rounded-md border px-2"
       >
-        {workoutExercises.map((exercise, index) => (
+        {exercisesOfSet.map((exercise, index) => (
           <div key={index} className="w-full">
             <WorkoutExerciseListItem
               workoutId={workout.id}
