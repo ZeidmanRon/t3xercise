@@ -1,9 +1,9 @@
 import Head from "next/head";
-import { useUser, SignIn } from "@clerk/nextjs";
+import { useUser, SignUp } from "@clerk/nextjs";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 
-export default function SignInPage() {
+export default function SignUpPage() {
   const { user, isLoaded, isSignedIn } = useUser();
   const router = useRouter();
 
@@ -33,7 +33,7 @@ export default function SignInPage() {
                 Workout
               </span>
             </h1>
-            <div className="mt-10">{isSignedIn ? "" : <SignIn />}</div>
+            <div className="mt-10">{isSignedIn ? "" : <SignUp />}</div>
           </div>
         </div>
       </main>
