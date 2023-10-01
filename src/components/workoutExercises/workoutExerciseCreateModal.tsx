@@ -12,9 +12,11 @@ import { type Workout } from "@prisma/client";
 
 interface WorkoutExerciseCreateModal {
   workout: Workout;
+  maxIndexesPerSet: number[];
 }
 export function WorkoutExerciseCreateModal({
   workout,
+  maxIndexesPerSet,
 }: WorkoutExerciseCreateModal) {
   const [openModal, setOpenModal] = useState(false);
 
@@ -33,6 +35,7 @@ export function WorkoutExerciseCreateModal({
           workoutId={workout.id}
           sets={workout.sets}
           setOpenModal={setOpenModal}
+          maxIndexPerSet={maxIndexesPerSet}
         />
       </DialogContent>
     </Dialog>

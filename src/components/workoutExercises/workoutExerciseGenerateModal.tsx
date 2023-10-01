@@ -10,12 +10,22 @@ import { RepeatIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { api } from "~/utils/api";
 import { LoadingSpinner } from "../layout/loading";
-import { type Exercise } from "@prisma/client";
 import { useExercises } from "~/pages/workouts/[workoutId]";
 import Swal from "sweetalert2";
 
 type editExerciseModalProps = {
-  exercise: Exercise;
+  exercise: {
+    id: string;
+    name: string;
+    desc: string;
+    category: string;
+    authorId: string;
+    authorName: string;
+    updatedAt: Date;
+    businessId: string | null;
+    set: number;
+    index: number;
+  };
   workoutId: string;
   set: number;
 };
@@ -41,16 +51,13 @@ export function WorkoutExerciseGenerateModal({
     api.workouts.removeExerciseFromWorkout.useMutation();
 
   //add Exercise to workout
-  const {
-    mutate: addExercise,
-    data: addedExercise,
-    isLoading: isAddingExercise,
-  } = api.workouts.addExerciseToWorkout.useMutation({
-    async onSuccess() {
-      await utils.workouts.getWorkoutById.invalidate();
-      setOpenDialog(false);
-    },
-  });
+  const { mutate: addExercise, isLoading: isAddingExercise } =
+    api.workouts.addExerciseToWorkout.useMutation({
+      async onSuccess() {
+        await utils.workouts.getWorkoutById.invalidate();
+        setOpenDialog(false);
+      },
+    });
 
   useEffect(() => {
     if (!exercisesOfCategory) return;
@@ -64,11 +71,6 @@ export function WorkoutExerciseGenerateModal({
       }
     });
   }, [exercisesOfCategory, workoutExercises]);
-
-  useEffect(() => {
-    if (!addedExercise) return;
-    setOpenDialog(false);
-  }, [addedExercise]);
 
   function generateExercise() {
     if (exercisesOfCategory?.length === 0 || !exercisesOfCategory) {
@@ -89,6 +91,7 @@ export function WorkoutExerciseGenerateModal({
       exerciseId: randomExercise!.id,
       workoutId: workoutId,
       set: set,
+      index: exercise.index,
     });
   }
 

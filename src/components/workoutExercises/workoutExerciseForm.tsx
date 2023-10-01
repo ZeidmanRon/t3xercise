@@ -54,12 +54,14 @@ type workoutExerciseFormProps = {
   workoutId: string;
   sets: number;
   setOpenModal: Dispatch<SetStateAction<boolean>>;
+  maxIndexPerSet: number[];
 };
 
 export function WorkoutExerciseForm({
   workoutId,
   sets,
   setOpenModal,
+  maxIndexPerSet,
 }: workoutExerciseFormProps) {
   const workoutExercises = useExercises();
   const utils = api.useContext();
@@ -100,6 +102,7 @@ export function WorkoutExerciseForm({
       workoutId: workoutId,
       set: data.exerciseSet,
       exerciseId: data.exerciseId,
+      index: maxIndexPerSet[data.exerciseSet - 1]! + 1,
     });
     form.reset();
   }

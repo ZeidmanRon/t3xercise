@@ -150,6 +150,7 @@ export const workoutsRouter = createTRPCRouter({
         workoutId: z.string(),
         set: z.number(),
         exerciseId: z.string(),
+        index: z.number(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -158,13 +159,18 @@ export const workoutsRouter = createTRPCRouter({
         calculateTimeLeftForLimit(reset);
       }
       try {
-        const { workoutId, exerciseId, set } = input;
+        const { workoutId, exerciseId, set, index } = input;
         const exerciseToAdd = await ctx.prisma.exercise.findUnique({
           where: { id: exerciseId },
         });
         if (!exerciseToAdd) throw new TRPCError({ code: "NOT_FOUND" });
         await ctx.prisma.exercisesOnWorkouts.create({
-          data: { exerciseId: exerciseId, workoutId: workoutId, set: set },
+          data: {
+            exerciseId: exerciseId,
+            workoutId: workoutId,
+            set: set,
+            index: index,
+          },
         });
         return exerciseToAdd;
       } catch (err) {

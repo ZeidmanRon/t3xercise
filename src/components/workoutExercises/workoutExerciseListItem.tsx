@@ -1,4 +1,3 @@
-import { type Exercise } from "@prisma/client";
 import React from "react";
 import { WorkoutExerciseDeleteModal } from "./workoutExerciseDeleteModal";
 import { Badge } from "~/components/ui/badge";
@@ -6,11 +5,22 @@ import { ScrollArea } from "~/components/ui/scroll-area";
 import { WorkoutExerciseGenerateModal } from "./workoutExerciseGenerateModal";
 
 type ExerciseProps = {
-  exercise: Exercise;
+  exercise: {
+    id: string;
+    name: string;
+    desc: string;
+    category: string;
+    authorId: string;
+    authorName: string;
+    updatedAt: Date;
+    businessId: string | null;
+    set: number;
+    index: number;
+  };
   workoutId: string;
   set: number;
 };
-const english = /^[A-Za-z0-9 ]*$/;
+
 export function WorkoutExerciseListItem({
   exercise,
   workoutId,

@@ -5,7 +5,6 @@ import PageNotFound from "../404";
 import Layout from "~/components/layout/layout";
 import { WorkoutExerciseList } from "~/components/workoutExercises/workoutExerciseList";
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { type Exercise } from "@prisma/client";
 import { WorkoutExerciseCreateModal } from "~/components/workoutExercises/workoutExerciseCreateModal";
 import { ScrollArea } from "~/components/ui/scroll-area";
 
@@ -18,13 +17,25 @@ export function useExercises() {
     throw new Error("useExercises must be used within a ExercisesProvider");
   }
 
-  return exercises as Exercise[]; // Assuming exercises is an array of Exercise
+  return exercises as {
+    id: string;
+    name: string;
+    desc: string;
+    category: string;
+    authorId: string;
+    authorName: string;
+    updatedAt: Date;
+    businessId: string | null;
+    set: number;
+    index: number;
+  }[]; // Assuming exercises is an array of Exercise
 }
 
 export default function WorkoutPage() {
   const router = useRouter();
   const [workoutId, setWorkoutId] = useState("");
   const [workoutExercises, setWorkoutExercises] = useState([{}]);
+  const [maxIndexesPerSet, setMaxIndexes] = useState<number[]>([0, 0, 0, 0, 0]);
 
   const {
     data: workout,
@@ -49,12 +60,48 @@ export default function WorkoutPage() {
     const exercisesIds = workout.ExercisesOnWorkouts.map(
       (item) => item.exerciseId
     );
+
+    // Update the state with the new maximum 'index' per set
+    const updatedMaxIndexes = [...maxIndexesPerSet];
+
+    workout.ExercisesOnWorkouts.forEach((exercise) => {
+      const { set, index } = exercise;
+
+      // Update the maximum 'index' if the current index is greater
+      if (index > updatedMaxIndexes[set - 1]!) {
+        updatedMaxIndexes[set - 1] = index;
+      }
+    });
+
+    // Update the state with the new maximum 'indexes' per set
+    console.log(updatedMaxIndexes);
+    setMaxIndexes(updatedMaxIndexes);
+
     getExercises(exercisesIds);
   }, [getExercises, workout]);
 
   useEffect(() => {
     if (!exercisesOfWorkout) return;
-    setWorkoutExercises(exercisesOfWorkout);
+    const combinedData = exercisesOfWorkout.map((exercise) => {
+      const relatedExerciseOnWorkout = workout!.ExercisesOnWorkouts.find(
+        (eow) => eow.exerciseId === exercise.id
+      );
+      if (relatedExerciseOnWorkout) {
+        return {
+          ...exercise,
+          set: relatedExerciseOnWorkout.set,
+          index: relatedExerciseOnWorkout.index,
+        };
+      }
+      // If no related exercise is found, return the exercise as is
+      return {
+        ...exercise,
+        set: 1,
+        index: 1,
+      };
+    });
+
+    setWorkoutExercises(combinedData);
   }, [exercisesOfWorkout]);
 
   if (error) {
@@ -82,7 +129,7 @@ export default function WorkoutPage() {
               {[...Array(workout.sets).keys()].map((set) => (
                 <WorkoutExerciseList
                   key={set + 1}
-                  workout={workout}
+                  workoutId={workout.id}
                   set={set + 1}
                 />
               ))}
@@ -91,7 +138,10 @@ export default function WorkoutPage() {
         </div>
         <div className="flex w-full justify-center p-2">
           <ExercisesContext.Provider value={workoutExercises}>
-            <WorkoutExerciseCreateModal workout={workout} />
+            <WorkoutExerciseCreateModal
+              workout={workout}
+              maxIndexesPerSet={maxIndexesPerSet}
+            />
           </ExercisesContext.Provider>
         </div>
       </div>
