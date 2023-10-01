@@ -12,6 +12,7 @@ type ExerciseProps = {
       exerciseId: string;
       workoutId: string;
       set: number;
+      index: number;
     }[];
   } & {
     id: string;

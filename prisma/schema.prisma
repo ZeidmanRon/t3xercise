@@ -48,6 +48,7 @@ model ExercisesOnWorkouts {
   exerciseId String
   workoutId  String
   set        Int
+  index      Int
   exercise   Exercise @relation(fields: [exerciseId], references: [id])
   workout    Workout  @relation(fields: [workoutId], references: [id])
 
