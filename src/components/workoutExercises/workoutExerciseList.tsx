@@ -7,11 +7,18 @@ import { Label } from "~/components/ui/label";
 type ExerciseProps = {
   workoutId: string;
   set: number;
+  setMaxIndexes: React.Dispatch<React.SetStateAction<number[]>>;
+  maxIndexesPerSet: number[];
 };
 
-export function WorkoutExerciseList({ set, workoutId }: ExerciseProps) {
+export function WorkoutExerciseList({
+  set,
+  workoutId,
+  setMaxIndexes,
+  maxIndexesPerSet,
+}: ExerciseProps) {
   const workoutExercises = useExercises();
-  // filter exercises -
+  // filter to the releveant set exercises
   const filteredExercises = workoutExercises.filter(
     (exercise) => exercise.set === set
   );
@@ -29,6 +36,8 @@ export function WorkoutExerciseList({ set, workoutId }: ExerciseProps) {
               workoutId={workoutId}
               exercise={exercise}
               set={set}
+              setMaxIndexes={setMaxIndexes}
+              maxIndexesPerSet={maxIndexesPerSet}
             />
             {index !== filteredExercises.length - 1 ? <Separator /> : ""}
           </div>

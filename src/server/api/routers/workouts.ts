@@ -178,4 +178,34 @@ export const workoutsRouter = createTRPCRouter({
         throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
       }
     }),
+  updateExerciseIndexInWorkout: privateProcedure
+    .input(
+      z.object({
+        workoutId: z.string(),
+        exerciseId: z.string(),
+        index: z.number(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { success, reset } = await rateLimit.limit(ctx.currentUser.id);
+      if (!success) {
+        calculateTimeLeftForLimit(reset);
+      }
+      try {
+        const { workoutId, exerciseId, index } = input;
+        await ctx.prisma.exercisesOnWorkouts.update({
+          where: {
+            exerciseId_workoutId: {
+              exerciseId: exerciseId,
+              workoutId: workoutId,
+            },
+          },
+          data: { index: index },
+        });
+        return;
+      } catch (err) {
+        console.log("at @remove_exercise_from_workout error:", err);
+        throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+      }
+    }),
 });

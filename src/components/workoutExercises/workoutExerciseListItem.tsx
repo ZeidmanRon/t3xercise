@@ -19,12 +19,16 @@ type ExerciseProps = {
   };
   workoutId: string;
   set: number;
+  setMaxIndexes: React.Dispatch<React.SetStateAction<number[]>>;
+  maxIndexesPerSet: number[];
 };
 
 export function WorkoutExerciseListItem({
   exercise,
   workoutId,
   set,
+  setMaxIndexes,
+  maxIndexesPerSet,
 }: ExerciseProps) {
   return (
     <div className="flex h-auto w-full flex-col rounded-lg p-1">
@@ -42,7 +46,9 @@ export function WorkoutExerciseListItem({
           {/* <ExerciseEditModal exercise={exercise} /> */}
           <WorkoutExerciseDeleteModal
             workoutId={workoutId}
-            exerciseId={exercise.id}
+            exerciseToRemove={exercise}
+            setMaxIndexes={setMaxIndexes}
+            maxIndexesPerSet={maxIndexesPerSet}
           />
           <WorkoutExerciseGenerateModal
             workoutId={workoutId}

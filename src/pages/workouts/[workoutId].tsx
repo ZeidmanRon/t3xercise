@@ -74,7 +74,6 @@ export default function WorkoutPage() {
     });
 
     // Update the state with the new maximum 'indexes' per set
-    console.log(updatedMaxIndexes);
     setMaxIndexes(updatedMaxIndexes);
 
     getExercises(exercisesIds);
@@ -131,6 +130,8 @@ export default function WorkoutPage() {
                   key={set + 1}
                   workoutId={workout.id}
                   set={set + 1}
+                  setMaxIndexes={setMaxIndexes}
+                  maxIndexesPerSet={maxIndexesPerSet}
                 />
               ))}
             </ScrollArea>
