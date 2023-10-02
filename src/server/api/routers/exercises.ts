@@ -68,6 +68,16 @@ export const exercisesRouter = createTRPCRouter({
       if (!success) {
         calculateTimeLeftForLimit(reset);
       }
+      const existExercise = await ctx.prisma.exercise.findFirst({
+        where: { name: input.name },
+      });
+
+      if (existExercise) {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: `כבר קיים תרגיל עם השם: ${input.name}`,
+        });
+      }
       const exercise = await ctx.prisma.exercise.create({
         data: {
           name: input.name,

@@ -31,6 +31,7 @@ import { LoadingSpinner } from "../layout/loading";
 import { useState, type Dispatch, type SetStateAction } from "react";
 import { type Exercise } from "@prisma/client";
 import { ScrollArea } from "~/components/ui/scroll-area";
+import Swal from "sweetalert2";
 
 export const FormSchema = z.object({
   name: z
@@ -82,6 +83,15 @@ export function ExerciseForm({
       async onSuccess() {
         await utils.exercises.getAll.invalidate();
         setOpenExerciseForm(false);
+      },
+      onError(error) {
+        setOpenExerciseForm(false);
+        void Swal.fire({
+          title: "שגיאה!",
+          text: error?.message,
+          icon: "error",
+          confirmButtonText: "אוקיי",
+        });
       },
     });
   const { mutate: updateExercise, isLoading: isUpdatingExercise } =
