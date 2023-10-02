@@ -27,7 +27,7 @@ export function WorkoutExerciseCreateModal({
           הוספת תרגיל
         </Button>
       </DialogTrigger>
-      <DialogContent className="top-52 flex h-auto w-11/12 flex-col">
+      <DialogContent className="top-40 flex h-auto w-11/12 flex-col">
         <DialogHeader className="h-fit">
           <DialogTitle>הוספת תרגיל לאימון</DialogTitle>
         </DialogHeader>

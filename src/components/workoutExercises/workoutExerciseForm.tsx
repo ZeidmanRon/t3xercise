@@ -205,7 +205,7 @@ export function WorkoutExerciseForm({
                       <CommandInput
                         placeholder={
                           exercisesOfCategory?.length
-                            ? "חפש/י קבוצת שריר"
+                            ? "חפש/י תרגיל"
                             : `לא נותרו תרגילי ${form.getValues("category")}`
                         }
                       />
