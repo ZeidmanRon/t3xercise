@@ -20,7 +20,7 @@ export default function HomePage() {
     <Layout>
       {/* <CreateExerciseWizard /> */}
       <div className="flex flex-1 flex-col items-center justify-between p-4">
-        <div className="flex h-5/6 w-full flex-col">
+        <div className="flex w-full flex-grow flex-col">
           <Label className="mb-1 text-xl font-semibold">
             אימונים האחרונים:
           </Label>

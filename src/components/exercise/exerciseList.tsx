@@ -9,14 +9,21 @@ type ExerciseProps = {
 };
 
 export const ExerciseList = ({ exercises }: ExerciseProps) => (
-  <div className="flex max-h-[450px] flex-1 justify-center">
-    <ScrollArea dir="rtl" className="flex-1 rounded-md border px-2">
-      {exercises.map((exercise, index) => (
-        <div className="w-full" key={exercise.id}>
-          <ExerciseSkeleton exercise={exercise} />
-          {index !== exercises.length - 1 ? <Separator /> : ""}
-        </div>
-      ))}
+  <div className="flex h-full w-full justify-center">
+    <ScrollArea
+      dir="rtl"
+      className="h-fit max-h-[450px] w-full overflow-y-auto rounded-md border px-2"
+    >
+      {exercises.length === 0 ? (
+        <div className="flex justify-center p-3">אין תרגילים</div>
+      ) : (
+        exercises.map((exercise, index) => (
+          <div className="w-full" key={exercise.id}>
+            <ExerciseSkeleton exercise={exercise} />
+            {index !== exercises.length - 1 ? <Separator /> : ""}
+          </div>
+        ))
+      )}
     </ScrollArea>
   </div>
 );
