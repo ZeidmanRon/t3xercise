@@ -15,7 +15,7 @@ export function WorkoutCreateModal() {
       <DialogTrigger asChild>
         <Button variant={"outline"}>הוספת אימון</Button>
       </DialogTrigger>
-      <DialogContent className="top-52 flex h-auto w-11/12">
+      <DialogContent className="top-60 flex h-auto w-11/12">
         {displayLoadingDialog ? (
           <div className="flex h-auto flex-1 items-center justify-center py-10">
             <LoadingSpinner size={40} />

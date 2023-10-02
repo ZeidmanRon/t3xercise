@@ -30,6 +30,7 @@ import {
 import { LoadingSpinner } from "../layout/loading";
 import { useState, type Dispatch, type SetStateAction } from "react";
 import { type Exercise } from "@prisma/client";
+import { ScrollArea } from "~/components/ui/scroll-area";
 
 export const FormSchema = z.object({
   name: z
@@ -156,30 +157,32 @@ export function ExerciseForm({
                 </PopoverTrigger>
                 <PopoverContent className=" w-full p-0">
                   <Command>
-                    <CommandInput placeholder="חפש/י קבוצת שריר" />
-                    <CommandEmpty>לא קיימת קבוצת שריר זו</CommandEmpty>
-                    <CommandGroup>
-                      {muscleGroups.map((muscleGroup) => (
-                        <CommandItem
-                          value={muscleGroup.value}
-                          key={muscleGroup.label}
-                          onSelect={(currentValue) => {
-                            form.setValue("category", currentValue);
-                            setOpenMuscleGroup(false);
-                          }}
-                        >
-                          <Check
-                            className={cn(
-                              "mr-2 h-4 w-4",
-                              muscleGroup.value === field.value
-                                ? "opacity-100"
-                                : "opacity-0"
-                            )}
-                          />
-                          {muscleGroup.label}
-                        </CommandItem>
-                      ))}
-                    </CommandGroup>
+                    <ScrollArea className="h-44" dir="rtl">
+                      <CommandInput placeholder="חפש/י קבוצת שריר" />
+                      <CommandEmpty>לא קיימת קבוצת שריר זו</CommandEmpty>
+                      <CommandGroup>
+                        {muscleGroups.map((muscleGroup) => (
+                          <CommandItem
+                            value={muscleGroup.value}
+                            key={muscleGroup.label}
+                            onSelect={(currentValue) => {
+                              form.setValue("category", currentValue);
+                              setOpenMuscleGroup(false);
+                            }}
+                          >
+                            <Check
+                              className={cn(
+                                "mr-2 h-4 w-4",
+                                muscleGroup.value === field.value
+                                  ? "opacity-100"
+                                  : "opacity-0"
+                              )}
+                            />
+                            {muscleGroup.label}
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </ScrollArea>
                   </Command>
                 </PopoverContent>
               </Popover>

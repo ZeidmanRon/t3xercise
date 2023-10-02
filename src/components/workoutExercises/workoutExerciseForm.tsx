@@ -29,6 +29,7 @@ import {
 import { LoadingSpinner } from "../layout/loading";
 import { useState, type Dispatch, type SetStateAction, useEffect } from "react";
 import { useExercises } from "~/pages/workouts/[workoutId]";
+import { ScrollArea } from "~/components/ui/scroll-area";
 
 export const FormSchema = z.object({
   exerciseName: z.string({ required_error: "נא לבחור תרגיל" }),
@@ -143,30 +144,32 @@ export function WorkoutExerciseForm({
                 <PopoverContent className="w-full p-0">
                   <Command>
                     <CommandInput placeholder="חפש/י קבוצת שריר" />
-                    <CommandEmpty>לא קיימת קבוצת שריר זו</CommandEmpty>
-                    <CommandGroup>
-                      {muscleGroups.map((muscleGroup) => (
-                        <CommandItem
-                          value={muscleGroup.value}
-                          key={muscleGroup.label}
-                          onSelect={(currentValue) => {
-                            form.setValue("category", currentValue);
-                            setOpenMuscleGroup(false);
-                            getExercises(currentValue);
-                          }}
-                        >
-                          <Check
-                            className={cn(
-                              "mr-2 h-4 w-4",
-                              muscleGroup.value === field.value
-                                ? "opacity-100"
-                                : "opacity-0"
-                            )}
-                          />
-                          {muscleGroup.label}
-                        </CommandItem>
-                      ))}
-                    </CommandGroup>
+                    <ScrollArea className="h-44" dir="rtl">
+                      <CommandEmpty>לא קיימת קבוצת שריר זו</CommandEmpty>
+                      <CommandGroup>
+                        {muscleGroups.map((muscleGroup) => (
+                          <CommandItem
+                            value={muscleGroup.value}
+                            key={muscleGroup.label}
+                            onSelect={(currentValue) => {
+                              form.setValue("category", currentValue);
+                              setOpenMuscleGroup(false);
+                              getExercises(currentValue);
+                            }}
+                          >
+                            <Check
+                              className={cn(
+                                "mr-2 h-4 w-4",
+                                muscleGroup.value === field.value
+                                  ? "opacity-100"
+                                  : "opacity-0"
+                              )}
+                            />
+                            {muscleGroup.label}
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </ScrollArea>
                   </Command>
                 </PopoverContent>
               </Popover>
@@ -209,32 +212,34 @@ export function WorkoutExerciseForm({
                             : `לא נותרו תרגילי ${form.getValues("category")}`
                         }
                       />
-                      <CommandEmpty>לא קיים תרגיל עם שם זה</CommandEmpty>
-                      <CommandGroup>
-                        {!!exercisesOfCategory
-                          ? exercisesOfCategory.map((exercise) => (
-                              <CommandItem
-                                value={exercise.name}
-                                key={exercise.id}
-                                onSelect={(currentValue) => {
-                                  form.setValue("exerciseName", currentValue);
-                                  form.setValue("exerciseId", exercise.id);
-                                  setOpenExerciseList(false);
-                                }}
-                              >
-                                <Check
-                                  className={cn(
-                                    "mr-2 h-4 w-4",
-                                    exercise.id === field.value
-                                      ? "opacity-100"
-                                      : "opacity-0"
-                                  )}
-                                />
-                                {exercise.name}
-                              </CommandItem>
-                            ))
-                          : null}
-                      </CommandGroup>
+                      <ScrollArea className="h-32" dir="rtl">
+                        <CommandEmpty>לא קיים תרגיל עם שם זה</CommandEmpty>
+                        <CommandGroup>
+                          {!!exercisesOfCategory
+                            ? exercisesOfCategory.map((exercise) => (
+                                <CommandItem
+                                  value={exercise.name}
+                                  key={exercise.id}
+                                  onSelect={(currentValue) => {
+                                    form.setValue("exerciseName", currentValue);
+                                    form.setValue("exerciseId", exercise.id);
+                                    setOpenExerciseList(false);
+                                  }}
+                                >
+                                  <Check
+                                    className={cn(
+                                      "mr-2 h-4 w-4",
+                                      exercise.id === field.value
+                                        ? "opacity-100"
+                                        : "opacity-0"
+                                    )}
+                                  />
+                                  {exercise.name}
+                                </CommandItem>
+                              ))
+                            : null}
+                        </CommandGroup>
+                      </ScrollArea>
                     </Command>
                   </PopoverContent>
                 </Popover>
