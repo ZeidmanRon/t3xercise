@@ -33,24 +33,20 @@ export function useExercises() {
 
 export default function WorkoutPage() {
   const router = useRouter();
-  const [workoutId, setWorkoutId] = useState("");
   const [workoutExercises, setWorkoutExercises] = useState([{}]);
   const [maxIndexesPerSet, setMaxIndexes] = useState<number[]>([0, 0, 0, 0, 0]);
 
   const {
+    mutate: getWorkoutById,
     data: workout,
     error,
-    refetch,
-  } = api.workouts.getWorkoutById.useQuery({
-    workoutId: workoutId,
-  });
+  } = api.workouts.mutationGetWorkoutById.useMutation();
   const { mutate: getExercises, data: exercisesOfWorkout } =
     api.exercises.getExercises.useMutation();
 
   useEffect(() => {
     if (router.isReady) {
-      setWorkoutId(router.query.workoutId as string);
-      refetch;
+      getWorkoutById({ workoutId: router.query.workoutId as string });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.isReady]);
@@ -109,7 +105,7 @@ export default function WorkoutPage() {
       <PageNotFound message={error?.data?.code} secondMessage={secondMessage} />
     );
   }
-  if (!workout || !exercisesOfWorkout || !workoutId) return <LoadingPage />;
+  if (!workout || !exercisesOfWorkout) return <LoadingPage />;
 
   return (
     <Layout>

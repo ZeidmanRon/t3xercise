@@ -72,6 +72,26 @@ export const workoutsRouter = createTRPCRouter({
       }
       return workout;
     }),
+  mutationGetWorkoutById: privateProcedure
+    .input(z.object({ workoutId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const { workoutId } = input;
+      const workout = await ctx.prisma.workout.findUnique({
+        where: {
+          id: workoutId,
+        },
+        include: {
+          ExercisesOnWorkouts: true, // Include the related exercises
+        },
+      });
+      if (!workout) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Invalid Workout ID",
+        });
+      }
+      return workout;
+    }),
   create: privateProcedure
     .input(
       z.object({
