@@ -129,10 +129,16 @@ export const exercisesRouter = createTRPCRouter({
       if (!success) {
         calculateTimeLeftForLimit(reset);
       }
-      const deletedExercise = await ctx.prisma.exercise.delete({
-        where: { id: input.exerciseId },
-      });
-      return deletedExercise;
+      try {
+        await ctx.prisma.exercise.delete({
+          where: { id: input.exerciseId },
+        });
+      } catch (err) {
+        throw new TRPCError({
+          code: "PRECONDITION_FAILED",
+          message: `לא ניתן למחוק את התרגיל, הוא מופיע בחלק מהאימונים`,
+        });
+      }
     }),
 
   getRandomExercises: privateProcedure

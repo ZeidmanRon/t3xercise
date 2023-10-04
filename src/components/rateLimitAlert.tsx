@@ -36,7 +36,7 @@ export default function RateLimitAlert({
         <AlertDescription className="flex flex-col">
           <div>
             <h1>{errorMessage}</h1>
-            <h1>Time Left: {RemainingTime} seconds</h1>
+            {!!RemainingTime ?? <h1>Time Left: {RemainingTime} seconds</h1>}
           </div>
         </AlertDescription>
       </Alert>

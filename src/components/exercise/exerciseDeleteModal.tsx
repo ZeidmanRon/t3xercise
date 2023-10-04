@@ -28,7 +28,6 @@ export function ExerciseDeleteModal({ exerciseId }: editExerciseModalProps) {
         setAlertCode(opts.data!.code);
         setAlertMessage(opts.message);
         setAlert(true);
-        console.log(opts.message, opts.data!.code);
       },
       async onSuccess() {
         await utils.exercises.getAll.invalidate();
@@ -49,7 +48,7 @@ export function ExerciseDeleteModal({ exerciseId }: editExerciseModalProps) {
       </DialogTrigger>
       <DialogContent className="flex h-auto w-3/4 flex-col items-center justify-center">
         <DialogHeader className="h-fit">
-          <DialogTitle>{isAlert ? "שגיאה" : "למחוק את התרגיל?"}</DialogTitle>
+          <DialogTitle>{isAlert ? <></> : "למחוק את התרגיל?"}</DialogTitle>
         </DialogHeader>
         {isAlert ? (
           <RateLimitAlert
