@@ -36,20 +36,16 @@ export default function WorkoutPage() {
   const [workoutExercises, setWorkoutExercises] = useState([{}]);
   const [maxIndexesPerSet, setMaxIndexes] = useState<number[]>([0, 0, 0, 0, 0]);
 
-  const {
-    mutate: getWorkoutById,
-    data: workout,
-    error,
-  } = api.workouts.mutationGetWorkoutById.useMutation();
+  const { data: workout, error } = api.workouts.getWorkoutById.useQuery(
+    {
+      workoutId: router.query.workoutId as string,
+    },
+    {
+      enabled: router.isReady,
+    }
+  );
   const { mutate: getExercises, data: exercisesOfWorkout } =
     api.exercises.getExercises.useMutation();
-
-  useEffect(() => {
-    if (router.isReady) {
-      getWorkoutById({ workoutId: router.query.workoutId as string });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router.isReady]);
 
   useEffect(() => {
     if (!workout) return;
