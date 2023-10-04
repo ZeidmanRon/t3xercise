@@ -69,7 +69,7 @@ export const exercisesRouter = createTRPCRouter({
         calculateTimeLeftForLimit(reset);
       }
       const existExercise = await ctx.prisma.exercise.findFirst({
-        where: { name: input.name },
+        where: { name: input.name, authorId: ctx.currentUser.id },
       });
 
       if (existExercise) {
