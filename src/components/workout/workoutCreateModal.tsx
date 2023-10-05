@@ -6,12 +6,12 @@ import { LoadingSpinner } from "../layout/loading";
 import WorkoutForm from "./workoutForm";
 
 export function WorkoutCreateModal() {
-  const [openWorkoutDialog, setOpenWorkoutDialog] = useState(false);
+  const [createWorkoutDialog, setCreateWorkoutDialog] = useState(false);
   const [displayLoadingDialog, setDisplayLoadingDialog] = useState(false);
 
   // isUpdatingWorkout
   return (
-    <Dialog open={openWorkoutDialog} onOpenChange={setOpenWorkoutDialog}>
+    <Dialog open={createWorkoutDialog} onOpenChange={setCreateWorkoutDialog}>
       <DialogTrigger asChild>
         <Button variant={"outline"}>הוספת אימון</Button>
       </DialogTrigger>
@@ -24,7 +24,7 @@ export function WorkoutCreateModal() {
           <div className="flex h-auto w-full flex-1 items-center justify-center">
             <WorkoutForm
               setDisplayLoadingDialog={setDisplayLoadingDialog}
-              setOpenWorkoutDialog={setOpenWorkoutDialog}
+              setCreateWorkoutDialog={setCreateWorkoutDialog}
             />
           </div>
         )}

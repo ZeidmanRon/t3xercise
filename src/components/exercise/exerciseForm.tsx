@@ -67,19 +67,17 @@ export const muscleGroups = [
 ];
 
 type exerciseFormProps = {
-  updateForm: boolean;
   exercise?: Exercise;
   setOpenExerciseForm: Dispatch<SetStateAction<boolean>>;
 };
 
 export function ExerciseForm({
-  updateForm,
   exercise,
   setOpenExerciseForm,
 }: exerciseFormProps) {
   const utils = api.useContext();
-  const { mutate: createExercise, isLoading: isCreatingExercise } =
-    api.exercises.create.useMutation({
+  const { mutate: upsertExercise, isLoading: isUpsertingExercise } =
+    api.exercises.upsert.useMutation({
       async onSuccess() {
         await utils.exercises.getAll.invalidate();
         setOpenExerciseForm(false);
@@ -94,34 +92,19 @@ export function ExerciseForm({
         });
       },
     });
-  const { mutate: updateExercise, isLoading: isUpdatingExercise } =
-    api.exercises.update.useMutation({
-      async onSuccess() {
-        await utils.exercises.getAll.invalidate();
-        setOpenExerciseForm(false);
-      },
-    });
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      category: updateForm ? exercise!.category : "",
-      name: updateForm ? exercise!.name : "",
-      desc: updateForm ? exercise!.desc : "",
+      category: !!exercise ? exercise.category : "",
+      name: !!exercise ? exercise.name : "",
+      desc: !!exercise ? exercise.desc : "",
     },
   });
   const [openMuscleGroup, setOpenMuscleGroup] = useState(false);
 
-  function onSubmitCreate(data: z.infer<typeof FormSchema>) {
-    createExercise({
-      name: data.name,
-      category: data.category,
-      desc: data.desc,
-    });
-    form.reset();
-  }
-  function onSubmitUpdate(data: z.infer<typeof FormSchema>) {
-    updateExercise({
-      exerciseId: exercise!.id,
+  function onSubmit(data: z.infer<typeof FormSchema>) {
+    upsertExercise({
+      exerciseId: exercise?.id,
       name: data.name,
       category: data.category,
       desc: data.desc,
@@ -129,7 +112,7 @@ export function ExerciseForm({
     form.reset();
   }
 
-  return isCreatingExercise || isUpdatingExercise ? (
+  return isUpsertingExercise ? (
     <div className="flex min-h-[245px] items-center justify-center">
       <LoadingSpinner size={40} />
     </div>
@@ -137,11 +120,7 @@ export function ExerciseForm({
     <Form {...form}>
       <form
         // eslint-disable-next-line @typescript-eslint/no-misused-promises
-        onSubmit={
-          updateForm
-            ? form.handleSubmit(onSubmitUpdate)
-            : form.handleSubmit(onSubmitCreate)
-        }
+        onSubmit={form.handleSubmit(onSubmit)}
         className="w-full  space-y-4"
       >
         <FormField

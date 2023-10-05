@@ -20,12 +20,12 @@ import { Button } from "~/components/ui/button";
 
 interface WorkoutFormProps {
   setDisplayLoadingDialog: Dispatch<SetStateAction<boolean>>;
-  setOpenWorkoutDialog: Dispatch<SetStateAction<boolean>>;
+  setCreateWorkoutDialog: Dispatch<SetStateAction<boolean>>;
 }
 
 export default function WorkoutForm({
   setDisplayLoadingDialog,
-  setOpenWorkoutDialog,
+  setCreateWorkoutDialog: setOpenWorkoutDialog,
 }: WorkoutFormProps) {
   const utils = api.useContext();
 

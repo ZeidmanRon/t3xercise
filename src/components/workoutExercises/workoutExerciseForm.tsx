@@ -57,7 +57,7 @@ type workoutExerciseFormProps = {
   setOpenModal: Dispatch<SetStateAction<boolean>>;
   maxIndexPerSet: number[];
 };
-
+  
 export function WorkoutExerciseForm({
   workoutId,
   sets,

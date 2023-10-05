@@ -22,10 +22,7 @@ export function ExerciseCreateModal() {
           <DialogTitle>יצירת תרגיל</DialogTitle>
         </DialogHeader>
         <div className="flex flex-1 flex-col">
-          <ExerciseForm
-            setOpenExerciseForm={setOpenExerciseForm}
-            updateForm={false}
-          />
+          <ExerciseForm setOpenExerciseForm={setOpenExerciseForm} />
         </div>
       </DialogContent>
     </Dialog>
