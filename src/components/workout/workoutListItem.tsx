@@ -7,6 +7,7 @@ import { WorkoutDeleteModal } from "./wokroutDeleteModal";
 import { Button } from "~/components/ui/button";
 import { EyeIcon } from "lucide-react";
 import { useRouter } from "next/router";
+import { WorkoutEditModal } from "./workoutEditModal";
 type WorkoutProps = {
   workout: Workout;
 };
@@ -64,7 +65,6 @@ export const WorkoutSkeleton: React.FC<WorkoutProps> = ({ workout }) => {
           <h2 className="text-xl font-semibold">{workout.title}</h2>
         </div>
         <div className="min-w-max">
-          {/* <WorkoutEditModal workout={workout} />*/}
           <Button
             onClick={() => {
               void router.push(`workouts/${workout.id}`);
@@ -75,6 +75,7 @@ export const WorkoutSkeleton: React.FC<WorkoutProps> = ({ workout }) => {
           >
             <EyeIcon size={16} />
           </Button>
+          <WorkoutEditModal workout={workout} />
           <WorkoutDeleteModal workoutId={workout.id} />
         </div>
       </div>

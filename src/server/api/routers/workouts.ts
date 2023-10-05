@@ -73,10 +73,10 @@ export const workoutsRouter = createTRPCRouter({
       return workout;
     }),
 
-  create: privateProcedure
+  upsert: privateProcedure
     .input(
       z.object({
-        // Exercise ID Array
+        workoutId: z.string().optional(),
         title: z.string(),
       })
     )
@@ -86,8 +86,14 @@ export const workoutsRouter = createTRPCRouter({
         calculateTimeLeftForLimit(reset);
       }
       const { title } = input;
-      const createdWorkout = await ctx.prisma.workout.create({
-        data: {
+      const createdWorkout = await ctx.prisma.workout.upsert({
+        where: { id: input.workoutId ?? "" },
+        update: {
+          title: title,
+          authorId: ctx.currentUser.id,
+          authorName: `${ctx.currentUser.firstName} ${ctx.currentUser.lastName}`,
+        },
+        create: {
           title: title,
           sets: 5,
           authorId: ctx.currentUser.id,

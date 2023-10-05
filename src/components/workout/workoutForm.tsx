@@ -17,25 +17,28 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Button } from "~/components/ui/button";
+import { type Workout } from "@prisma/client";
 
 interface WorkoutFormProps {
-  setDisplayLoadingDialog: Dispatch<SetStateAction<boolean>>;
-  setCreateWorkoutDialog: Dispatch<SetStateAction<boolean>>;
+  workout?: Workout;
+  setIsLoading: Dispatch<SetStateAction<boolean>>;
+  setShowModal: Dispatch<SetStateAction<boolean>>;
 }
 
 export default function WorkoutForm({
-  setDisplayLoadingDialog,
-  setCreateWorkoutDialog: setOpenWorkoutDialog,
+  workout,
+  setIsLoading,
+  setShowModal,
 }: WorkoutFormProps) {
   const utils = api.useContext();
 
-  const { mutate: createWorkout, error: workoutError } =
-    api.workouts.create.useMutation({
+  const { mutate: upsertWorkout, error: workoutError } =
+    api.workouts.upsert.useMutation({
       async onSuccess() {
         await utils.workouts.getMostUpdated.invalidate();
         await utils.workouts.getAll.invalidate();
-        setDisplayLoadingDialog(false);
-        setOpenWorkoutDialog(false);
+        setIsLoading(false);
+        setShowModal(false);
       },
     });
 
@@ -48,15 +51,15 @@ export default function WorkoutForm({
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      workoutName: "", // Set initial values here
+      workoutName: workout?.title ?? "", // Set initial values here
     },
   });
 
   //useEffect for showing Errors
   useEffect(() => {
     if (workoutError) {
-      setOpenWorkoutDialog(false);
-      setDisplayLoadingDialog(false);
+      setShowModal(false);
+      setIsLoading(false);
       void Swal.fire({
         title: "שגיאה!",
         text: workoutError?.message,
@@ -64,11 +67,13 @@ export default function WorkoutForm({
         confirmButtonText: "אוקיי",
       });
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [workoutError]);
 
   function handleSubmit(data: z.infer<typeof FormSchema>) {
-    setDisplayLoadingDialog(true);
-    createWorkout({
+    setIsLoading(true);
+    upsertWorkout({
+      workoutId: workout?.id,
       title: data.workoutName,
     }); //reset dialog variables
     form.resetField("workoutName");
@@ -103,7 +108,7 @@ export default function WorkoutForm({
         />
         <div className="flex items-center justify-center">
           <Button type="submit" className="font-normal">
-            יצירת אימון
+            סיום עריכה
           </Button>
         </div>
       </form>

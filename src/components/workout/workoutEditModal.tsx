@@ -1,19 +1,29 @@
 import { Button } from "~/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "~/components/ui/dialog";
-import { useState } from "react";
-
-import { LoadingSpinner } from "../layout/loading";
 import WorkoutForm from "./workoutForm";
+import { EditIcon } from "lucide-react";
+import { useState } from "react";
+import { type Workout } from "@prisma/client";
+import { LoadingSpinner } from "../layout/loading";
 
-export function WorkoutCreateModal() {
-  const [openCreateModal, setOpenCreateModal] = useState(false);
+type editWorkoutModalProps = {
+  workout: Workout;
+};
+
+export function WorkoutEditModal({ workout }: editWorkoutModalProps) {
+  const [openEditModal, setOpenEditModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  // isUpdatingWorkout
   return (
-    <Dialog open={openCreateModal} onOpenChange={setOpenCreateModal}>
+    <Dialog open={openEditModal} onOpenChange={setOpenEditModal}>
       <DialogTrigger asChild>
-        <Button variant={"outline"}>הוספת אימון</Button>
+        <Button
+          className=" rounded-full text-[0.6rem]"
+          size={"sm"}
+          variant={"ghost"}
+        >
+          <EditIcon size={16} />
+        </Button>
       </DialogTrigger>
       <DialogContent className="top-60 flex h-auto w-11/12">
         {isLoading ? (
@@ -23,8 +33,9 @@ export function WorkoutCreateModal() {
         ) : (
           <div className="flex h-auto w-full flex-1 items-center justify-center">
             <WorkoutForm
+              workout={workout}
               setIsLoading={setIsLoading}
-              setShowModal={setOpenCreateModal}
+              setShowModal={setOpenEditModal}
             />
           </div>
         )}
