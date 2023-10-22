@@ -61,6 +61,7 @@ export default function WorkoutPage() {
 
       // Update the maximum 'index' if the current index is greater
       if (index > updatedMaxIndexes[set - 1]!) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         updatedMaxIndexes[set - 1] = index;
       }
     });
@@ -69,7 +70,7 @@ export default function WorkoutPage() {
     setMaxIndexes(updatedMaxIndexes);
 
     getExercises(exercisesIds);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [getExercises, workout]);
 
   useEffect(() => {
@@ -82,6 +83,7 @@ export default function WorkoutPage() {
         return {
           ...exercise,
           set: relatedExerciseOnWorkout.set,
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           index: relatedExerciseOnWorkout.index,
         };
       }
@@ -94,7 +96,7 @@ export default function WorkoutPage() {
     });
 
     setWorkoutExercises(combinedData);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [exercisesOfWorkout]);
 
   if (error) {

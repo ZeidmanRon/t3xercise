@@ -95,7 +95,7 @@ export const workoutsRouter = createTRPCRouter({
         },
         create: {
           title: title,
-          sets: 5,
+          sets: 10,
           authorId: ctx.currentUser.id,
           authorName: `${ctx.currentUser.firstName} ${ctx.currentUser.lastName}`,
         },

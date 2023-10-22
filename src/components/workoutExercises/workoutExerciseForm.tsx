@@ -57,7 +57,7 @@ type workoutExerciseFormProps = {
   setOpenModal: Dispatch<SetStateAction<boolean>>;
   maxIndexPerSet: number[];
 };
-  
+
 export function WorkoutExerciseForm({
   workoutId,
   sets,
@@ -271,33 +271,35 @@ export function WorkoutExerciseForm({
                   </PopoverTrigger>
                   <PopoverContent className="w-full">
                     <Command>
-                      <CommandGroup>
-                        {[...Array(sets).keys()]
-                          .map((i) => i + 1)
-                          .map((number) => (
-                            <CommandItem
-                              value={`${number}`}
-                              key={number}
-                              onSelect={(currentValue) => {
-                                form.setValue(
-                                  "exerciseSet",
-                                  parseInt(currentValue)
-                                );
-                                setOpenSetList(false);
-                              }}
-                            >
-                              <Check
-                                className={cn(
-                                  "mr-2 h-4 w-4",
-                                  number === field.value
-                                    ? "opacity-100"
-                                    : "opacity-0"
-                                )}
-                              />
-                              {number}
-                            </CommandItem>
-                          ))}
-                      </CommandGroup>
+                      <ScrollArea className="h-32" dir="rtl">
+                        <CommandGroup>
+                          {[...Array(sets).keys()]
+                            .map((i) => i + 1)
+                            .map((number) => (
+                              <CommandItem
+                                value={`${number}`}
+                                key={number}
+                                onSelect={(currentValue) => {
+                                  form.setValue(
+                                    "exerciseSet",
+                                    parseInt(currentValue)
+                                  );
+                                  setOpenSetList(false);
+                                }}
+                              >
+                                <Check
+                                  className={cn(
+                                    "mr-2 h-4 w-4",
+                                    number === field.value
+                                      ? "opacity-100"
+                                      : "opacity-0"
+                                  )}
+                                />
+                                {number}
+                              </CommandItem>
+                            ))}
+                        </CommandGroup>
+                      </ScrollArea>
                     </Command>
                   </PopoverContent>
                 </Popover>
