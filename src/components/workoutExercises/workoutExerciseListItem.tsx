@@ -33,17 +33,17 @@ export function WorkoutExerciseListItem({
   return (
     <div className="flex h-auto w-full flex-col rounded-lg p-1">
       <div className="top flex w-full items-center justify-between">
-        <div className="flex w-full min-w-max items-center justify-between">
-          <h2 className="text-md font-semibold">{exercise.name}</h2>
+        <div className="flex w-full items-center">
+          <h2 className="text-md w-3/4 font-semibold">{exercise.name}</h2>
+        </div>
+        <div className="flex min-w-max items-center justify-center text-left">
+          {/* <ExerciseEditModal exercise={exercise} /> */}
           <Badge
             className="px-3 text-center text-[0.6rem] font-semibold text-gray-600"
             variant="outline"
           >
             {exercise.category}
           </Badge>
-        </div>
-        <div className="min-w-max">
-          {/* <ExerciseEditModal exercise={exercise} /> */}
           <WorkoutExerciseDeleteModal
             workoutId={workoutId}
             exerciseToRemove={exercise}
@@ -60,7 +60,7 @@ export function WorkoutExerciseListItem({
       {exercise.desc ? (
         <ScrollArea
           dir="rtl"
-          className="-mt-2 max-h-12 min-h-[1rem] overflow-y-auto"
+          className="-mt-2 max-h-12 min-h-[1rem] w-5/6 overflow-y-auto"
         >
           <p className="text-xs text-gray-400">{exercise.desc}</p>
         </ScrollArea>
