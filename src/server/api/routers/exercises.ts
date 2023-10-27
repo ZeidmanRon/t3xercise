@@ -68,6 +68,7 @@ export const exercisesRouter = createTRPCRouter({
       if (!success) {
         calculateTimeLeftForLimit(reset);
       }
+
       const existExercise = await ctx.prisma.exercise.findFirst({
         where: { name: input.name, authorId: ctx.currentUser.id },
       });
@@ -103,6 +104,17 @@ export const exercisesRouter = createTRPCRouter({
       const { success, reset } = await rateLimit.limit(ctx.currentUser.id);
       if (!success) {
         calculateTimeLeftForLimit(reset);
+      }
+
+      const existExercise = await ctx.prisma.exercise.findFirst({
+        where: { name: input.name.trim(), authorId: ctx.currentUser.id },
+      });
+
+      if (existExercise) {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: `כבר קיים תרגיל עם השם: ${input.name}`,
+        });
       }
 
       const exercise = await ctx.prisma.exercise.upsert({

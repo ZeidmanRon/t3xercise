@@ -95,9 +95,9 @@ export function ExerciseForm({
   function onSubmit(data: z.infer<typeof FormSchema>) {
     upsertExercise({
       exerciseId: exercise?.id,
-      name: data.name,
+      name: data.name.trim(),
       category: data.category,
-      desc: data.desc,
+      desc: data.desc?.trim(),
     });
     form.reset();
   }
