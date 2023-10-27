@@ -7,6 +7,7 @@ import { Button } from "~/components/ui/button";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "~/lib/utils";
 import { api } from "~/utils/api";
+import { muscleGroups } from "~/components/globals";
 
 import {
   Form,
@@ -54,17 +55,6 @@ export const FormSchema = z.object({
     })
     .min(2, { message: "נא להזין קבוצת שריר" }),
 });
-
-export const muscleGroups = [
-  { label: "ישבן", value: "ישבן" },
-  { label: "רגליים", value: "רגליים" },
-  { label: "גב", value: "גב" },
-  { label: "בטן", value: "בטן" },
-  { label: "חזה", value: "חזה" },
-  { label: "כתפיים", value: "כתפיים" },
-  { label: "ידיים", value: "ידיים" },
-  { label: "אירובי", value: "אירובי" },
-];
 
 type exerciseFormProps = {
   exercise?: Exercise;
