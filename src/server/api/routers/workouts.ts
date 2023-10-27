@@ -143,8 +143,13 @@ export const workoutsRouter = createTRPCRouter({
       }
       try {
         const { workoutId, exerciseId } = input;
-        await ctx.prisma.exercisesOnWorkouts.deleteMany({
-          where: { workoutId: workoutId, exerciseId: exerciseId },
+        await ctx.prisma.exercisesOnWorkouts.delete({
+          where: {
+            exerciseId_workoutId: {
+              workoutId: workoutId,
+              exerciseId: exerciseId,
+            },
+          },
         });
       } catch (err) {
         console.log("at @remove_exercise_from_workout error:", err);

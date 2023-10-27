@@ -49,7 +49,7 @@ export function WorkoutExerciseDeleteModal({
 
   const { mutate: deleteExercise, isLoading: isDeleting } =
     api.workouts.removeExerciseFromWorkout.useMutation({
-      onSuccess() {
+      async onSuccess() {
         // filter to the releveant set exercises
         const filteredExercises = workoutExercises.filter(
           (exercise) => exercise.set === exerciseToRemove.set
@@ -68,6 +68,7 @@ export function WorkoutExerciseDeleteModal({
         const newIndexes: number[] = [...maxIndexesPerSet];
         newIndexes[exerciseToRemove.set - 1] -= 1;
         setMaxIndexes(newIndexes);
+        await utils.workouts.getWorkoutById.invalidate();
       },
     });
 
